@@ -400,7 +400,7 @@
         .dm-btn {
             padding: 8px 20px; font-size: 13px; font-weight: 500; border-radius: var(--radius-full); color: var(--text-muted); transition: all var(--transition-fast);
         }
-        .dm-btn.active { background: var(--card-secondary); color: var(--text-primary); box-shadow: var(--shadow-sm); }
+        .dm-btn.active { background: var(--primary); color: var(--primary-invert); box-shadow: var(--shadow-sm); }
 
         .btn-primary {
             height: 44px; padding: 0 24px; background: var(--primary); color: var(--primary-invert);
@@ -625,17 +625,35 @@
         <!-- =========================================================
              SHARED FILTERS
              ========================================================= -->
-        <section class="shared-filters-bar" style="display:flex; flex-direction:column; gap:24px; margin-bottom:32px;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+        <section class="shared-filters-bar" style="display:flex; flex-direction:column; gap:16px; margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;">
                 <div class="filter-item">
                     <span class="label">Date Range</span>
-                    <select class="premium-select" id="dateRangeSelect" onchange="window.updateAnalytics()">
-                        <option value="30">Last 30 Days</option>
-                        <option value="60">Last 60 Days</option>
-                        <option value="90" class="premium-option">Last 90 Days 👑</option>
-                        <option value="180" class="premium-option">Last 6 Months 👑</option>
-                        <option value="ytd" class="premium-option">Year to Date 👑</option>
-                    </select>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <select class="premium-select" id="dateRangeSelect" onchange="handleDateRangeChange(this)">
+                            <option value="30">Last 30 Days</option>
+                            <option value="60">Last 60 Days</option>
+                            <option value="90" class="premium-option">Last 90 Days (PRO)</option>
+                            <option value="180" class="premium-option">Last 6 Months (PRO)</option>
+                            <option value="ytd" class="premium-option">Year to Date (PRO)</option>
+                            <option value="custom" class="premium-option">Custom (PRO)</option>
+                        </select>
+                        <div id="customDatePickers" style="display: none; gap: 8px; align-items: center;">
+                            <input type="date" id="customStartDate" class="premium-select" style="padding: 6px 12px;">
+                            <span>to</span>
+                            <input type="date" id="customEndDate" class="premium-select" style="padding: 6px 12px;">
+                            <script>
+                                // Set default values for custom date pickers
+                                (function(){
+                                    const today = new Date();
+                                    const past = new Date();
+                                    past.setDate(today.getDate() - 30);
+                                    document.getElementById('customEndDate').value = today.toISOString().split('T')[0];
+                                    document.getElementById('customStartDate').value = past.toISOString().split('T')[0];
+                                })();
+                            </script>
+                        </div>
+                    </div>
                 </div>
                 
                 <div id="heatmap-toggles" style="display:flex; align-items:center; gap:16px;">
@@ -649,19 +667,23 @@
                 </div>
                 
                 <div id="charts-toggles" style="display:none; align-items:center; gap:16px;">
-                    <div class="display-mode-toggle">
-                        <button class="dm-btn active" onclick="setChartMode('combined')">Combined</button>
-                        <button class="dm-btn" onclick="setChartMode('separate')">Separate</button>
+                    <div class="display-mode-toggle" style="background: var(--card-secondary); padding: 4px; border-radius: 8px;">
+                        <button class="dm-btn active" onclick="setChartMode('combined', this)">Combined</button>
+                        <button class="dm-btn" onclick="setChartMode('separate', this)">Separate</button>
                     </div>
                 </div>
             </div>
             
-            <div class="filter-item">
+            <div class="filter-item" style="width: 100%;">
                 <span class="label">Select Habits</span>
                 <div class="chip-group" id="dynamic-pills-container">
                     <button class="chip active" data-habit="overall" onclick="togglePill(this)">Overall Score</button>
                     <!-- JS will populate -->
                 </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; width: 100%;">
+                <button class="btn btn-primary" id="btn-generate-chart" onclick="window.updateAnalytics()" style="display: none;">Generate Chart</button>
+                <button class="btn btn-primary" id="btn-show-heatmap" onclick="window.updateAnalytics()">Show Heatmap</button>
             </div>
         </section>
 
@@ -676,7 +698,7 @@
                         Performance Heatmap
                         <div class="info-icon-sm">i</div>
                     </h2>
-                    <button class="btn-icon-sq" aria-label="Fullscreen">
+                    <button class="btn-icon-sq" aria-label="Fullscreen" onclick="toggleFullscreen('heatmap')">
                         <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                     </button>
                 </div>
@@ -784,6 +806,45 @@
 </div>
 
 <!-- ==========================================================================
+     11. FULLSCREEN OVERLAY
+     ========================================================================== -->
+<div class="modal-overlay" id="fullscreenOverlay" style="z-index: 9999;" onclick="if(event.target === this) closeFullscreen()">
+    <div class="modal-card" id="fullscreenContainer" style="width: 95vw; height: 90vh; max-width: 1600px; display: flex; flex-direction: column;">
+        <div class="modal-header" style="background-color: var(--card-secondary); padding: 16px; display: flex; justify-content: flex-end;">
+            <button class="btn-close" onclick="closeFullscreen()" style="background: var(--border);">
+                <svg viewBox="0 0 24 24" style="stroke: var(--text-primary);"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div id="fullscreenContent" style="flex: 1; overflow: auto; padding: 24px; background: var(--card-bg);">
+            <!-- Content gets moved here -->
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================================================
+     12. PREMIUM PROMPT MODAL
+     ========================================================================== -->
+<div class="modal-overlay" id="premiumModal" onclick="if(event.target === this) closePremiumModal()">
+    <div class="modal-card" style="max-width: 400px; text-align: center; padding-bottom: 32px;">
+        <div class="modal-header" style="background-color: #8A2BE2; justify-content: center; padding: 32px 24px 24px;">
+            <div style="background: rgba(255,255,255,0.2); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon><line x1="12" y1="22" x2="12" y2="15.5"></line><polyline points="22 8.5 12 15.5 2 8.5"></polyline><polyline points="2 15.5 12 8.5 22 15.5"></polyline><line x1="12" y1="2" x2="12" y2="8.5"></line></svg>
+            </div>
+            <button class="btn-close" onclick="closePremiumModal()" style="position: absolute; top: 16px; right: 16px;">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="modal-body" style="padding: 24px;">
+            <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary);">Unlock PRO Analytics</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 15px;">
+                Custom date ranges, advanced charts, and detailed insights are available exclusively on the PRO plan.
+            </p>
+            <a href="subscription.html" class="btn btn-primary" style="width: 100%; display: block; text-decoration: none; padding: 12px;">Proceed to Buy</a>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================================================
      JAVASCRIPT (UI Logic Only)
      ========================================================================== -->
 <script>
@@ -797,7 +858,7 @@
         if(moonIcon && sunIcon) { moonIcon.style.display = 'none'; sunIcon.style.display = 'block'; }
     } else {
         htmlElement.setAttribute('data-theme', 'dark');
-        if(moonIcon && sunIcon) { sunIcon.style.display = 'none'; moonIcon.style.display = 'block'; }
+        if(moonIcon && sunIcon) { moonIcon.style.display = 'none'; moonIcon.style.display = 'block'; }
     }
 
     const themeToggleBtn = document.getElementById('themeToggle');
@@ -820,6 +881,9 @@
         });
     }
 
+    let previousDateRange = '30';
+    window.currentTab = 'heatmap';
+
     function switchTab(tab, element) {
         document.querySelectorAll('.segmented-btn').forEach(btn => btn.classList.remove('active'));
         element.classList.add('active');
@@ -832,23 +896,99 @@
         const chBlock = document.getElementById('view-charts');
         const htToggles = document.getElementById('heatmap-toggles');
         const chToggles = document.getElementById('charts-toggles');
+        const btnGenChart = document.getElementById('btn-generate-chart');
+        const btnShowHm = document.getElementById('btn-show-heatmap');
+        
+        window.currentTab = tab;
         
         if(tab === 'heatmap') {
             hmBlock.style.display = 'block';
             chBlock.style.display = 'none';
             htToggles.style.display = 'flex';
             chToggles.style.display = 'none';
+            btnGenChart.style.display = 'none';
+            btnShowHm.style.display = 'inline-flex';
+            
+            // Enforce single selection on switch
+            if (selectedPills.length > 1) {
+                selectedPills = [selectedPills[0]];
+                window.renderPills();
+            }
         } else {
             hmBlock.style.display = 'none';
             chBlock.style.display = 'block';
             htToggles.style.display = 'none';
             chToggles.style.display = 'flex';
-            renderEChart();
+            btnGenChart.style.display = 'inline-flex';
+            btnShowHm.style.display = 'none';
+            // Chart rendering will happen only when user clicks generate, but we can resize the existing chart
             setTimeout(() => { if(myChart) myChart.resize(); }, 50);
         }
     }
     
+    window.handleDateRangeChange = function(select) {
+        const val = select.value;
+        const isPremiumUser = localStorage.getItem('isPremium') === 'true';
+        
+        if (['custom', '90', '180', 'ytd'].includes(val)) {
+            if (!isPremiumUser) {
+                document.getElementById('premiumModal').classList.add('active');
+                select.value = previousDateRange; // revert
+                document.getElementById('customDatePickers').style.display = 'none';
+                return;
+            }
+        }
+        
+        previousDateRange = val;
+        
+        if (val === 'custom') {
+            document.getElementById('customDatePickers').style.display = 'flex';
+        } else {
+            document.getElementById('customDatePickers').style.display = 'none';
+            window.updateAnalytics();
+        }
+    };
+
+    window.closePremiumModal = function() {
+        document.getElementById('premiumModal').classList.remove('active');
+    };
+
+    let originalChartParent = null;
+    let originalHeatmapParent = null;
     
+    window.toggleFullscreen = function(viewId) {
+        const overlay = document.getElementById('fullscreenOverlay');
+        const content = document.getElementById('fullscreenContent');
+        content.innerHTML = ''; // clear
+        
+        if (viewId === 'heatmap') {
+            const hm = document.getElementById('heatmap-months-container');
+            originalHeatmapParent = hm.parentNode;
+            content.appendChild(hm);
+        } else if (viewId === 'chart') {
+            const ch = document.getElementById('dynamic-charts-container');
+            originalChartParent = ch.parentNode;
+            content.appendChild(ch);
+            setTimeout(() => { if(myChart) myChart.resize(); }, 100);
+        }
+        overlay.classList.add('active');
+    };
+    
+    window.closeFullscreen = function() {
+        const overlay = document.getElementById('fullscreenOverlay');
+        const content = document.getElementById('fullscreenContent');
+        
+        if (content.children.length > 0) {
+            const el = content.children[0];
+            if (el.id === 'heatmap-months-container' && originalHeatmapParent) {
+                originalHeatmapParent.appendChild(el);
+            } else if (el.id === 'dynamic-charts-container' && originalChartParent) {
+                originalChartParent.appendChild(el);
+                setTimeout(() => { if(myChart) myChart.resize(); }, 100);
+            }
+        }
+        overlay.classList.remove('active');
+    };
     let currentUser = null;
     let customHabitsData = JSON.parse(localStorage.getItem('customHabitsData') || '[]');
     let userHabits = JSON.parse(localStorage.getItem('userHabits') || '{}');
@@ -924,23 +1064,35 @@
 
     window.togglePill = function(btn) {
         const habitId = btn.getAttribute('data-habit');
-        if(selectedPills.includes(habitId)) {
-            if(selectedPills.length > 1) {
-                selectedPills = selectedPills.filter(id => id !== habitId);
-                btn.classList.remove('active');
-            }
+        if(window.currentTab === 'heatmap') {
+            // Single selection
+            selectedPills = [habitId];
+            window.renderPills();
         } else {
-            selectedPills.push(habitId);
-            btn.classList.add('active');
+            // Multi selection
+            if(selectedPills.includes(habitId)) {
+                if(selectedPills.length > 1) {
+                    selectedPills = selectedPills.filter(id => id !== habitId);
+                    btn.classList.remove('active');
+                }
+            } else {
+                selectedPills.push(habitId);
+                btn.classList.add('active');
+            }
         }
-        window.updateAnalytics();
+        // updateAnalytics() is removed from here; user must click Generate/Show
     };
 
-    window.renderInsights = function(days) {
+    window.renderInsights = function(days, customStart, customEnd) {
         let logs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
         let now = new Date();
         let startDate = new Date(now);
-        startDate.setDate(now.getDate() - days + 1); // e.g. for 30 days, we go back 29 days from today
+        if (customStart && customEnd) {
+            startDate = new Date(customStart);
+            now = new Date(customEnd);
+        } else {
+            startDate.setDate(now.getDate() - days + 1);
+        }
         
         let datesInRange = [];
         let curr = new Date(startDate);
@@ -1067,13 +1219,29 @@
         const isPremium = localStorage.getItem('isPremium') === 'true'; 
         
         let days = dateSelect.value;
-        if (!isPremium && (days === '90' || days === '180' || days === 'ytd')) {
-            alert("Upgrade to Premium to view more than 60 days of history.");
-            dateSelect.value = '60';
-            days = '60';
+        let customStart = null;
+        let customEnd = null;
+
+        if (!isPremium && (days === '90' || days === '180' || days === 'ytd' || days === 'custom')) {
+            dateSelect.value = '30';
+            days = '30';
         }
         
-        if (days === 'ytd') {
+        if (days === 'custom') {
+            const startInput = document.getElementById('customStartDate').value;
+            const endInput = document.getElementById('customEndDate').value;
+            if (!startInput || !endInput) {
+                alert("Please select both start and end dates.");
+                return;
+            }
+            customStart = new Date(startInput);
+            customEnd = new Date(endInput);
+            if (customStart > customEnd) {
+                alert("Start date cannot be after end date.");
+                return;
+            }
+            days = Math.floor((customEnd - customStart) / (1000 * 60 * 60 * 24)) + 1;
+        } else if (days === 'ytd') {
             const now = new Date();
             const start = new Date(now.getFullYear(), 0, 1);
             days = Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1;
@@ -1081,19 +1249,25 @@
             days = parseInt(days);
         }
 
-        renderInsights(days);
-        renderEChart(days);
-        renderHeatmap(days);
+        renderInsights(days, customStart, customEnd);
+        renderEChart(days, customStart, customEnd);
+        renderHeatmap(days, customStart, customEnd);
     };
 
     window.setChartMode = function(mode, btn) {
         document.querySelectorAll('.dm-btn').forEach(b => b.classList.remove('active'));
         if (btn) btn.classList.add('active');
         localStorage.setItem('chartMode', mode);
-        window.updateAnalytics();
+        // Only re-render the chart, don't update everything since pill state might differ
+        const ds = document.getElementById('dateRangeSelect').value;
+        if (ds !== 'custom') {
+            renderEChart(parseInt(ds));
+        } else {
+            window.updateAnalytics();
+        }
     };
 
-    window.renderHeatmap = function(days) {
+    window.renderHeatmap = function(days, customStart, customEnd) {
         let container = document.getElementById('heatmap-months-container');
         if (!container) return;
         container.innerHTML = '';
@@ -1101,10 +1275,15 @@
         let logs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
         
         let now = new Date();
-        now.setHours(0,0,0,0);
         let startDate = new Date(now);
-        startDate.setDate(now.getDate() - days + 1);
+        if (customStart && customEnd) {
+            startDate = new Date(customStart);
+            now = new Date(customEnd);
+        } else {
+            startDate.setDate(now.getDate() - days + 1);
+        }
         startDate.setHours(0,0,0,0);
+        now.setHours(23,59,59,999);
         
         let months = {};
         let curr = new Date(startDate);
@@ -1160,6 +1339,9 @@
                 grid.appendChild(cell);
             }
             
+            let allDates = Object.keys(logs).sort();
+            let earliestDateStr = allDates.length > 0 ? allDates[0] : null;
+
             for (let d = 1; d <= daysInMonth; d++) {
                 let cell = document.createElement('div');
                 let curDate = new Date(mData.year, mData.month, d);
@@ -1193,6 +1375,19 @@
                         cell.onclick = () => openModal(score, finalLevel, dateStr);
                     } else {
                         cell.className = 'hm-cell';
+                    }
+                    
+                    if (dateStr === earliestDateStr) {
+                        cell.style.position = 'relative';
+                        let star = document.createElement('div');
+                        star.innerHTML = '⭐';
+                        star.style.position = 'absolute';
+                        star.style.top = '-6px';
+                        star.style.right = '-6px';
+                        star.style.fontSize = '12px';
+                        star.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))';
+                        star.title = 'Start Date';
+                        cell.appendChild(star);
                     }
                 } else {
                     cell.className = 'hm-cell empty';
@@ -1254,7 +1449,7 @@
     // ==========================================
     let echartsInstances = [];
 
-    window.renderEChart = function(days) {
+    window.renderEChart = function(days, customStart, customEnd) {
         // Cleanup old instances
         echartsInstances.forEach(chart => {
             if (chart) chart.dispose();
@@ -1271,13 +1466,18 @@
         
         let now = new Date();
         let startDate = new Date(now);
-        startDate.setDate(now.getDate() - days + 1);
+        if (customStart && customEnd) {
+            startDate = new Date(customStart);
+            now = new Date(customEnd);
+        } else {
+            startDate.setDate(now.getDate() - days + 1);
+        }
         startDate.setHours(0,0,0,0);
         
         let dates = [];
         let curr = new Date(startDate);
         let end = new Date(now);
-        end.setHours(0,0,0,0);
+        end.setHours(23,59,59,999);
         
         while(curr <= end) {
             let dateStr = curr.getFullYear() + '-' + String(curr.getMonth() + 1).padStart(2, '0') + '-' + String(curr.getDate()).padStart(2, '0');
@@ -1357,16 +1557,20 @@
         if (chartMode === 'combined') {
             // Render 1 big chart
             let html = `
-                <section class="premium-card chart-card-wrapper">
+                <section class="premium-card chart-card">
                     <div class="chart-header">
-                        <h2 style="display:flex; align-items:center; gap:8px;">
-                            Combined Performance
-                        </h2>
+                        <div>
+                            <h2>Combined Performance</h2>
+                            <p class="body-text">Comparison of selected habits</p>
+                        </div>
                         <div style="display:flex; gap:16px; align-items:center;">
-                            <select class="premium-select" style="height:36px; min-width:auto; padding-right:32px;" id="chartTypeSelect" onchange="renderEChart(parseInt(document.getElementById('dateRangeSelect').value))">
+                            <select class="premium-select" style="height:36px; min-width:auto; padding-right:32px;" id="chartTypeSelect" onchange="window.updateAnalytics()">
                                 <option value="line" ${chartType === 'line' ? 'selected' : ''}>Line Chart</option>
                                 <option value="bar" ${chartType === 'bar' ? 'selected' : ''}>Bar Chart</option>
                             </select>
+                            <button class="btn-icon-sq" aria-label="Fullscreen" onclick="toggleFullscreen('chart')">
+                                <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                            </button>
                         </div>
                     </div>
                     <div id="chart-container-0" style="width: 100%; height: 280px;"></div>
