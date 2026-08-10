@@ -667,6 +667,10 @@
                 </div>
                 
                 <div id="charts-toggles" style="display:none; align-items:center; gap:16px;">
+                    <select class="premium-select" style="height:44px; min-width:auto; padding-right:32px;" id="globalChartTypeSelect" onchange="window.updateAnalytics()">
+                        <option value="line">Line Chart</option>
+                        <option value="bar">Bar Chart</option>
+                    </select>
                     <div class="display-mode-toggle" style="background: var(--card-secondary); padding: 4px; border-radius: 8px;">
                         <button class="dm-btn active" onclick="setChartMode('combined', this)">Combined</button>
                         <button class="dm-btn" onclick="setChartMode('separate', this)">Separate</button>
@@ -1300,15 +1304,7 @@
             startDate.setDate(now.getDate() - days + 1);
         }
         
-        // Dynamic Start Date constraint
-        let accStr = localStorage.getItem('accountCreationTime');
-        if (accStr && !customStart) {
-            let accDate = new Date(accStr);
-            accDate.setHours(0,0,0,0);
-            if (accDate > startDate && accDate <= now) {
-                startDate = new Date(accDate);
-            }
-        }
+        // Dynamic Start Date constraint removed to show full grid
         startDate.setHours(0,0,0,0);
         now.setHours(23,59,59,999);
         
@@ -1408,18 +1404,7 @@
                         cell.onclick = () => openModal(-1, 0, dateStr);
                     }
                     
-                    if (dateStr === earliestDateStr) {
-                        cell.style.position = 'relative';
-                        let star = document.createElement('div');
-                        star.innerHTML = '⭐';
-                        star.style.position = 'absolute';
-                        star.style.top = '-6px';
-                        star.style.right = '-6px';
-                        star.style.fontSize = '12px';
-                        star.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))';
-                        star.title = 'Start Date';
-                        cell.appendChild(star);
-                    }
+                    
                 } else {
                     cell.className = 'hm-cell empty';
                     cell.style.opacity = '0';
@@ -1524,6 +1509,12 @@
                 let targetDisplay = hData.target_value ? (hData.target_value + ' ' + (hData.unit || '')) : 'N/A';
                 if(hData.habit_type === 'yes-no') targetDisplay = 'Yes';
                 
+                
+                let actDisplay = (log.inputs && typeof log.inputs[h.id] !== 'undefined') ? log.inputs[h.id] : 'No Input';
+                if(hData.habit_type === 'yes-no') {
+                     actDisplay = (log.inputs && typeof log.inputs[h.id] !== 'undefined') ? (log.inputs[h.id] === 'yes' ? 'Yes' : 'No') : 'No Input';
+                }
+                
                 let isSuccess = h.score >= 50; // Simple threshold
                 let iconHtml = isSuccess ? 
                     `<div class="mh-icon success" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>` : 
@@ -1537,6 +1528,7 @@
                         </div>
                         <div class="mh-row" style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">
                             <span>Target: <span class="val" style="color: var(--text-primary); font-weight: 600;">${targetDisplay}</span></span>
+                            <span>Act: <span class="val" style="color: var(--text-primary); font-weight: 600;">${actDisplay}</span></span>
                         </div>
                         <div class="mh-row" style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary);">
                             <span>Score: <span class="val" style="color: var(--text-primary); font-weight: 600;">${h.score}%</span></span>
@@ -1640,7 +1632,7 @@
         };
 
         const colors = ['#3b82f6', '#a855f7', '#22c55e', '#f97316', '#ef4444', '#14b8a6', '#facc15', '#6366f1'];
-        let chartType = document.getElementById('chartTypeSelect') ? document.getElementById('chartTypeSelect').value : 'line';
+        let chartType = document.getElementById('globalChartTypeSelect') ? document.getElementById('globalChartTypeSelect').value : 'line';
         
         // Generate Series Data
         let seriesArr = [];
@@ -1664,7 +1656,9 @@
                 smooth: true,
                 data: scores,
                 itemStyle: { color: color },
-                lineStyle: { width: 3 }
+                lineStyle: { width: 3 },
+                barMaxWidth: 16,
+                barMinWidth: 4
             };
             
             if (chartType === 'line' && chartMode === 'separate') {
@@ -1688,10 +1682,7 @@
                             <p class="body-text">Comparison of selected habits</p>
                         </div>
                         <div style="display:flex; gap:16px; align-items:center;">
-                            <select class="premium-select" style="height:36px; min-width:auto; padding-right:32px;" id="chartTypeSelect" onchange="window.updateAnalytics()">
-                                <option value="line" ${chartType === 'line' ? 'selected' : ''}>Line Chart</option>
-                                <option value="bar" ${chartType === 'bar' ? 'selected' : ''}>Bar Chart</option>
-                            </select>
+                            
                             <button class="btn-icon-sq" aria-label="Fullscreen" onclick="toggleFullscreen('chart')">
                                 <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                             </button>
@@ -1728,7 +1719,7 @@
             seriesArr.forEach((series, idx) => {
                 let chartDom = document.getElementById(`chart-container-${idx}`);
                 let chart = echarts.init(chartDom);
-                chart.setOption(createChartOption([series], 'line')); // Separate mode forces line for better look
+                chart.setOption(createChartOption([series], chartType));
                 echartsInstances.push(chart);
             });
         }

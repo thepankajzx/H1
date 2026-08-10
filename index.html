@@ -1325,7 +1325,7 @@
             
             let totalScore = 0;
             let maxPossible = 0;
-            let dailyLog = { score: 0, habits: {} };
+            let dailyLog = { score: 0, habits: {}, inputs: {} };
             
             Object.values(userHabits).forEach(habit => {
                 let habitScore = 0;
@@ -1336,6 +1336,7 @@
                     const val = document.getElementById('habit-' + id)?.value;
                     if (val) {
                         hasInput = true;
+                        dailyLog.inputs[id] = val;
                         if (val === 'yes') habitScore = 100;
                         else if (val === 'no') habitScore = 0;
                     }
@@ -1349,6 +1350,7 @@
                     hasInput = (hrsEl && hrsEl.value !== "") || (minsEl && minsEl.value !== "");
                     
                     if (hasInput) {
+                        dailyLog.inputs[id] = (hrs > 0 ? hrs + 'h ' : '') + (mins > 0 ? mins + 'm' : '').trim();
                         const totalMins = hrs * 60 + mins;
                         let targetMins = parseInt(habit.target_value || 60);
                         if (habit.unit === 'hr') targetMins *= 60;
@@ -1371,6 +1373,7 @@
                     const val = document.getElementById('habit-' + id)?.value;
                     if (val) {
                         hasInput = true;
+                        dailyLog.inputs[id] = val;
                         habitScore = 100;
                     }
                 }
