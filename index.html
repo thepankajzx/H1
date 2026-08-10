@@ -954,7 +954,6 @@
                         document.getElementById('auth-buttons').style.display = 'none';
                         document.getElementById('profile-avatar').style.display = 'flex';
                         const avatar = document.querySelector('#profile-avatar .avatar');
-                        avatar.innerText = (user.email ? user.email.charAt(0).toUpperCase() : 'U');
                         
                         // Load habits from Firebase
                         try {
@@ -964,6 +963,13 @@
                                 
                                 const finalName = data.name || localStorage.getItem('tempFullName') || user.displayName || "User";
                                 updateGreeting(finalName);
+                                
+                                // Dynamic Avatar
+                                let initials = 'U';
+                                const parts = finalName.trim().split(' ').filter(p => p.length > 0);
+                                if (parts.length === 1) initials = parts[0].charAt(0).toUpperCase();
+                                else if (parts.length > 1) initials = (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+                                if (avatar) avatar.innerText = initials;
                                 
                                 if (data.region) localStorage.setItem('userRegion', data.region);
                                 

@@ -998,6 +998,23 @@
             window.onAuthStateChanged(window.firebaseAuth, async (user) => {
                 if(user) {
                     currentUser = user;
+                    localStorage.setItem('accountCreationTime', user.metadata.creationTime);
+                    await syncLogsFromFirebase();
+                    // Dynamic Avatar
+                    const finalName = localStorage.getItem('tempFullName') || user.displayName || "User";
+                    let initials = 'U';
+                    const parts = finalName.trim().split(' ').filter(p => p.length > 0);
+                    if (parts.length === 1) initials = parts[0].charAt(0).toUpperCase();
+                    else if (parts.length > 1) initials = (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+                    
+                    const avatarEl = document.querySelector('.avatar');
+                    if (avatarEl) {
+                        const dot = avatarEl.querySelector('.status-dot');
+                        avatarEl.innerHTML = '';
+                        avatarEl.appendChild(document.createTextNode(initials));
+                        if (dot) avatarEl.appendChild(dot);
+                    }
+                    
                     await syncLogsFromFirebase();
                 } else {
                     renderEChart();
@@ -1282,6 +1299,16 @@
         } else {
             startDate.setDate(now.getDate() - days + 1);
         }
+        
+        // Dynamic Start Date constraint
+        let accStr = localStorage.getItem('accountCreationTime');
+        if (accStr && !customStart) {
+            let accDate = new Date(accStr);
+            accDate.setHours(0,0,0,0);
+            if (accDate > startDate && accDate <= now) {
+                startDate = new Date(accDate);
+            }
+        }
         startDate.setHours(0,0,0,0);
         now.setHours(23,59,59,999);
         
@@ -1374,7 +1401,11 @@
                         
                         cell.onclick = () => openModal(score, finalLevel, dateStr);
                     } else {
-                        cell.className = 'hm-cell';
+                        // Empty/Missed day styling
+                        cell.className = 'hm-cell hm-empty';
+                        cell.style.border = '1px dashed var(--border)';
+                        cell.style.opacity = '0.5';
+                        cell.onclick = () => openModal(-1, 0, dateStr);
                     }
                     
                     if (dateStr === earliestDateStr) {
@@ -1427,14 +1458,96 @@
     const modalDate = document.getElementById('modalDate');
     
     function openModal(score, level, dateStr) {
-        modalScore.textContent = score + '%';
         const dt = new Date(dateStr);
-        modalDate.textContent = dt.toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'});
+        const formattedDate = dt.toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'});
         
+        let logs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
+        let log = logs[dateStr];
+        let userHabits = JSON.parse(localStorage.getItem('userHabits') || '{}');
+        
+        const modal = document.getElementById('heatmapModal');
+        const modalDate = document.getElementById('modalDate');
+        const modalScore = document.getElementById('modalScore');
+        const modalHeader = document.getElementById('modalHeader');
+        const modalBody = document.querySelector('.modal-body');
+
+        modalDate.textContent = formattedDate;
+
+        if (score < 0 || !log) {
+            modalScore.textContent = 'N/A';
+            modalHeader.style.backgroundColor = '#1e2126'; // Dark header for empty
+            
+            modalBody.innerHTML = `
+                <div style="padding: 40px 20px; text-align: center; color: var(--text-secondary);">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 16px; opacity: 0.4;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <div style="font-size: 16px; font-weight: 600; color: var(--text-primary);">No entries for this day</div>
+                    <div style="font-size: 14px; margin-top: 6px;">You didn't track any habits on this date.</div>
+                </div>
+            `;
+            modal.classList.add('active');
+            return;
+        }
+
+        modalScore.textContent = score + '%';
         const rootStyles = getComputedStyle(document.documentElement);
-        const bgColor = rootStyles.getPropertyValue(`--hm-${level}`).trim() || '#2E323A';
+        const bgColor = rootStyles.getPropertyValue(`--hm-${level}`).trim() || '#00C853';
         modalHeader.style.backgroundColor = bgColor;
         
+        // Dynamic habit cards
+        let selectedPills = Array.from(document.querySelectorAll('.filter-pill.active')).map(p => p.dataset.val);
+        
+        let habitsToRender = [];
+        if (selectedPills.includes('overall')) {
+            if (log.habits) {
+                Object.keys(log.habits).forEach(hId => {
+                    habitsToRender.push({ id: hId, score: log.habits[hId] });
+                });
+            }
+        } else {
+            selectedPills.forEach(pill => {
+                if (log.habits && typeof log.habits[pill] !== 'undefined') {
+                    habitsToRender.push({ id: pill, score: log.habits[pill] });
+                }
+            });
+        }
+        
+        if (habitsToRender.length === 0) {
+            modalBody.innerHTML = '<div style="padding:20px; text-align:center; color: var(--text-secondary);">No data for selected filters.</div>';
+        } else {
+            let cardsHtml = '<div class="modal-habit-grid">';
+            habitsToRender.forEach(h => {
+                let hData = userHabits[h.id] || { name: 'Unknown Habit' };
+                let targetDisplay = hData.target_value ? (hData.target_value + ' ' + (hData.unit || '')) : 'N/A';
+                if(hData.habit_type === 'yes-no') targetDisplay = 'Yes';
+                
+                let isSuccess = h.score >= 50; // Simple threshold
+                let iconHtml = isSuccess ? 
+                    `<div class="mh-icon success" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>` : 
+                    `<div class="mh-icon fail" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>`;
+                
+                cardsHtml += `
+                    <div class="modal-habit-card" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
+                        <div class="mh-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span class="mh-title" style="font-size: 15px; font-weight: 600; color: var(--text-primary);">${hData.name}</span>
+                            ${iconHtml}
+                        </div>
+                        <div class="mh-row" style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">
+                            <span>Target: <span class="val" style="color: var(--text-primary); font-weight: 600;">${targetDisplay}</span></span>
+                        </div>
+                        <div class="mh-row" style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary);">
+                            <span>Score: <span class="val" style="color: var(--text-primary); font-weight: 600;">${h.score}%</span></span>
+                        </div>
+                    </div>
+                `;
+            });
+            cardsHtml += '</div>';
+            modalBody.innerHTML = cardsHtml;
+        }
+
         modal.classList.add('active');
     }
 
@@ -1472,6 +1585,17 @@
         } else {
             startDate.setDate(now.getDate() - days + 1);
         }
+        
+        // Dynamic Start Date constraint
+        let accStr = localStorage.getItem('accountCreationTime');
+        if (accStr && !customStart) {
+            let accDate = new Date(accStr);
+            accDate.setHours(0,0,0,0);
+            if (accDate > startDate && accDate <= now) {
+                startDate = new Date(accDate);
+            }
+        }
+        
         startDate.setHours(0,0,0,0);
         
         let dates = [];
