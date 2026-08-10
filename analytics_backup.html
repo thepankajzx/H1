@@ -1,0 +1,1203 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Analytics & Insights | Premium Habit Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Apache ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <style>
+        /* ==========================================================================
+           1. PREMIUM DESIGN SYSTEM & VARIABLES
+           ========================================================================== */
+        :root {
+            --bg-base: #111315;
+            --card-bg: #1A1D21;
+            --card-secondary: #23272F;
+            --border: #2E323A;
+            --hover-bg: #2A2F37;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #B7BDC8;
+            --text-muted: #8A9099;
+            
+            --primary: #FFFFFF;
+            --primary-invert: #111315;
+            --accent-1: #3b82f6;
+            
+            --success: #22c55e;
+            --warning: #eab308;
+            --danger: #ef4444;
+            
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.15);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.25);
+            --shadow-lg: 0 24px 48px rgba(0,0,0,0.4);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+            
+            --transition-fast: 0.15s ease;
+            --transition-smooth: 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+
+            --hm-empty: #23272F; 
+            --hm-0: #8B0000; 
+            --hm-1: #B71C1C; 
+            --hm-2: #D32F2F; 
+            --hm-3: #EF5350; 
+            --hm-4: #FF8A80; 
+            --hm-5: #C8E6C9; 
+            --hm-6: #81C784; 
+            --hm-7: #4CAF50; 
+            --hm-8: #2E7D32; 
+            --hm-9: #00C853; 
+        }
+
+        [data-theme="light"] {
+            --bg-base: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --card-secondary: #F3F4F6;
+            --border: #E5E7EB;
+            --hover-bg: #E5E7EB;
+            
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            
+            --primary: #111827;
+            --primary-invert: #FFFFFF;
+            
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+            
+            --hm-empty: #F3F4F6;
+        }
+
+        /* ==========================================================================
+           2. RESET & TYPOGRAPHY SYSTEM
+           ========================================================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color var(--transition-smooth), color var(--transition-smooth);
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+        h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+        .card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+        .body-text { font-size: 14px; color: var(--text-secondary); margin-top: 6px; }
+        .label { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; display: block; }
+
+        a { color: var(--text-secondary); text-decoration: none; transition: var(--transition-fast); }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; outline: none; }
+        svg { width: 18px; height: 18px; stroke-width: 2px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-full); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ==========================================================================
+           3. LAYOUT & SPACING
+           ========================================================================== */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 32px;
+            width: 100%;
+        }
+
+        .premium-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-smooth), border-color var(--transition-smooth);
+        }
+
+        /* ==========================================================================
+           4. HEADER & BACK BUTTON
+           ========================================================================== */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 32px;
+            gap: 16px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            padding: 4px;
+            margin-top: 4px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+        }
+        .btn-back:hover { background: var(--hover-bg); transform: translateX(-4px); }
+        .btn-back svg { width: 24px; height: 24px; stroke-width: 2.5px; }
+
+        .header-text h1 { margin-bottom: 4px; }
+
+        .header-right-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 4px 6px;
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+        }
+
+        .icon-btn {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            color: var(--text-secondary);
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition-smooth);
+        }
+        .icon-btn:hover { color: var(--text-primary); background: var(--hover-bg); }
+
+        .avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: var(--accent-1);
+            color: #fff;
+            font-weight: 600;
+            font-size: 12px;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+        .avatar::after {
+            content: ''; position: absolute; bottom: -2px; right: -2px;
+            width: 10px; height: 10px; background: var(--success);
+            border: 2px solid var(--card-bg); border-radius: 50%;
+        }
+
+        /* ==========================================================================
+           5. SEGMENTED TABS
+           ========================================================================== */
+        .tabs-container {
+            margin-bottom: 32px;
+            display: flex;
+        }
+
+        .segmented-control {
+            display: inline-flex;
+            background: var(--bg-base);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            padding: 6px;
+            position: relative;
+        }
+
+        .segmented-btn {
+            padding: 10px 40px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-radius: var(--radius-full);
+            position: relative;
+            z-index: 2;
+            transition: color var(--transition-smooth);
+        }
+        .segmented-btn.active { color: var(--text-primary); }
+
+        .segment-highlight {
+            position: absolute;
+            top: 6px; bottom: 6px; left: 6px;
+            background: var(--card-bg);
+            border-radius: var(--radius-full);
+            transition: all var(--transition-smooth);
+            z-index: 1;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ==========================================================================
+           6. INSIGHT CARDS
+           ========================================================================== */
+        .insights-section {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .insight-card { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
+        .insight-header { display: flex; align-items: center; gap: 12px; }
+        .insight-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--card-secondary); }
+        .insight-icon svg { width: 20px; height: 20px; }
+        .insight-value-group { display: flex; flex-direction: column; }
+        .insight-title { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+        .insight-value { font-size: 24px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+        .insight-trend { font-size: 12px; font-weight: 500; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+        .insight-trend.up { color: var(--success); }
+        .insight-trend.down { color: var(--danger); }
+        
+        .card-1 .insight-icon { color: var(--accent-1); background: rgba(59, 130, 246, 0.1); }
+        .card-2 .insight-icon { color: var(--success); background: rgba(34, 197, 94, 0.1); }
+        .card-3 .insight-icon { color: var(--warning); background: rgba(234, 179, 8, 0.1); }
+        .card-4 .insight-icon { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+        .card-5 .insight-icon { color: var(--primary); background: var(--border); }
+
+        /* ==========================================================================
+           7. FILTERS SECTION
+           ========================================================================== */
+        .filter-section {
+            display: flex; align-items: flex-end; justify-content: space-between;
+            gap: 24px; margin-bottom: 24px; flex-wrap: wrap;
+        }
+
+        .filter-group { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+        .filter-item { display: flex; flex-direction: column; }
+
+        .premium-select {
+            appearance: none; background: var(--card-bg); border: 1px solid var(--border);
+            color: var(--text-primary); height: 44px; padding: 0 40px 0 16px;
+            border-radius: var(--radius-md); font-size: 14px; font-weight: 500;
+            cursor: pointer; outline: none; min-width: 180px;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%238A9099%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat; background-position: right 12px center;
+            transition: var(--transition-smooth);
+        }
+        .premium-select:hover { border-color: var(--text-secondary); background: var(--hover-bg); }
+
+        .toggle-wrapper {
+            display: flex; align-items: center; gap: 12px; cursor: pointer; height: 44px; padding: 0 16px;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-md);
+        }
+        .toggle-switch {
+            width: 36px; height: 20px; background: var(--border); border-radius: var(--radius-full); position: relative; transition: var(--transition-smooth);
+        }
+        .toggle-switch::after {
+            content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: var(--text-secondary); border-radius: 50%; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s;
+        }
+        .toggle-wrapper input:checked + .toggle-switch { background: var(--primary); }
+        .toggle-wrapper input:checked + .toggle-switch::after { transform: translateX(16px); background: var(--primary-invert); }
+
+        .btn-secondary {
+            height: 44px; padding: 0 24px; background: var(--card-bg); color: var(--text-primary);
+            border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition-smooth);
+        }
+        .btn-secondary:hover { background: var(--hover-bg); border-color: var(--text-muted); }
+
+        /* ==========================================================================
+           8. HEATMAP SECTION
+           ========================================================================== */
+        .heatmap-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .info-icon-sm { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--text-muted); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; cursor: pointer; }
+        .btn-icon-sq { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+        .btn-icon-sq:hover { background: var(--hover-bg); color: var(--text-primary); }
+        .months-container { display: flex; gap: 48px; overflow-x: auto; padding-bottom: 16px; }
+        .month-block { display: flex; flex-direction: column; }
+        .month-title { font-size: 16px; font-weight: 600; text-align: center; margin-bottom: 16px; color: var(--text-primary); }
+        .heatmap-grid-layout { display: flex; gap: 12px; }
+        .hm-y-axis { display: flex; flex-direction: column; gap: 6px; padding-top: 0; color: var(--text-muted); font-size: 13px; font-weight: 500; }
+        .hm-y-label { height: 24px; display: flex; align-items: center; }
+        .hm-grid { display: grid; grid-template-rows: repeat(7, 24px); grid-auto-flow: column; gap: 6px; }
+        
+        .hm-cell { width: 24px; height: 24px; border-radius: 6px; background-color: var(--hm-empty); border: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: transform 0s, border-color 0.2s, box-shadow 0.2s; position: relative; }
+        [data-theme="light"] .hm-cell { border-color: rgba(0,0,0,0.03); }
+        .hm-cell:hover { transform: scale(1.15); z-index: 10; border-color: var(--text-secondary); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        
+        .hm-lvl-0 { background-color: var(--hm-0); }
+        .hm-lvl-1 { background-color: var(--hm-1); }
+        .hm-lvl-2 { background-color: var(--hm-2); }
+        .hm-lvl-3 { background-color: var(--hm-3); }
+        .hm-lvl-4 { background-color: var(--hm-4); }
+        .hm-lvl-5 { background-color: var(--hm-5); }
+        .hm-lvl-6 { background-color: var(--hm-6); }
+        .hm-lvl-7 { background-color: var(--hm-7); }
+        .hm-lvl-8 { background-color: var(--hm-8); }
+        .hm-lvl-9 { background-color: var(--hm-9); }
+
+        .hm-cell .pct { display: none; position: absolute; inset: 0; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; pointer-events: none; }
+        .show-percentages .hm-cell .pct { display: flex; }
+
+        /* ==========================================================================
+           9. CHARTS SECTION (FIXED STACKED ACTIONS)
+           ========================================================================== */
+        #view-charts { display: none; }
+
+        .charts-filter-bar {
+            display: flex;
+            align-items: flex-end; 
+            justify-content: space-between;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .charts-filter-left { 
+            flex: 1 1 auto; 
+        }
+        
+        .charts-filter-right { 
+            display: flex; 
+            flex-direction: column; /* Stack vertically */
+            align-items: flex-end; /* Align right */
+            gap: 12px; /* Space between toggle and button */
+            flex: 0 0 auto; 
+            margin-left: auto; 
+        }
+
+        .chip-group { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 12px; 
+        }
+        
+        .chip {
+            padding: 10px 18px; border-radius: 24px; border: 1px solid var(--border);
+            background: transparent; color: var(--text-secondary);
+            font-size: 13px; font-weight: 500; cursor: pointer;
+            transition: all var(--transition-fast); display: flex; align-items: center; gap: 6px;
+        }
+        .chip:hover { border-color: var(--text-muted); color: var(--text-primary); }
+        .chip.active { background: var(--primary); color: var(--primary-invert); border-color: var(--primary); }
+        
+        .chip-icon {
+            width: 36px; height: 36px; border-radius: 50%; background: transparent; border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition-fast); color: var(--text-secondary);
+        }
+        .chip-icon:hover { border-color: var(--text-muted); color: var(--text-primary); }
+
+        .display-mode-toggle {
+            display: inline-flex; background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius-full); padding: 4px; height: 44px; align-items: center;
+        }
+        .dm-btn {
+            padding: 8px 20px; font-size: 13px; font-weight: 500; border-radius: var(--radius-full); color: var(--text-muted); transition: all var(--transition-fast);
+        }
+        .dm-btn.active { background: var(--card-secondary); color: var(--text-primary); box-shadow: var(--shadow-sm); }
+
+        .btn-primary {
+            height: 44px; padding: 0 24px; background: var(--primary); color: var(--primary-invert);
+            border-radius: var(--radius-md); font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition-smooth);
+        }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .chart-card-wrapper { margin-bottom: 24px; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .mock-chart { width: 100%; height: 240px; position: relative; }
+
+        .separate-charts-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 24px; }
+        .mini-chart-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+        .mc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .mc-title-group { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px;}
+        .mc-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;}
+        .mc-stats { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; }
+        .mc-score { font-size: 32px; font-weight: 700; line-height: 1; }
+        .mc-trend { font-size: 13px; font-weight: 500; display: flex; flex-direction: column; align-items: flex-end; }
+        .mc-trend span { color: var(--text-muted); font-size: 11px; }
+        .mc-footer { display: flex; justify-content: space-between; margin-top: 16px; font-size: 12px; color: var(--text-muted); }
+
+        .c-blue .mc-icon { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .c-purple .mc-icon { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+        .c-green .mc-icon { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .c-orange .mc-icon { background: rgba(249, 115, 22, 0.1); color: #f97316; }
+
+        /* ==========================================================================
+           10. PREMIUM MODAL
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; opacity: 0; transition: opacity var(--transition-smooth);
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-card { background: #111315; border-radius: 20px; width: 100%; max-width: 440px; box-shadow: var(--shadow-lg); overflow: hidden; transform: scale(0.95); transition: transform var(--transition-smooth); }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-header { padding: 24px 24px 32px 24px; position: relative; color: #ffffff; }
+        .btn-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.15); color: #ffffff; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); border: none; cursor: pointer; }
+        .btn-close:hover { background: rgba(0,0,0,0.3); transform: scale(1.05); }
+        .modal-date { font-size: 15px; font-weight: 500; opacity: 0.9; margin-bottom: 4px; }
+        .modal-score { font-size: 64px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+        .modal-body { padding: 24px; background: #111315; }
+        .modal-habit-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .modal-habit-card { background: #1A1D21; border: 1px solid #2E323A; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .mh-top { display: flex; justify-content: space-between; align-items: center; }
+        .mh-title { font-size: 16px; font-weight: 600; color: #ffffff; }
+        .mh-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .mh-icon.success { background: rgba(34,197,94,0.1); color: #22c55e; border: 1px solid rgba(34,197,94,0.2);}
+        .mh-icon.fail { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.2);}
+        .mh-icon svg { width: 12px; height: 12px; }
+        .mh-row { display: flex; gap: 12px; font-size: 13px; color: #8A9099; }
+        .mh-row span.val { color: #ffffff; font-weight: 600; }
+
+        /* ==========================================================================
+           11. RESPONSIVE DESIGN (MOBILE OPTIMIZED)
+           ========================================================================== */
+        @media (max-width: 1024px) {
+            .insights-section { grid-template-columns: repeat(3, 1fr); }
+            .separate-charts-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content { padding: 24px 16px; }
+            
+            .header-section { margin-bottom: 24px; margin-top: 8px; align-items: center; gap: 12px; }
+            .header-left { gap: 8px; align-items: flex-start; }
+            .header-text h1 { font-size: 22px; line-height: 1.2; margin-bottom: 2px;}
+            .header-text p { font-size: 13px; }
+            .btn-back { width: 32px; height: 32px; margin-top: 2px; }
+            .btn-back svg { width: 20px; height: 20px; }
+
+            .tabs-container { margin-bottom: 24px; justify-content: flex-start; overflow-x: auto; padding-bottom: 4px;}
+            .segmented-btn { padding: 8px 24px; }
+
+            .insights-section {
+                display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+                padding-bottom: 16px; gap: 16px; -ms-overflow-style: none; scrollbar-width: none;
+            }
+            .insights-section::-webkit-scrollbar { display: none; }
+            .insight-card { min-width: 240px; scroll-snap-align: start; padding: 16px; }
+
+            .filter-section { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .filter-group { flex-direction: column; align-items: flex-start; gap: 16px; width: 100%; }
+            .filter-item { width: 100%; }
+            .premium-select { width: 100%; min-width: 100%; }
+            
+            /* FIXED MOBILE BEHAVIOR FOR CHARTS FILTER */
+            .charts-filter-bar { gap: 20px; flex-direction: column; align-items: flex-start; margin-bottom: 24px; }
+            .charts-filter-bar > * { width: 100%; }
+            .charts-filter-right { flex-direction: column; align-items: flex-start; width: 100%; gap: 12px; margin-left: 0; }
+            
+            /* Stretch toggle buttons on mobile */
+            .display-mode-toggle { width: 100%; display: flex; justify-content: space-between; }
+            .dm-btn { flex: 1; text-align: center; }
+            
+            .btn-primary, .btn-secondary { width: 100%; }
+            
+            .chip-group { overflow-x: auto; padding-bottom: 8px; white-space: nowrap; flex-wrap: nowrap; width: 100%; -ms-overflow-style: none; scrollbar-width: none;}
+            .chip-group::-webkit-scrollbar { display: none; }
+            
+            .premium-card { padding: 16px; }
+            .heatmap-header-top h2 { font-size: 18px; }
+            
+            .months-container { flex-direction: column; gap: 32px; align-items: center; overflow-x: visible; }
+            .month-title { text-align: left; width: 100%; margin-bottom: 12px; }
+            .heatmap-grid-layout { width: 100%; justify-content: center; overflow-x: auto;}
+            .separate-charts-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <main class="main-content">
+        
+        <!-- HEADER -->
+        <header class="header-section">
+            <div class="header-left">
+                <a href="index.html" class="btn-back" aria-label="Go Back" style="text-decoration: none;">
+                    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                </a>
+                <div class="header-text">
+                    <h1>Analytics & Insights</h1>
+                    <p class="body-text">Track your habits. Visualize your consistency.</p>
+                </div>
+            </div>
+            
+            <div class="header-right-pill">
+                <button class="icon-btn" id="themeToggle" aria-label="Toggle Theme">
+                    <svg id="moonIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <svg id="sunIcon" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+                <a href="profile.html" style="text-decoration: none;">
+                    <div class="avatar" title="Profile">
+                        PA
+                        <span class="status-dot"></span>
+                    </div>
+                </a>
+            </div>
+        </header>
+
+        <!-- TABS -->
+        <nav class="tabs-container">
+            <div class="segmented-control" id="tab-control">
+                <div class="segment-highlight" id="segment-bg"></div>
+                <button class="segmented-btn active" onclick="switchTab('heatmap', this)">Heatmap</button>
+                <button class="segmented-btn" onclick="switchTab('charts', this)">Charts</button>
+            </div>
+        </nav>
+
+        <!-- INSIGHTS SECTION -->
+        <section class="insights-section">
+            <div class="insight-card premium-card card-1">
+                <div class="insight-header">
+                    <div class="insight-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+                    <div class="insight-value-group">
+                        <span class="insight-title">Average Score</span>
+                        <span class="insight-value">68%</span>
+                    </div>
+                </div>
+                <div class="insight-trend up">
+                    <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                    <span>+12% vs last 90 days</span>
+                </div>
+            </div>
+
+            <div class="insight-card premium-card card-2">
+                <div class="insight-header">
+                    <div class="insight-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+                    <div class="insight-value-group">
+                        <span class="insight-title">Best Day</span>
+                        <span class="insight-value">96%</span>
+                    </div>
+                </div>
+                <div class="insight-trend" style="color:var(--success);">
+                    <span>25 May 2026</span>
+                </div>
+            </div>
+
+            <div class="insight-card premium-card card-3">
+                <div class="insight-header">
+                    <div class="insight-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                    <div class="insight-value-group">
+                        <span class="insight-title">Most Consistent</span>
+                        <span class="insight-value">12 Days</span>
+                    </div>
+                </div>
+                <div class="insight-trend" style="color:var(--success);">
+                    <span>Current Streak</span>
+                </div>
+            </div>
+
+            <div class="insight-card premium-card card-4">
+                <div class="insight-header">
+                    <div class="insight-icon"><svg viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg></div>
+                    <div class="insight-value-group">
+                        <span class="insight-title">Lowest Day</span>
+                        <span class="insight-value">18%</span>
+                    </div>
+                </div>
+                <div class="insight-trend" style="color:var(--danger);">
+                    <span>15 Apr 2026</span>
+                </div>
+            </div>
+
+            <div class="insight-card premium-card card-5">
+                <div class="insight-header">
+                    <div class="insight-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+                    <div class="insight-value-group">
+                        <span class="insight-title">Total Tracked</span>
+                        <span class="insight-value">78 Days</span>
+                    </div>
+                </div>
+                <div class="insight-trend" style="color:var(--accent-1);">
+                    <span>Out of 90 Days</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             VIEW 1: HEATMAP
+             ========================================================= -->
+        <div id="view-heatmap">
+            
+            <section class="filter-section">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <span class="label">Date Range</span>
+                        <select class="premium-select">
+                            <option>Last 90 Days</option>
+                            <option>Last 6 Months</option>
+                            <option>Year to Date</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <span class="label">Heatmap Filter</span>
+                        <select class="premium-select">
+                            <option>Overall Score</option>
+                            <option>Wake Up</option>
+                            <option>Workout</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <span class="label">Show % on Cells</span>
+                        <label class="toggle-wrapper" style="margin-top:0; border:none; padding:0; background:transparent; height:auto;">
+                            <input type="checkbox" id="showPctToggle" style="display:none;" onchange="togglePercentages()">
+                            <div class="toggle-switch"></div>
+                        </label>
+                    </div>
+                    <button class="btn-secondary" style="margin-top:0;">
+                        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+                        Refresh Heatmap
+                    </button>
+                </div>
+            </section>
+
+            <section class="premium-card">
+                <div class="heatmap-header-top">
+                    <h2 style="display:flex; align-items:center; gap:8px;">
+                        Performance Heatmap
+                        <div class="info-icon-sm">i</div>
+                    </h2>
+                    <button class="btn-icon-sq" aria-label="Fullscreen">
+                        <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                    </button>
+                </div>
+
+                <div class="months-container">
+                    <div class="month-block">
+                        <div class="month-title">Jul 2026</div>
+                        <div class="heatmap-grid-layout">
+                            <div class="hm-y-axis">
+                                <span class="hm-y-label">Mon</span>
+                                <span class="hm-y-label">Tue</span>
+                                <span class="hm-y-label">Wed</span>
+                                <span class="hm-y-label">Thu</span>
+                                <span class="hm-y-label">Fri</span>
+                                <span class="hm-y-label">Sat</span>
+                                <span class="hm-y-label">Sun</span>
+                            </div>
+                            <div class="hm-grid" id="grid-jul"></div>
+                        </div>
+                    </div>
+
+                    <div class="month-block">
+                        <div class="month-title">Aug 2026</div>
+                        <div class="heatmap-grid-layout">
+                            <div class="hm-y-axis">
+                                <span class="hm-y-label">Mon</span>
+                                <span class="hm-y-label">Tue</span>
+                                <span class="hm-y-label">Wed</span>
+                                <span class="hm-y-label">Thu</span>
+                                <span class="hm-y-label">Fri</span>
+                                <span class="hm-y-label">Sat</span>
+                                <span class="hm-y-label">Sun</span>
+                            </div>
+                            <div class="hm-grid" id="grid-aug"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- =========================================================
+             VIEW 2: CHARTS
+             ========================================================= -->
+        <div id="view-charts">
+            
+            <!-- CHARTS SPECIFIC FILTERS -->
+            <section class="charts-filter-bar">
+                
+                <!-- 1. Select Habits -->
+                <div class="filter-item charts-filter-left">
+                    <span class="label">Select Habits</span>
+                    <div class="chip-group">
+                        <button class="chip active">Overall Score</button>
+                        <button class="chip">Wake Up</button>
+                        <button class="chip">Sleep Time</button>
+                        <button class="chip">Study</button>
+                        <button class="chip">Workout</button>
+                        <button class="chip">Reading</button>
+                        <button class="chip">Meditation</button>
+                        <button class="chip-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                    </div>
+                </div>
+
+                <!-- 2 & 3. Actions (Stacked vertically, right aligned) -->
+                <div class="charts-filter-right">
+                    
+                    <!-- Toggle Button ONLY (No Label) -->
+                    <div class="display-mode-toggle">
+                        <button class="dm-btn active">Combined</button>
+                        <button class="dm-btn">Separate</button>
+                    </div>
+                    
+                    <!-- Generate Charts Button -->
+                    <button class="btn-primary" style="margin-top:0;">
+                        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        Generate Charts
+                    </button>
+
+                </div>
+                
+            </section>
+
+            <!-- COMBINED CHART CARD -->
+            <section class="premium-card chart-card-wrapper">
+                <div class="chart-header">
+                    <h2 style="display:flex; align-items:center; gap:8px;">
+                        Combined Performance
+                        <div class="info-icon-sm">i</div>
+                    </h2>
+                    <div style="display:flex; gap:16px; align-items:center;">
+                        <select class="premium-select" style="height:36px; min-width:auto; padding-right:32px;">
+                            <option>Line Chart</option>
+                            <option>Bar Chart</option>
+                        </select>
+                        <button class="btn-icon-sq" style="height:36px; width:36px;"><svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></button>
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:center; gap:8px; align-items:center; margin-bottom:24px; font-size:13px; color:var(--text-secondary);">
+                    <div style="width:10px; height:10px; border-radius:50%; background:var(--accent-1);"></div> Overall Score
+                </div>
+
+                <!-- Apache ECharts Container -->
+                <div id="main-chart" style="width: 100%; height: 260px;"></div>
+            </section>
+
+            <h2 style="display:flex; align-items:center; gap:8px; margin-top:32px;">
+                Separate Habit Performance
+                <div class="info-icon-sm">i</div>
+            </h2>
+
+            <div class="separate-charts-grid">
+                
+                <div class="mini-chart-card c-blue">
+                    <div class="mc-header">
+                        <div class="mc-title-group"><div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div> Wake Up</div>
+                        <button class="btn-icon-sq" style="width:28px;height:28px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></button>
+                    </div>
+                    <div class="mc-stats">
+                        <div class="mc-score">92%</div>
+                        <div class="mc-trend"><span style="color:var(--success); font-size:13px; font-weight:600;">â†‘ 12%</span> <span>vs last 90 days</span></div>
+                    </div>
+                    <div style="height:60px; background:linear-gradient(180deg, rgba(59,130,246,0.1) 0%, transparent 100%); border-top: 2px solid #3b82f6; border-radius:4px;"></div>
+                    <div class="mc-footer"><span>Target: 07:00 AM</span> <span>Best: 100%</span></div>
+                </div>
+
+                <div class="mini-chart-card c-purple">
+                    <div class="mc-header">
+                        <div class="mc-title-group"><div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></div> Sleep Time</div>
+                        <button class="btn-icon-sq" style="width:28px;height:28px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></button>
+                    </div>
+                    <div class="mc-stats">
+                        <div class="mc-score">78%</div>
+                        <div class="mc-trend"><span style="color:var(--success); font-size:13px; font-weight:600;">â†‘ 8%</span> <span>vs last 90 days</span></div>
+                    </div>
+                    <div style="height:60px; background:linear-gradient(180deg, rgba(168,85,247,0.1) 0%, transparent 100%); border-top: 2px solid #a855f7; border-radius:4px;"></div>
+                    <div class="mc-footer"><span>Target: 7-8 Hours</span> <span>Best: 100%</span></div>
+                </div>
+
+                <div class="mini-chart-card c-green">
+                    <div class="mc-header">
+                        <div class="mc-title-group"><div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div> Study</div>
+                        <button class="btn-icon-sq" style="width:28px;height:28px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></button>
+                    </div>
+                    <div class="mc-stats">
+                        <div class="mc-score">65%</div>
+                        <div class="mc-trend"><span style="color:var(--danger); font-size:13px; font-weight:600;">â†“ 5%</span> <span>vs last 90 days</span></div>
+                    </div>
+                    <div style="height:60px; background:linear-gradient(180deg, rgba(34,197,94,0.1) 0%, transparent 100%); border-top: 2px solid #22c55e; border-radius:4px;"></div>
+                    <div class="mc-footer"><span>Target: 3 Hours</span> <span>Best: 95%</span></div>
+                </div>
+
+                <div class="mini-chart-card c-orange">
+                    <div class="mc-header">
+                        <div class="mc-title-group"><div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path></svg></div> Workout</div>
+                        <button class="btn-icon-sq" style="width:28px;height:28px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></button>
+                    </div>
+                    <div class="mc-stats">
+                        <div class="mc-score">71%</div>
+                        <div class="mc-trend"><span style="color:var(--success); font-size:13px; font-weight:600;">â†‘ 10%</span> <span>vs last 90 days</span></div>
+                    </div>
+                    <div style="height:60px; background:linear-gradient(180deg, rgba(249,115,22,0.1) 0%, transparent 100%); border-top: 2px solid #f97316; border-radius:4px;"></div>
+                    <div class="mc-footer"><span>Target: 45 Min</span> <span>Best: 100%</span></div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ==========================================================================
+     10. PREMIUM MODAL
+     ========================================================================== -->
+<div class="modal-overlay" id="heatmapModal" onclick="closeModal(event)">
+    <div class="modal-card">
+        <div class="modal-header" id="modalHeader" style="background-color: #00C853;">
+            <button class="btn-close" onclick="document.getElementById('heatmapModal').classList.remove('active')">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div class="modal-date" id="modalDate">Aug 14, 2026</div>
+            <div class="modal-score" id="modalScore">98%</div>
+        </div>
+        
+        <div class="modal-body">
+            <div class="modal-habit-grid">
+                <div class="modal-habit-card">
+                    <div class="mh-top">
+                        <span class="mh-title">Wake Up</span>
+                        <div class="mh-icon success">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                    </div>
+                    <div class="mh-row">
+                        <span>Target: <span class="val">06:00</span></span>
+                        <span>Act: <span class="val">05:45</span></span>
+                    </div>
+                    <div class="mh-row">
+                        <span>Points: <span class="val">10/10</span></span>
+                    </div>
+                </div>
+
+                <div class="modal-habit-card">
+                    <div class="mh-top">
+                        <span class="mh-title">Sleep Time</span>
+                        <div class="mh-icon fail">
+                            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </div>
+                    </div>
+                    <div class="mh-row">
+                        <span>Target: <span class="val">23:00</span></span>
+                        <span>Act: <span class="val">01:30</span></span>
+                    </div>
+                    <div class="mh-row">
+                        <span>Points: <span class="val">0/10</span></span>
+                    </div>
+                </div>
+
+                <div class="modal-habit-card">
+                    <div class="mh-top">
+                        <span class="mh-title">Deep Work</span>
+                        <div class="mh-icon success">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                    </div>
+                    <div class="mh-row">
+                        <span>Target: <span class="val">4h</span></span>
+                        <span>Act: <span class="val">4.5h</span></span>
+                    </div>
+                    <div class="mh-row">
+                        <span>Points: <span class="val">20/20</span></span>
+                    </div>
+                </div>
+
+                <div class="modal-habit-card">
+                    <div class="mh-top">
+                        <span class="mh-title">Workout</span>
+                        <div class="mh-icon success">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                    </div>
+                    <div class="mh-row">
+                        <span>Target: <span class="val">1h</span></span>
+                        <span>Act: <span class="val">1h 15m</span></span>
+                    </div>
+                    <div class="mh-row">
+                        <span>Points: <span class="val">15/15</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================================================
+     JAVASCRIPT (UI Logic Only)
+     ========================================================================== -->
+<script>
+    const htmlElement = document.documentElement;
+    const moonIcon = document.getElementById('moonIcon');
+    const sunIcon = document.getElementById('sunIcon');
+    
+    // Check local storage for theme preference globally
+    if(localStorage.getItem('theme') === 'light') {
+        htmlElement.setAttribute('data-theme', 'light');
+        if(moonIcon && sunIcon) { moonIcon.style.display = 'none'; sunIcon.style.display = 'block'; }
+    } else {
+        htmlElement.setAttribute('data-theme', 'dark');
+        if(moonIcon && sunIcon) { sunIcon.style.display = 'none'; moonIcon.style.display = 'block'; }
+    }
+
+    const themeToggleBtn = document.getElementById('themeToggle');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const isLight = htmlElement.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                htmlElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            } else {
+                htmlElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                moonIcon.style.display = 'none';
+                sunIcon.style.display = 'block';
+            }
+            // Re-render chart to match new theme
+            setTimeout(() => { if (typeof renderEChart === 'function') renderEChart(); }, 50);
+        });
+    }
+
+    function switchTab(tab, element) {
+        document.querySelectorAll('.segmented-btn').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+        
+        const bg = document.getElementById('segment-bg');
+        bg.style.width = element.offsetWidth + 'px';
+        bg.style.transform = `translateX(${element.offsetLeft - 4}px)`;
+
+        const hmBlock = document.getElementById('view-heatmap');
+        const chBlock = document.getElementById('view-charts');
+        
+        if(tab === 'heatmap') {
+            hmBlock.style.display = 'block';
+            chBlock.style.display = 'none';
+        } else {
+            hmBlock.style.display = 'none';
+            chBlock.style.display = 'block';
+            // Render and resize chart when its container becomes visible
+            renderEChart();
+            setTimeout(() => { if(myChart) myChart.resize(); }, 50);
+        }
+    }
+    
+    
+    let currentUser = null;
+    let customHabitsData = JSON.parse(localStorage.getItem('customHabitsData') || '[]');
+    let userHabits = JSON.parse(localStorage.getItem('userHabits') || '{}');
+
+    window.addEventListener('load', () => {
+        if(window.firebaseAuth) {
+            window.onAuthStateChanged(window.firebaseAuth, async (user) => {
+                if(user) {
+                    currentUser = user;
+                    await syncLogsFromFirebase();
+                } else {
+                    renderEChart();
+                }
+            });
+        } else {
+            renderEChart();
+        }
+    });
+
+    async function syncLogsFromFirebase() {
+        if(!currentUser) return;
+        try {
+            const logsRef = window.collection(window.firebaseDb, "users", currentUser.uid, "logs");
+            const snapshot = await window.getDocs(logsRef);
+            let localLogs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
+            
+            snapshot.forEach(doc => {
+                localLogs[doc.id] = doc.data();
+            });
+            localStorage.setItem('dailyLogs', JSON.stringify(localLogs));
+            
+            // Also sync custom habits mapping just in case
+            const userDoc = await window.getDoc(window.doc(window.firebaseDb, "users", currentUser.uid));
+            if(userDoc.exists()) {
+                const data = userDoc.data();
+                if(data.customHabitsData) {
+                    localStorage.setItem('customHabitsData', JSON.stringify(data.customHabitsData));
+                    customHabitsData = data.customHabitsData;
+                }
+                if(data.userHabits) {
+                    localStorage.setItem('userHabits', JSON.stringify(data.userHabits));
+                    userHabits = data.userHabits;
+                }
+            }
+        } catch(e) {
+            console.error("Firebase sync error in analytics:", e);
+        }
+        renderEChart();
+    }
+;
+
+    const chips = document.querySelectorAll('.chip');
+    chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            chip.classList.toggle('active');
+        });
+    });
+
+    const dmBtns = document.querySelectorAll('.dm-btn');
+    dmBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            dmBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+
+    function generateMonthGrid(containerId) {
+        const grid = document.getElementById(containerId);
+        for (let col = 0; col < 5; col++) {
+            for (let row = 0; row < 7; row++) {
+                const cell = document.createElement('div');
+                
+                let score = Math.floor(Math.random() * 110) - 10; 
+                
+                if (score >= 0) {
+                    const level = Math.floor(score / 10);
+                    const finalLevel = level >= 10 ? 9 : level;
+                    cell.className = `hm-cell hm-lvl-${finalLevel}`;
+                    
+                    const pct = document.createElement('span');
+                    pct.className = 'pct';
+                    pct.textContent = score;
+                    cell.appendChild(pct);
+
+                    cell.onclick = () => openModal(score, finalLevel);
+                } else {
+                    cell.className = 'hm-cell';
+                }
+                
+                cell.style.gridColumn = col + 1;
+                cell.style.gridRow = row + 1;
+                grid.appendChild(cell);
+            }
+        }
+    }
+
+    generateMonthGrid('grid-jul');
+    generateMonthGrid('grid-aug');
+
+    function togglePercentages() {
+        const isChecked = document.getElementById('showPctToggle').checked;
+        const grids = document.querySelectorAll('.hm-grid');
+        grids.forEach(grid => {
+            if(isChecked) {
+                grid.classList.add('show-percentages');
+            } else {
+                grid.classList.remove('show-percentages');
+            }
+        });
+    }
+
+    const modal = document.getElementById('heatmapModal');
+    const modalHeader = document.getElementById('modalHeader');
+    const modalScore = document.getElementById('modalScore');
+    
+    function openModal(score, level) {
+        modalScore.textContent = score + '%';
+        
+        const rootStyles = getComputedStyle(document.documentElement);
+        const bgColor = rootStyles.getPropertyValue(`--hm-${level}`).trim();
+        modalHeader.style.backgroundColor = bgColor;
+        
+        modal.classList.add('active');
+    }
+
+    function closeModal(e) {
+        if(e.target === modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    // ==========================================
+    // Apache ECharts Integration
+    // ==========================================
+    let myChart = null;
+
+    function renderEChart() {
+        if (!myChart) {
+            myChart = echarts.init(document.getElementById('main-chart'));
+        }
+        
+        let logs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
+        let dates = Object.keys(logs).sort(); 
+        
+        // Mock data if empty
+        if (dates.length === 0) {
+            let today = new Date();
+            for (let i = 6; i >= 0; i--) {
+                let d = new Date(today);
+                d.setDate(today.getDate() - i);
+                dates.push(d.toISOString().split('T')[0]);
+                logs[d.toISOString().split('T')[0]] = { score: Math.floor(Math.random() * 40) + 60 };
+            }
+        }
+        
+        let scores = dates.map(d => logs[d].score);
+        
+        let isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        let textColor = isDark ? '#8A9099' : '#9CA3AF';
+        let splitLineColor = isDark ? '#2E323A' : '#E5E7EB';
+
+        let option = {
+            tooltip: {
+                trigger: 'axis',
+                formatter: '{b}<br/><span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#3b82f6;"></span>Score: <b>{c}%</b>'
+            },
+            grid: {
+                left: '2%', right: '2%', bottom: '2%', top: '10%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: dates.map(d => {
+                    const dt = new Date(d);
+                    return dt.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+                }),
+                axisLabel: { color: textColor },
+                axisLine: { lineStyle: { color: splitLineColor } }
+            },
+            yAxis: {
+                type: 'value',
+                min: 0, max: 100,
+                axisLabel: { color: textColor, formatter: '{value}%' },
+                splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }
+            },
+            series: [{
+                name: 'Overall Score',
+                type: 'line',
+                smooth: true,
+                data: scores,
+                itemStyle: { color: '#3b82f6' },
+                lineStyle: { width: 3 },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: 'rgba(59, 130, 246, 0.4)' },
+                        { offset: 1, color: 'rgba(59, 130, 246, 0)' }
+                    ])
+                }
+            }]
+        };
+        
+        myChart.setOption(option);
+    }
+    
+    // Bind to the "Generate Charts" button to refresh
+    document.querySelector('.btn-primary').addEventListener('click', renderEChart);
+
+    window.addEventListener('resize', () => {
+        if(myChart) myChart.resize();
+    });
+</script>
+    <script type="module" src="firebase-config.js"></script>
+</body>
+</html>
+
+

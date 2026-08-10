@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Profile</title>
+    <style>
+        /* ==========================================================================
+           1. CSS VARIABLES & THEME SETTINGS
+           ========================================================================== */
+        :root {
+            /* Default Dark Mode Palette */
+            --bg: #0B0F19;
+            --card-bg: #111827;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            
+            --primary: #2563EB;
+            --primary-hover: #1D4ED8;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            
+            --accent: #7C3AED;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #94A3B8;
+            --text-tertiary: #64748B;
+
+            /* Spacing & Layout */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --radius-xl: 22px;
+            --radius-full: 9999px;
+            
+            --transition-fast: 0s;
+            --transition-smooth: 0s;
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Light Mode Palette Overrides */
+        body.light-mode {
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(0, 0, 0, 0.15);
+            
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-tertiary: #94A3B8;
+            
+            --primary-glow: rgba(37, 99, 235, 0.2);
+        }
+
+        /* ==========================================================================
+           2. RESET & BASE STYLES
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Inter', 'SF Pro Display', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background-color var(--transition-smooth), color var(--transition-smooth);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--text-tertiary); border-radius: var(--radius-full); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 { font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+        h1 { font-size: 1.75rem; margin: 0; }
+        h2 { font-size: 1.25rem; margin-bottom: 1.25rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; transition: color var(--transition-smooth); }
+        h3 { font-size: 1.1rem; }
+        p { color: var(--text-secondary); font-size: 0.95rem; }
+        a { color: var(--primary); text-decoration: none; transition: var(--transition-fast); }
+        a:hover { color: var(--primary-hover); }
+
+        /* ==========================================================================
+           3. LAYOUT & UTILITIES
+           ========================================================================== */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            transition: padding var(--transition-smooth);
+        }
+
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-start { justify-content: flex-start; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-5 { gap: 1.25rem; }
+        .gap-6 { gap: 1.5rem; }
+        .gap-8 { gap: 2rem; }
+        .mt-auto { margin-top: auto; }
+        .m-0 { margin: 0; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-5 { margin-bottom: 1.25rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .col-span-2 { grid-column: span 2; }
+        
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .text-xl { font-size: 1.25rem; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        .text-center { text-align: center; }
+        .text-secondary { color: var(--text-secondary); transition: color var(--transition-smooth); }
+        .text-primary { color: var(--text-primary); transition: color var(--transition-smooth); }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-white { color: #ffffff !important; }
+        
+        .w-full { width: 100%; }
+        .hidden { display: none !important; }
+        .relative { position: relative; }
+
+        /* ==========================================================================
+           4. COMPONENTS
+           ========================================================================== */
+        /* Cards */
+        .card {
+            background: linear-gradient(145deg, rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.4));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), background var(--transition-smooth), border-color var(--transition-smooth), padding var(--transition-smooth);
+        }
+
+        body.light-mode .card {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        
+        /* Keep Membership card dark/premium even in light mode and enforce white text */
+        body.light-mode .membership-card {
+            background: linear-gradient(135deg, #1E1B4B, #312E81);
+            box-shadow: 0 15px 35px rgba(49, 46, 129, 0.2);
+        }
+        .membership-card h3,
+        body.light-mode .membership-card h3 {
+            color: #ffffff !important;
+        }
+        .membership-card p,
+        body.light-mode .membership-card p {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        .membership-card strong,
+        body.light-mode .membership-card strong {
+            color: #ffffff !important;
+        }
+        .membership-card svg,
+        body.light-mode .membership-card svg {
+            color: #ffffff !important;
+        }
+
+        .card:hover {
+            border-color: var(--border-hover);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: var(--transition-smooth);
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        body.light-mode .btn-outline {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-outline:hover {
+            background: rgba(124, 124, 124, 0.1);
+            border-color: var(--border-hover);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(124, 124, 124, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Premium Action Button (Subscription) */
+        .btn-premium-action {
+            background: #ffffff;
+            color: #1E1B4B;
+            border: none;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .btn-premium-action:hover {
+            background: #f8fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Inputs & Forms */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: color var(--transition-smooth);
+        }
+
+        .input, .select, .textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition-fast);
+            outline: none;
+        }
+
+        body.light-mode .input, 
+        body.light-mode .select, 
+        body.light-mode .textarea {
+            background: rgba(0, 0, 0, 0.03);
+            color: var(--text-primary);
+        }
+
+        .input:focus, .select:focus, .textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        body.light-mode .input:focus, 
+        body.light-mode .select:focus, 
+        body.light-mode .textarea:focus {
+            background: rgba(0, 0, 0, 0.01);
+        }
+
+        .textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-success { background: rgba(34, 197, 94, 0.1); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .badge-premium { background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(37, 99, 235, 0.2)); color: #A78BFA; border: 1px solid rgba(124, 58, 237, 0.3); }
+
+        /* Gold Crown Premium Icon */
+        .gold-crown-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #111827;
+            border: 2px solid #F59E0B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+            flex-shrink: 0;
+            transition: transform var(--transition-fast);
+        }
+        body.light-mode .gold-crown-icon {
+            background: #000000;
+        }
+        .list-item:hover .gold-crown-icon {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+        }
+
+        /* ==========================================================================
+           5. SECTION SPECIFIC STYLES
+           ========================================================================== */
+        
+        /* Profile Header */
+        .profile-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: var(--radius-full);
+            object-fit: cover;
+            border: 3px solid var(--border);
+            padding: 4px;
+            background: var(--bg);
+            transition: var(--transition-smooth);
+        }
+
+        .avatar-container:hover .avatar {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .info-grid {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            transition: color var(--transition-smooth);
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color var(--transition-smooth);
+        }
+
+        .edit-btn-pos { 
+            flex-shrink: 0;
+            margin-left: auto; /* Pushes it to the far right */
+        }
+
+        /* Lists (Settings) */
+        .list-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+
+        body.light-mode .list-item {
+            background: rgba(0, 0, 0, 0.015);
+        }
+
+        .list-item:hover {
+            background: rgba(124, 124, 124, 0.08);
+            border-color: var(--border-hover);
+        }
+
+        .list-item-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .list-item-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .list-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            flex-shrink: 0;
+        }
+
+        body.light-mode .list-icon {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .list-item:hover .list-icon {
+            background: var(--primary-glow);
+            color: var(--primary);
+        }
+
+        .list-title { font-weight: 500; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; transition: color var(--transition-smooth); }
+        .list-desc { font-size: 0.85rem; color: var(--text-tertiary); transition: color var(--transition-smooth); }
+
+        /* Membership Card */
+        .membership-card {
+            position: relative;
+            overflow: hidden;
+            border-color: rgba(124, 58, 237, 0.3);
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #1E1B4B, #312E81);
+        }
+
+        .membership-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.2) 0%, transparent 60%);
+            animation: pulse-glow 8s infinite alternate;
+            pointer-events: none;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .animate-fade {
+            opacity: 0;
+            animation: fadeUp 0.01s forwards;
+        }
+        
+        .delay-1 { animation-delay: 0s; }
+        .delay-2 { animation-delay: 0s; }
+
+        /* ==========================================================================
+           6. RESPONSIVE DESIGN (All Screen Optimization)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            .container { padding: 1.5rem 1rem 2.5rem 1rem; gap: 1.5rem; }
+            .card { padding: 1.5rem; border-radius: var(--radius-lg); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
+            
+            .profile-header { flex-direction: column; align-items: center; text-align: center; }
+            .edit-btn-pos { position: static; width: 100%; margin-top: 1rem; justify-content: center; margin-left: 0; }
+            
+            .info-grid { grid-template-columns: 1fr; width: 100%; text-align: left; gap: 1rem; }
+            
+            /* Overriding grid columns for mobile edit profile form */
+            .grid-cols-2 { grid-template-columns: 1fr; gap: 1rem; }
+            .col-span-2 { grid-column: span 1; }
+            
+            .list-item { padding: 1rem; }
+            .list-item-left { gap: 0.85rem; }
+            .list-icon { width: 36px; height: 36px; }
+            .avatar { width: 100px; height: 100px; }
+            
+            h1 { font-size: 1.35rem; }
+            h2 { font-size: 1.15rem; }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 1rem 0.75rem 2rem 0.75rem; gap: 1.25rem; }
+            .card { padding: 1.25rem; border-radius: var(--radius-md); }
+            
+            .list-item { padding: 0.875rem; }
+            .list-item-left { gap: 0.75rem; }
+            .list-icon { width: 32px; height: 32px; }
+            .list-icon svg { width: 16px; height: 16px; }
+            
+            .list-title { font-size: 0.95rem; }
+            .list-desc { font-size: 0.75rem; }
+            
+            .gold-crown-icon { width: 28px; height: 28px; border-width: 1.5px; }
+            .gold-crown-icon svg { width: 14px; height: 14px; }
+            
+            h1 { font-size: 1.25rem; }
+            h2 { font-size: 1.05rem; }
+            
+            .btn { font-size: 0.875rem; padding: 0.5rem 1rem; }
+            .avatar { width: 90px; height: 90px; }
+        }
+    
+/* Slide Over Panel */
+.slide-over {
+    position: fixed;
+    top: 0; right: -100%; width: 100%; height: 100vh;
+    background: var(--bg);
+    z-index: 9999;
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.slide-over.open { right: 0; }
+
+.slide-header {
+    position: sticky;
+    top: 0; background: var(--bg);
+    padding: 1rem 1.5rem;
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+}
+.slide-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.back-btn { display: flex; align-items: center; gap: 8px; color: var(--primary); font-weight: 600; font-size: 16px; cursor: pointer; }
+.progress-bar-container { width: 100%; height: 6px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+.progress-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
+
+.search-bar { width: 100%; padding: 12px 40px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-primary); font-size: 16px; outline: none; }
+.search-container { position: relative; padding: 0 1.5rem; margin-top: 1rem; }
+.search-icon { position: absolute; left: 2.5rem; top: 12px; color: var(--text-secondary); }
+
+.category-title { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin: 2rem 1.5rem 1rem; font-weight: bold; }
+
+/* Habit Cards */
+.habit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; padding: 0 1.5rem; }
+@media (max-width: 600px) { .habit-grid { grid-template-columns: 1fr; } }
+
+.h-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1rem; cursor: pointer; transition: transform 0s, box-shadow 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+}
+.h-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+.h-card.selected { border-color: var(--primary); background: rgba(37, 99, 235, 0.05); box-shadow: 0 0 15px rgba(37,99,235,0.2); }
+.h-card.locked { opacity: 0.8; pointer-events: none; }
+
+.h-card-header { display: flex; align-items: center; gap: 12px; }
+.h-icon { font-size: 24px; }
+.h-info { flex: 1; }
+.h-title { font-weight: bold; font-size: 16px; color: var(--text-primary); }
+.h-status { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+.h-card.selected .h-status { color: var(--primary); font-weight: 600; }
+.h-check { display: none; color: var(--primary); }
+.h-card.selected .h-check { display: block; }
+
+/* Accordion Expansion */
+.h-target-config {
+    max-height: 0; overflow: hidden; transition: max-height 0.3s ease, margin-top 0.3s ease, opacity 0.3s ease;
+    opacity: 0; margin-top: 0; border-top: 1px dashed var(--border);
+}
+.h-card.expanded .h-target-config { max-height: 200px; opacity: 1; margin-top: 1rem; padding-top: 1rem; }
+
+.config-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.config-label { font-size: 12px; color: var(--text-secondary); }
+.config-input { width: 100px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-primary); text-align: right; }
+.config-select { padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-primary); }
+
+.done-btn { width: 100%; padding: 8px; background: var(--primary); color: white; border-radius: 8px; font-weight: bold; margin-top: 10px; }
+
+/* Premium Custom Habit */
+.h-card.premium { border-color: #F59E0B; background: rgba(245, 158, 11, 0.05); }
+.h-card.premium .h-title { color: #F59E0B; }
+.premium-badge { font-size: 10px; background: #F59E0B; color: black; padding: 2px 6px; border-radius: 10px; font-weight: bold; margin-left: 8px; vertical-align: middle; }
+
+/* Bottom Sheet */
+.bottom-sheet-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(4px);
+}
+.bottom-sheet-overlay.active { opacity: 1; pointer-events: auto; }
+
+.bottom-sheet {
+    position: fixed; bottom: -100%; left: 0; width: 100%; background: var(--card-bg);
+    border-radius: 24px 24px 0 0; padding: 2rem; z-index: 10001;
+    transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
+}
+.bottom-sheet.active { bottom: 0; }
+.bs-handle { width: 40px; height: 5px; background: var(--border); border-radius: 5px; margin: 0 auto 1.5rem; }
+
+/* Save Modal */
+.save-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000;
+    display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+}
+.save-modal { background: var(--card-bg); border-radius: 20px; padding: 2rem; width: 90%; max-width: 400px; text-align: center; border: 1px solid var(--border); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.save-modal.show { transform: scale(1); }
+.save-icon { font-size: 60px; margin-bottom: 1rem; color: var(--primary); }
+
+</style>
+</head>
+<body>
+
+    <main class="container">
+
+        <!-- Top Navigation / Back Button / Theme Toggle -->
+        <header class="flex justify-between items-center w-full animate-fade">
+            <div class="flex items-center gap-3">
+                <button class="btn btn-ghost" style="padding: 0.5rem;" onclick="window.location.href='index.html'" aria-label="Go Back">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </button>
+                <h1 style="color: var(--text-primary);">My Account</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+                    <svg id="moonIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <svg id="sunIcon" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+            </div>
+        </header>
+        
+        <!-- ==============================
+             PROFILE HEADER & VIEW MODE
+             ============================== -->
+        <section id="profile-view" class="card animate-fade delay-1">
+            <div class="profile-header">
+                
+                <!-- Avatar -->
+                <div class="avatar-container">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="User Profile Image" id="display-avatar" class="avatar" style="opacity: 0; transition: opacity 0.3s;">
+                </div>
+
+                <!-- Info Grid -->
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Full Name</span>
+                        <span class="info-value text-xl font-semibold" id="val-name"></span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Email Address</span>
+                        <span class="info-value" id="val-email"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Joined Date</span>
+                        <span class="info-value" id="val-joined"></span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary edit-btn-pos" onclick="toggleEditMode()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    Edit Profile
+                </button>
+            </div>
+        </section>
+
+        <!-- ==============================
+             EDIT PROFILE FORM
+             ============================== -->
+        <section id="edit-view" class="card hidden animate-fade">
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Edit Profile
+            </h2>
+            <form id="profile-form" onsubmit="saveProfile(event)" class="grid grid-cols-2 gap-6 mt-6">
+                
+                <div class="input-group">
+                    <label class="label">Full Name</label>
+                    <input type="text" id="input-name" class="input" value="" required>
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">Email Address</label>
+                    <input type="email" id="input-email" class="input" value="" required>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Date of Birth</label>
+                    <input type="date" id="input-dob" class="input" value="">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Phone Number</label>
+                    <input type="tel" id="input-phone" class="input" value="" placeholder="Your phone number">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Country</label>
+                    <select id="input-country" class="select">
+                        <option value="" selected disabled>Select country</option>
+                        <option value="US">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="CA">Canada</option>
+                        <option value="AU">Australia</option>
+                        <option value="IN">India</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Gender</label>
+                    <select id="input-gender" class="select">
+                        <option value="" selected disabled>Select gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Occupation</label>
+                    <input type="text" id="input-occ" class="input" value="" placeholder="Your occupation">
+                </div>
+
+                <div class="input-group col-span-2">
+                    <label class="label">Your commitment</label>
+                    <textarea id="input-bio" class="textarea" placeholder="Write something about your goals..."></textarea>
+                </div>
+
+                <div class="flex gap-4 col-span-2" style="justify-content: flex-end; margin-top: 1rem;">
+                    <button type="button" class="btn btn-outline" onclick="toggleEditMode()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- =========
+        <!-- ==============================
+             MY HABITS
+             ============================== -->
+        <section class="card animate-fade delay-1" style="margin-bottom: 2rem;">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 style="margin:0;"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="text-primary"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> My Habits</h2>
+                    <p style="margin-top: 5px;" id="selected-summary">0 / 8 Habits Selected</p>
+                </div>
+                <button class="btn btn-primary" onclick="window.location.href='setup-habits.html'">Choose Habits</button>
+            </div>
+        </section>
+
+<!-- ==============================
+             MEMBERSHIP & QUICK ACTIONS
+             ============================== -->
+        <div class="grid grid-cols-2 gap-8 animate-fade delay-2">
+            
+            <!-- Membership -->
+            <section class="card membership-card">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="flex items-center gap-2 m-0 text-white" style="color: #ffffff !important;">
+                            <div class="gold-crown-icon" title="Premium Feature" style="width: 24px; height: 24px; border-width: 1px;">
+                                <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 12px; height: 12px;">
+                                    <path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/>
+                                </svg>
+                            </div>
+                            <span id="plan-name">Free Plan</span>
+                        </h3>
+                        <span class="badge" id="plan-badge" style="background: rgba(255,255,255,0.15); color: #ffffff !important; border: 1px solid rgba(255,255,255,0.3); display: none;">Premium</span>
+                    </div>
+                    <p class="text-sm mb-6" style="color: rgba(255,255,255,0.8) !important;">Status: <strong class="text-white" id="plan-status" style="color: #ffffff !important;">Basic</strong></p>
+                </div>
+                
+                <button class="btn btn-premium-action w-full justify-center mt-auto" onclick="managePremium()">
+                    Manage Subscription
+                </button>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="card">
+                <h3 class="mb-5">Quick Actions</h3>
+                <div class="flex flex-col gap-4">
+                    <button class="btn btn-outline w-full justify-start text-sm" style="padding: 0.875rem 1.25rem;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        Purchases
+                    </button>
+                    <button class="btn btn-outline w-full justify-start text-sm" style="padding: 0.875rem 1.25rem;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        Support
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==============================
+             ACCOUNT SETTINGS
+             ============================== -->
+        <section class="card animate-fade delay-2">
+            <h2>
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="text-primary"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Account Settings
+            </h2>
+            <div class="list-group mt-4">
+                
+                <!-- Change Password -->
+                <div class="list-item">
+                    <div class="list-item-left">
+                        <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg></div>
+                        <div>
+                            <div class="list-title">Change Password</div>
+                            <div class="list-desc">Update your login credentials</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="list-item">
+                    <div class="list-item-left">
+                        <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+                        <div>
+                            <div class="list-title">Notification Settings</div>
+                            <div class="list-desc">Manage emails and alerts</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+                <!-- Language -->
+                <div class="list-item" onclick="document.getElementById('language-region-modal').classList.remove('hidden');" style="cursor: pointer;">
+                    <div class="list-item-left">
+                        <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></div>
+                        <div>
+                            <div class="list-title">Language & Region</div>
+                            <div class="list-desc" id="lang-region-desc">English, Auto-detect</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+                <!-- Manage Devices -->
+                <div class="list-item">
+                    <div class="list-item-left">
+                        <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div>
+                        <div>
+                            <div class="list-title">Manage Devices</div>
+                            <div class="list-desc">3 devices currently logged in</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+                <!-- Export Data -->
+                <div class="list-item">
+                    <div class="list-item-left">
+                        <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></div>
+                        <div>
+                            <div class="list-title">Export Data</div>
+                            <div class="list-desc">Download a copy of your info</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gold Crown Premium Icon on the Right -->
+                    <div class="list-item-right">
+                        <div class="gold-crown-icon" title="Premium Feature">
+                            <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 16px; height: 16px;">
+                                <path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/>
+                            </svg>
+                        </div>
+                        <div class="text-tertiary">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Account -->
+                <div class="list-item" style="border-color: rgba(239, 68, 68, 0.2); cursor: pointer;" onclick="openDeleteAccountModal()">
+                    <div class="list-item-left">
+                        <div class="list-icon" style="color: var(--danger); background: rgba(239, 68, 68, 0.1);"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></div>
+                        <div>
+                            <div class="list-title" style="color: var(--danger);">Delete Account</div>
+                            <div class="list-desc">Permanently delete your data</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer / Logout -->
+        <div class="flex justify-center mt-4 mb-8">
+            <button class="btn btn-ghost text-secondary hover:text-danger w-full max-w-xs justify-center" onclick="logoutUser()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Secure Logout
+            </button>
+        </div>
+
+    </main>
+
+    <!-- ==========================================================================
+         JAVASCRIPT
+         ========================================================================== -->
+    
+<script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // Globals for UI
+        window.buyPremium = () => { window.location.href = 'subscription.html'; };
+        window.managePremium = () => { window.location.href = 'subscription.html'; };
+        window.toggleTheme = toggleTheme;
+        window.logoutUser = logoutUser;
+
+        // Ensure global theme fixes
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', isLight ? 'light' : 'dark');
+            
+            const sun = document.getElementById('sunIcon');
+            const moon = document.getElementById('moonIcon');
+            if (sun && moon) {
+                if (isLight) { sun.style.display = 'block'; moon.style.display = 'none'; }
+                else { sun.style.display = 'none'; moon.style.display = 'block'; }
+            }
+        }
+        
+        // Check theme on load
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+            document.documentElement.setAttribute('data-theme', 'light');
+            window.addEventListener('DOMContentLoaded', () => {
+                const sun = document.getElementById('sunIcon');
+                const moon = document.getElementById('moonIcon');
+                if (sun && moon) { sun.style.display = 'block'; moon.style.display = 'none'; }
+            });
+        }
+
+        // Data
+        const categories = {
+            'Morning': { icon: 'ðŸŒ…', items: ['h1', 'h6', 'h7'] },
+            'Health': { icon: 'ðŸ’ª', items: ['h2', 'h8', 'h11'] },
+            'Learning': { icon: 'ðŸ“š', items: ['h3', 'h10', 'h12'] },
+            'Lifestyle': { icon: 'ðŸ“±', items: ['h4', 'h14', 'h5', 'h13'] }
+        };
+
+        const defaultHabits = {
+            'h1': { name: 'Wake Up', type: 'time', icon: 'â˜€ï¸', defaultVal: '06:00' },
+            'h6': { name: 'Sleep Time', type: 'time', icon: 'ðŸŒ™', defaultVal: '22:00' },
+            'h7': { name: 'Sleep Duration', type: 'calculated', icon: 'ðŸ’¤', defaultVal: 'Calculated' },
+            'h2': { name: 'Exercise', type: 'duration', icon: 'ðŸƒ', defaultVal: '45' },
+            'h8': { name: 'Meditation', type: 'duration', icon: 'ðŸ§˜', defaultVal: '15' },
+            'h11': { name: 'Healthy Meals', type: 'binary', icon: 'ðŸ¥—', defaultVal: 'Yes/No' },
+            'h3': { name: 'Book Reading / Study', type: 'duration', icon: 'ðŸ“–', defaultVal: '60' },
+            'h10': { name: 'Focus Hours', type: 'duration', icon: 'ðŸŽ¯', defaultVal: '120' },
+            'h12': { name: 'New Skill Work', type: 'duration', icon: 'ðŸ› ï¸', defaultVal: '30' },
+            'h4': { name: 'Screen Time', type: 'duration', icon: 'ðŸ“±', defaultVal: '120' },
+            'h14': { name: 'Time Wasted', type: 'duration', icon: 'â³', defaultVal: '30' },
+            'h5': { name: 'Porn/Masturbation', type: 'binary', icon: 'ðŸš«', defaultVal: 'Yes/No' },
+            'h13': { name: 'Any Bad Habit', type: 'binary', icon: 'ðŸš¬', defaultVal: 'Yes/No' }
+        };
+
+        let isPremium = localStorage.getItem('isPremium') === 'true';
+        let customHabitsData = JSON.parse(localStorage.getItem('customHabitsData') || '[]');
+        let userHabits = JSON.parse(localStorage.getItem('userHabits') || '{}');
+        let tempUserHabits = JSON.parse(JSON.stringify(userHabits));
+        let currentUser = null;
+        
+        // Instant UI Render from Cache (Solves 1-2 second loading delay)
+        window.addEventListener('DOMContentLoaded', () => {
+            const cached = localStorage.getItem('cachedProfile');
+            if (cached) {
+                try {
+                    const c = JSON.parse(cached);
+                    if (c.name) {
+                        document.getElementById('val-name').textContent = c.name;
+                        document.getElementById('input-name').value = c.name;
+                        const avatarEl = document.getElementById('display-avatar');
+                        avatarEl.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(c.name) + '&size=240&background=2563EB&color=fff&rounded=true';
+                        avatarEl.style.opacity = '1';
+                    }
+                    if (c.email) {
+                        document.getElementById('val-email').textContent = c.email;
+                        document.getElementById('input-email').value = c.email;
+                    }
+                    if (c.joinedDate) {
+                        const joinDate = new Date(c.joinedDate);
+                        document.getElementById('val-joined').textContent = joinDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    }
+                } catch(e) {}
+            }
+            
+            const savedRegion = localStorage.getItem('userRegion') || 'auto';
+            const regionSelect = document.getElementById('select-region');
+            if(regionSelect) regionSelect.value = savedRegion;
+            updateLangRegionDesc(savedRegion);
+        });
+
+        window.saveLanguageRegion = function() {
+            const region = document.getElementById('select-region').value;
+            localStorage.setItem('userRegion', region);
+            updateLangRegionDesc(region);
+            document.getElementById('language-region-modal').classList.add('hidden');
+            // If user is logged in, save to firebase as well
+            if (currentUser) {
+                try {
+                    window.updateDoc(window.doc(window.firebaseDb, "users", currentUser.uid), {
+                        region: region
+                    });
+                } catch(e) { console.error("Error saving region to Firebase", e); }
+            }
+        };
+
+        function updateLangRegionDesc(region) {
+            const desc = document.getElementById('lang-region-desc');
+            if(!desc) return;
+            if(region === 'auto') desc.innerText = "English, Auto-detect";
+            else if(region === 'America/New_York') desc.innerText = "English, US (New York)";
+            else if(region === 'America/Los_Angeles') desc.innerText = "English, US (Los Angeles)";
+            else if(region === 'Asia/Kolkata') desc.innerText = "English, India (IST)";
+            else if(region === 'Europe/London') desc.innerText = "English, UK (London)";
+            else if(region === 'Australia/Sydney') desc.innerText = "English, Australia (Sydney)";
+        }
+
+        window.addEventListener('load', () => {
+            if (window.firebaseAuth) {
+                onAuthStateChanged(window.firebaseAuth, async (user) => {
+                    if (user) { currentUser = user; window.currentUser = user; await loadUserDataFromFirebase(); }
+                    else { window.location.href = 'login.html'; }
+                });
+            } else {
+                console.error("Firebase Auth not loaded");
+                setTimeout(() => window.location.href = 'login.html', 1000);
+            }
+        });
+
+        let isNewUser = false;
+        async function loadUserDataFromFirebase() {
+            try {
+                const docSnap = await getDoc(doc(window.firebaseDb, "users", currentUser.uid));
+                
+                // Handle Joined Date
+                if (currentUser.metadata.creationTime) {
+                    const joinDate = new Date(currentUser.metadata.creationTime);
+                    document.getElementById('val-joined').textContent = joinDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                }
+
+
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if(data.isPremium !== undefined) isPremium = data.isPremium;
+                    if(data.customHabitsData) customHabitsData = data.customHabitsData;
+                    if(data.userHabits) { userHabits = data.userHabits; tempUserHabits = JSON.parse(JSON.stringify(userHabits)); }
+                    
+                    // Restore profile fields
+                    if(data.name) {
+                        document.getElementById('val-name').textContent = data.name;
+                        document.getElementById('input-name').value = data.name;
+                        const avatarEl = document.getElementById('display-avatar');
+                        avatarEl.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(data.name) + '&size=240&background=2563EB&color=fff&rounded=true';
+                        avatarEl.style.opacity = '1';
+                    }
+                    if(data.dob) {
+                        document.getElementById('input-dob').value = data.dob;
+                    }
+                    if(data.phone) document.getElementById('input-phone').value = data.phone;
+                    if(data.country) document.getElementById('input-country').value = data.country;
+                    if(data.gender) document.getElementById('input-gender').value = data.gender;
+                    if(data.occupation) document.getElementById('input-occ').value = data.occupation;
+                    if(data.dateOfBirth) document.getElementById('input-dob').value = data.dateOfBirth;
+                    if(data.bio) document.getElementById('input-bio').value = data.bio;
+                    
+                    document.getElementById('val-email').textContent = currentUser.email;
+                    document.getElementById('input-email').value = currentUser.email;
+                    
+                    // Update cache for existing user
+                    localStorage.setItem('cachedProfile', JSON.stringify({
+                        name: data.name,
+                        email: currentUser.email,
+                        joinedDate: currentUser.metadata.creationTime
+                    }));
+                    
+                } else {
+                    isNewUser = true;
+                    // Pre-fill name from localStorage or Google Auth
+                    const tempName = localStorage.getItem('tempFullName') || currentUser.displayName || "";
+                    if (tempName) {
+                        document.getElementById('input-name').value = tempName;
+                        document.getElementById('val-name').textContent = tempName;
+                        const avatarEl = document.getElementById('display-avatar');
+                        avatarEl.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(tempName) + '&size=240&background=2563EB&color=fff&rounded=true';
+                        avatarEl.style.opacity = '1';
+                    }
+                    document.getElementById('input-email').value = currentUser.email;
+                    document.getElementById('val-email').textContent = currentUser.email;
+                    
+                    // Update cache
+                    localStorage.setItem('cachedProfile', JSON.stringify({
+                        name: data.name || tempName,
+                        email: currentUser.email,
+                        joinedDate: currentUser.metadata.creationTime
+                    }));
+                    
+                    // Initialize empty habits for new user
+                    userHabits = {};
+                    tempUserHabits = {};
+                    
+                    // We no longer force edit-view for new users.
+                    // Just save the initial empty profile to Firebase.
+                    await setDoc(doc(window.firebaseDb, "users", currentUser.uid), {
+                        name: tempName,
+                        email: currentUser.email,
+                        userHabits: userHabits,
+                        isPremium: false,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+            } catch (e) { console.error(e); }
+            refreshUI();
+        }
+
+
+
+        async function saveUserDataToFirebase() {
+            if (!currentUser) return;
+            try {
+                await setDoc(doc(window.firebaseDb, "users", currentUser.uid), {
+                    isPremium, customHabitsData, userHabits
+                }, { merge: true });
+            } catch(e) { console.error(e); }
+        }
+
+        function refreshUI() {
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const count = Object.keys(tempUserHabits).length;
+            const max = isPremium ? 20 : 8;
+            document.getElementById('selected-summary').textContent = `${count} / ${max} Habits Selected`;
+        }
+
+
+
+        function logoutUser() {
+            if(window.firebaseAuth) {
+                signOut(window.firebaseAuth).then(() => {
+                    window.location.href = 'login.html';
+                });
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Profile Edit Logic
+        window.toggleEditMode = function() {
+            const editView = document.getElementById('edit-view');
+            const profileView = document.getElementById('profile-view');
+            if (editView.classList.contains('hidden')) {
+                profileView.classList.add('hidden');
+                editView.classList.remove('hidden');
+            } else {
+                editView.classList.add('hidden');
+                profileView.classList.remove('hidden');
+            }
+        };
+
+        window.saveProfile = async function(e) {
+            e.preventDefault();
+            const newName = document.getElementById('input-name').value;
+            const newDob = document.getElementById('input-dob').value;
+            const newPhone = document.getElementById('input-phone').value;
+            const newCountry = document.getElementById('input-country').value;
+            const newGender = document.getElementById('input-gender').value;
+            const newOcc = document.getElementById('input-occ').value;
+            const newBio = document.getElementById('input-bio').value;
+            const newDob = document.getElementById('input-dob').value;
+            
+            document.getElementById('val-name').textContent = newName;
+            const avatarEl = document.getElementById('display-avatar');
+            avatarEl.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(newName) + '&size=240&background=2563EB&color=fff&rounded=true';
+            avatarEl.style.opacity = '1';
+            
+            if(currentUser) {
+                await setDoc(doc(window.firebaseDb, "users", currentUser.uid), {
+                    name: newName,
+                    dob: newDob,
+                    phone: newPhone,
+                    country: newCountry,
+                    gender: newGender,
+                    occupation: newOcc,
+                    dateOfBirth: newDob,
+                    bio: newBio,
+                    userHabits: userHabits,
+                    customHabitsData: customHabitsData,
+                    isPremium: isPremium
+                }, { merge: true });
+                
+                // Update cache
+                const cached = JSON.parse(localStorage.getItem('cachedProfile') || '{}');
+                cached.name = newName;
+                localStorage.setItem('cachedProfile', JSON.stringify(cached));
+            }
+            
+            localStorage.removeItem('tempFullName'); // Clean up
+            
+            if (isNewUser) {
+                window.location.href = 'index.html'; // Redirect to dashboard after first setup
+            } else {
+                toggleEditMode();
+            }
+            document.getElementById('save-modal-overlay').style.display = 'none';
+        };
+
+        // Lock "Choose Habits" if habits were finalized within 30 days
+        window.addEventListener('DOMContentLoaded', () => {
+            const habitsRaw = localStorage.getItem('userHabits');
+            if (habitsRaw) {
+                try {
+                    const habits = JSON.parse(habitsRaw);
+                    const validHabits = Object.values(habits).filter(h => typeof h === 'object' && h.habit_id);
+                    if (validHabits.length > 0) {
+                        let addedAtStr = null;
+                        for (let h of validHabits) {
+                            if (h.addedAt) {
+                                addedAtStr = h.addedAt;
+                                break;
+                            }
+                        }
+                        if (addedAtStr) {
+                            const addedAtDate = new Date(addedAtStr);
+                            const lockDate = new Date(addedAtDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+                            const now = new Date();
+                            if (now < lockDate) {
+                                const btn = document.querySelector('button[onclick="window.location.href=\'setup-habits.html\'"]');
+                                if (btn) {
+                                    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: middle;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Locked`;
+                                    btn.style.background = '#64748B';
+                                    btn.style.borderColor = '#64748B';
+                                    btn.onclick = () => {
+                                        document.getElementById('lock-date-display').innerText = lockDate.toLocaleDateString();
+                                        document.getElementById('lock-warning-modal').classList.remove('hidden');
+                                    };
+                                }
+                            }
+                        }
+                    }
+                } catch(e) {}
+            }
+        });
+</script>
+
+    <!-- Lock Warning Modal -->
+    <div id="lock-warning-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div class="card animate-fade" style="background: #FFFFFF !important; max-width: 400px; width: calc(100% - 2rem); margin: 1rem; text-align: center; border-radius: var(--radius-xl); border-top: 4px solid var(--primary); padding: 2rem;">
+            <div style="margin: 0 auto 1.5rem auto; width: 64px; height: 64px; background: rgba(99, 102, 241, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h2 class="mb-3" style="font-size: 1.25rem; color: #0F172A !important;">Habits Locked</h2>
+            <p style="color: #64748B !important; margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.6;">
+                Your habits are locked to build consistency.<br>You can edit them again on <strong id="lock-date-display" style="color: #0F172A !important;"></strong>, 30 days later.
+            </p>
+            <button class="btn btn-primary w-full justify-center" onclick="document.getElementById('lock-warning-modal').classList.add('hidden');">Understood</button>
+        </div>
+    </div>
+    
+    <!-- Language & Region Modal -->
+    <div id="language-region-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div class="card animate-fade" style="background: #FFFFFF !important; max-width: 400px; width: calc(100% - 2rem); margin: 1rem; border-radius: var(--radius-lg);">
+            <h2 class="mb-4 text-center" style="color: #0F172A !important;">Language & Region</h2>
+            
+            <div class="mb-4">
+                <label style="display: block; margin-bottom: 0.5rem; color: #64748B !important;">Language</label>
+                <select id="select-language" style="width: 100%; padding: 0.75rem; background: #F8FAFC !important; border: 1px solid #E2E8F0 !important; border-radius: var(--radius-sm); color: #0F172A !important; outline: none;">
+                    <option value="en">English</option>
+                </select>
+            </div>
+            
+            <div class="mb-6">
+                <label style="display: block; margin-bottom: 0.5rem; color: #64748B !important;">Region / Timezone</label>
+                <select id="select-region" style="width: 100%; padding: 0.75rem; background: #F8FAFC !important; border: 1px solid #E2E8F0 !important; border-radius: var(--radius-sm); color: #0F172A !important; outline: none;">
+                    <option value="auto">Auto-detect (Local Time)</option>
+                    <option value="America/New_York">United States (New York)</option>
+                    <option value="America/Los_Angeles">United States (Los Angeles)</option>
+                    <option value="Asia/Kolkata">India (IST)</option>
+                    <option value="Europe/London">UK (London)</option>
+                    <option value="Australia/Sydney">Australia (Sydney)</option>
+                </select>
+            </div>
+            
+            <div class="flex gap-4 w-full">
+                <button class="btn btn-outline w-full justify-center" onclick="document.getElementById('language-region-modal').classList.add('hidden');">Cancel</button>
+                <button class="btn btn-primary w-full justify-center" onclick="saveLanguageRegion()">Save</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Account Modal -->
+    <style>
+        /* --- MODAL CONTAINER --- */
+        .del-popup-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 360px;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+
+        /* --- 1. WARNING SECTION (Top) --- */
+        .warning-section {
+            background-color: #fff5f5;
+            padding: 30px 20px 25px 20px;
+        }
+        .icon-circle-red {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            background-color: #ffe4e6;
+            color: #e11d48;
+            border-radius: 50%;
+            margin-bottom: 12px;
+            border: 1px solid #fecdd3;
+        }
+        .warning-title {
+            color: #9f1239;
+            font-size: 20px;
+            margin: 0 0 8px 0;
+            font-weight: 800;
+        }
+        .warning-text {
+            color: #be123c;
+            font-size: 14px;
+            line-height: 1.4;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* --- 2. RETENTION SECTION (Middle) --- */
+        .retention-section {
+            background-color: #f0fdf4;
+            border-top: 1px dashed #86efac;
+            padding: 25px 20px;
+        }
+        .icon-circle-green {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            background-color: #dcfce7;
+            color: #16a34a;
+            border-radius: 50%;
+            margin-bottom: 12px;
+        }
+        .retention-title {
+            color: #14532d;
+            font-size: 16px;
+            margin: 0 0 6px 0;
+            font-weight: 700;
+        }
+        .retention-text {
+            color: #15803d;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* --- 3. ACTIONS SECTION (Bottom) --- */
+        .action-section {
+            background: #FFFFFF;
+            padding: 16px 20px 20px;
+            display: flex;
+            flex-direction: row; /* Ensures buttons are side-by-side */
+            gap: 12px;
+        }
+
+        /* Base Button Styles */
+        .btn-del {
+            flex: 1; /* Makes both buttons take exactly 50% space */
+            padding: 12px 0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            
+            /* These 3 lines ensure icon and text are perfectly centered inside the button */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            
+            transition: all 0.2s ease;
+        }
+
+        /* Keep Building Button */
+        .btn-del-cancel {
+            background: #F8FAFC;
+            color: #475569;
+            border: 1.5px solid #E2E8F0;
+        }
+        .btn-del-cancel:hover { 
+            background: #F1F5F9; 
+            color: #0F172A; 
+        }
+
+        /* Delete Button */
+        .btn-del-delete {
+            background: #FFFFFF;
+            color: #DC2626;
+            border: 1.5px solid #FECACA;
+        }
+        .btn-del-delete:hover { 
+            background: #FEF2F2; 
+        }
+    </style>
+    <!-- OVERLAY & MODAL -->
+    <div id="delete-account-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        
+        <div class="del-popup-container">
+            
+            <!-- 1. Top Warning Area -->
+            <div class="warning-section">
+                <div class="icon-circle-red">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+                <h2 class="warning-title">Delete Account?</h2>
+                <p class="warning-text">This will permanently erase all your habits, history, and personal data.</p>
+            </div>
+
+            <!-- 2. Emotional/Retention Area -->
+            <div class="retention-section">
+                <div class="icon-circle-green">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                </div>
+                <h3 class="retention-title">Don't sacrifice your momentum</h3>
+                <p class="retention-text">“First we make our habits, then they make us. You showed up. You improved. You grew.”</p>
+            </div>
+
+            <!-- 3. Action Buttons -->
+            <div class="action-section">
+                <button class="btn-del btn-del-cancel" onclick="closeDeleteAccountModal()">Keep Building</button>
+                <button class="btn-del btn-del-delete" onclick="confirmDeleteAccount()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span>Delete</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- Custom Habit Modal -->
+    <div id="custom-habit-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div class="card animate-fade" style="max-width: 400px; width: 100%; margin: 1rem;">
+            <h2 class="mb-4 text-center">Add Custom Habit</h2>
+            <div class="mb-4">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Habit Name</label>
+                <input type="text" id="customHabitName" placeholder="e.g. Drink 3L Water" style="width: 100%; padding: 0.75rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); outline: none;">
+            </div>
+            <div class="mb-6">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Tracking Logic</label>
+                <select id="customHabitLogic" style="width: 100%; padding: 0.75rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); outline: none;">
+                    <option value="binary">Yes/No (Binary)</option>
+                    <option value="time">Specific Time (e.g. Wake up time)</option>
+                    <option value="duration">Duration (Hours & Mins)</option>
+                </select>
+            </div>
+            <div class="flex gap-4 w-full">
+                <button class="btn btn-outline w-full justify-center" onclick="closeCustomHabitModal()">Cancel</button>
+                <button class="btn btn-primary w-full justify-center" onclick="addCustomHabit()">Add Habit</button>
+            </div>
+        </div>
+    </div>
+    <!-- Premium Modal -->
+    <div id="premium-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div class="card animate-fade" style="max-width: 400px; text-align: center; margin: 1rem;">
+            <div class="gold-crown-icon mx-auto mb-4" style="margin: 0 auto 1rem auto; width: 64px; height: 64px; border-width: 3px;">
+                <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 32px; height: 32px;"><path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/></svg>
+            </div>
+            <h2 class="justify-center">Unlock Premium</h2>
+            <p class="mb-6">You have reached the free limit of 8 habits. Upgrade to Premium to track all 14 habits!</p>
+            <div class="flex gap-4 w-full">
+                <button class="btn btn-outline w-full justify-center" onclick="closePremiumPopup()">Maybe Later</button>
+                <button class="btn btn-premium-action w-full justify-center" onclick="buyPremium()">Buy Monthly</button>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        function openDeleteAccountModal() {
+            document.getElementById('delete-account-modal').classList.remove('hidden');
+        }
+
+        function closeDeleteAccountModal() {
+            document.getElementById('delete-account-modal').classList.add('hidden');
+        }
+
+        async function confirmDeleteAccount() {
+            if(!window.currentUser) return;
+            const deleteBtn = document.querySelector('#delete-account-modal button:last-child');
+            deleteBtn.innerHTML = 'Deleting...';
+            deleteBtn.disabled = true;
+
+            try {
+                // Delete user doc from firestore
+                const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+                await deleteDoc(doc(window.firebaseDb, "users", window.currentUser.uid));
+                
+                // Try deleting auth account
+                const { deleteUser } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
+                try {
+                    await deleteUser(window.currentUser);
+                } catch (authErr) {
+                    console.log("Could not delete auth user immediately (might need reauth), but data is wiped.", authErr);
+                }
+
+                // Redirect to login
+                window.location.href = 'login.html';
+            } catch (err) {
+                console.error("Error deleting account:", err);
+                alert("An error occurred while deleting your account.");
+                deleteBtn.innerHTML = 'Delete';
+                deleteBtn.disabled = false;
+            }
+        }
+        
+        // Expose to window for inline onclick handlers
+        window.openDeleteAccountModal = openDeleteAccountModal;
+        window.closeDeleteAccountModal = closeDeleteAccountModal;
+        window.confirmDeleteAccount = confirmDeleteAccount;
+    </script>
+    <script type="module" src="firebase-config.js"></script>
+</body>
+</html>
+
+

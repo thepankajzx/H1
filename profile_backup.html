@@ -1,0 +1,1120 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Profile</title>
+    <style>
+        /* ==========================================================================
+           1. CSS VARIABLES & THEME SETTINGS
+           ========================================================================== */
+        :root {
+            /* Default Dark Mode Palette */
+            --bg: #0B0F19;
+            --card-bg: #111827;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            
+            --primary: #2563EB;
+            --primary-hover: #1D4ED8;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            
+            --accent: #7C3AED;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #94A3B8;
+            --text-tertiary: #64748B;
+
+            /* Spacing & Layout */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --radius-xl: 22px;
+            --radius-full: 9999px;
+            
+            --transition-fast: 0s;
+            --transition-smooth: 0s;
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Light Mode Palette Overrides */
+        body.light-mode {
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(0, 0, 0, 0.15);
+            
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-tertiary: #94A3B8;
+            
+            --primary-glow: rgba(37, 99, 235, 0.2);
+        }
+
+        /* ==========================================================================
+           2. RESET & BASE STYLES
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Inter', 'SF Pro Display', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background-color var(--transition-smooth), color var(--transition-smooth);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--text-tertiary); border-radius: var(--radius-full); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 { font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+        h1 { font-size: 1.75rem; margin: 0; }
+        h2 { font-size: 1.25rem; margin-bottom: 1.25rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; transition: color var(--transition-smooth); }
+        h3 { font-size: 1.1rem; }
+        p { color: var(--text-secondary); font-size: 0.95rem; }
+        a { color: var(--primary); text-decoration: none; transition: var(--transition-fast); }
+        a:hover { color: var(--primary-hover); }
+
+        /* ==========================================================================
+           3. LAYOUT & UTILITIES
+           ========================================================================== */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            transition: padding var(--transition-smooth);
+        }
+
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-start { justify-content: flex-start; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-5 { gap: 1.25rem; }
+        .gap-6 { gap: 1.5rem; }
+        .gap-8 { gap: 2rem; }
+        .mt-auto { margin-top: auto; }
+        .m-0 { margin: 0; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-5 { margin-bottom: 1.25rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .col-span-2 { grid-column: span 2; }
+        
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .text-xl { font-size: 1.25rem; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        .text-center { text-align: center; }
+        .text-secondary { color: var(--text-secondary); transition: color var(--transition-smooth); }
+        .text-primary { color: var(--text-primary); transition: color var(--transition-smooth); }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-white { color: #ffffff !important; }
+        
+        .w-full { width: 100%; }
+        .hidden { display: none !important; }
+        .relative { position: relative; }
+
+        /* ==========================================================================
+           4. COMPONENTS
+           ========================================================================== */
+        /* Cards */
+        .card {
+            background: linear-gradient(145deg, rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.4));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), background var(--transition-smooth), border-color var(--transition-smooth), padding var(--transition-smooth);
+        }
+
+        body.light-mode .card {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        
+        /* Keep Membership card dark/premium even in light mode and enforce white text */
+        body.light-mode .membership-card {
+            background: linear-gradient(135deg, #1E1B4B, #312E81);
+            box-shadow: 0 15px 35px rgba(49, 46, 129, 0.2);
+        }
+        .membership-card h3,
+        body.light-mode .membership-card h3 {
+            color: #ffffff !important;
+        }
+        .membership-card p,
+        body.light-mode .membership-card p {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        .membership-card strong,
+        body.light-mode .membership-card strong {
+            color: #ffffff !important;
+        }
+        .membership-card svg,
+        body.light-mode .membership-card svg {
+            color: #ffffff !important;
+        }
+
+        .card:hover {
+            border-color: var(--border-hover);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: var(--transition-smooth);
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        body.light-mode .btn-outline {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-outline:hover {
+            background: rgba(124, 124, 124, 0.1);
+            border-color: var(--border-hover);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(124, 124, 124, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Premium Action Button (Subscription) */
+        .btn-premium-action {
+            background: #ffffff;
+            color: #1E1B4B;
+            border: none;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .btn-premium-action:hover {
+            background: #f8fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Inputs & Forms */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: color var(--transition-smooth);
+        }
+
+        .input, .select, .textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition-fast);
+            outline: none;
+        }
+
+        body.light-mode .input, 
+        body.light-mode .select, 
+        body.light-mode .textarea {
+            background: rgba(0, 0, 0, 0.03);
+            color: var(--text-primary);
+        }
+
+        .input:focus, .select:focus, .textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        body.light-mode .input:focus, 
+        body.light-mode .select:focus, 
+        body.light-mode .textarea:focus {
+            background: rgba(0, 0, 0, 0.01);
+        }
+
+        .textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-success { background: rgba(34, 197, 94, 0.1); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .badge-premium { background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(37, 99, 235, 0.2)); color: #A78BFA; border: 1px solid rgba(124, 58, 237, 0.3); }
+
+        /* Gold Crown Premium Icon */
+        .gold-crown-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #111827;
+            border: 2px solid #F59E0B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+            flex-shrink: 0;
+            transition: transform var(--transition-fast);
+        }
+        body.light-mode .gold-crown-icon {
+            background: #000000;
+        }
+        .list-item:hover .gold-crown-icon {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+        }
+
+        /* ==========================================================================
+           5. SECTION SPECIFIC STYLES
+           ========================================================================== */
+        
+        /* Profile Header */
+        .profile-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: var(--radius-full);
+            object-fit: cover;
+            border: 3px solid var(--border);
+            padding: 4px;
+            background: var(--bg);
+            transition: var(--transition-smooth);
+        }
+
+        .avatar-container:hover .avatar {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .info-grid {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            transition: color var(--transition-smooth);
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color var(--transition-smooth);
+        }
+
+        .edit-btn-pos { position: absolute; top: 0; right: 0; }
+
+        /* Lists (Settings) */
+        .list-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+
+        body.light-mode .list-item {
+            background: rgba(0, 0, 0, 0.015);
+        }
+
+        .list-item:hover {
+            background: rgba(124, 124, 124, 0.08);
+            border-color: var(--border-hover);
+        }
+
+        .list-item-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .list-item-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .list-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            flex-shrink: 0;
+        }
+
+        body.light-mode .list-icon {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .list-item:hover .list-icon {
+            background: var(--primary-glow);
+            color: var(--primary);
+        }
+
+        .list-title { font-weight: 500; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; transition: color var(--transition-smooth); }
+        .list-desc { font-size: 0.85rem; color: var(--text-tertiary); transition: color var(--transition-smooth); }
+
+        /* Membership Card */
+        .membership-card {
+            position: relative;
+            overflow: hidden;
+            border-color: rgba(124, 58, 237, 0.3);
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #1E1B4B, #312E81);
+        }
+
+        .membership-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.2) 0%, transparent 60%);
+            animation: pulse-glow 8s infinite alternate;
+            pointer-events: none;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .animate-fade {
+            opacity: 0;
+            animation: fadeUp 0.01s forwards;
+        }
+        
+        .delay-1 { animation-delay: 0s; }
+        .delay-2 { animation-delay: 0s; }
+
+        /* ==========================================================================
+           6. RESPONSIVE DESIGN (All Screen Optimization)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            .container { padding: 1.5rem 1rem 2.5rem 1rem; gap: 1.5rem; }
+            .card { padding: 1.5rem; border-radius: var(--radius-lg); }
+            
+            .profile-header { flex-direction: column; align-items: center; text-align: center; }
+            .edit-btn-pos { position: static; width: 100%; margin-top: 1rem; justify-content: center; }
+            
+            .info-grid { grid-template-columns: 1fr; width: 100%; text-align: left; gap: 1rem; }
+            
+            /* Overriding grid columns for mobile edit profile form */
+            .grid-cols-2 { grid-template-columns: 1fr; gap: 1rem; }
+            .col-span-2 { grid-column: span 1; }
+            
+            .list-item { padding: 1rem; }
+            .list-item-left { gap: 0.85rem; }
+            .list-icon { width: 36px; height: 36px; }
+            .avatar { width: 100px; height: 100px; }
+            
+            h1 { font-size: 1.35rem; }
+            h2 { font-size: 1.15rem; }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 1rem 0.75rem 2rem 0.75rem; gap: 1.25rem; }
+            .card { padding: 1.25rem; border-radius: var(--radius-md); }
+            
+            .list-item { padding: 0.875rem; }
+            .list-item-left { gap: 0.75rem; }
+            .list-icon { width: 32px; height: 32px; }
+            .list-icon svg { width: 16px; height: 16px; }
+            
+            .list-title { font-size: 0.95rem; }
+            .list-desc { font-size: 0.75rem; }
+            
+            .gold-crown-icon { width: 28px; height: 28px; border-width: 1.5px; }
+            .gold-crown-icon svg { width: 14px; height: 14px; }
+            
+            h1 { font-size: 1.25rem; }
+            h2 { font-size: 1.05rem; }
+            
+            .btn { font-size: 0.875rem; padding: 0.5rem 1rem; }
+            .avatar { width: 90px; height: 90px; }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+
+        <!-- Top Navigation / Back Button / Theme Toggle -->
+        <header class="flex justify-between items-center w-full animate-fade">
+            <div class="flex items-center gap-3">
+                <button class="btn btn-ghost" style="padding: 0.5rem;" onclick="window.location.href='index.html'" aria-label="Go Back">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </button>
+                <h1 style="color: var(--text-primary);">My Account</h1>
+            </div>
+            
+            <!-- Removed Day/Night Toggle from Profile as requested -->
+        </header>
+        
+        <!-- ==============================
+             PROFILE HEADER & VIEW MODE
+             ============================== -->
+        <section id="profile-view" class="card animate-fade delay-1">
+            <div class="profile-header">
+                
+                <!-- Avatar -->
+                <div class="avatar-container">
+                    <img src="https://ui-avatars.com/api/?name=Alexander+Sterling&size=240&background=2563EB&color=fff&rounded=true" alt="User Profile Image" id="display-avatar" class="avatar">
+                </div>
+
+                <!-- Info Grid -->
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Full Name</span>
+                        <span class="info-value text-xl font-semibold" id="val-name">Alexander Sterling</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Account Status</span>
+                        <span class="info-value">
+                            <span class="badge badge-success">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                Verified
+                            </span>
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email Address</span>
+                        <span class="info-value" id="val-email">alexander.sterling@example.com</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Date of Birth</span>
+                        <span class="info-value" id="val-dob">October 12, 1990</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary edit-btn-pos" onclick="toggleEditMode()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    Edit Profile
+                </button>
+            </div>
+        </section>
+
+        <!-- ==============================
+             EDIT PROFILE FORM
+             ============================== -->
+        <section id="edit-view" class="card hidden animate-fade">
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Edit Profile
+            </h2>
+            <form id="profile-form" onsubmit="saveProfile(event)" class="grid grid-cols-2 gap-6 mt-6">
+                
+                <div class="input-group">
+                    <label class="label">Full Name</label>
+                    <input type="text" id="input-name" class="input" value="Alexander Sterling" required>
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">Email Address</label>
+                    <input type="email" id="input-email" class="input" value="alexander.sterling@example.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Date of Birth</label>
+                    <input type="date" id="input-dob" class="input" value="1990-10-12">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Phone Number</label>
+                    <input type="tel" id="input-phone" class="input" value="+1 (555) 123-4567">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Country</label>
+                    <select id="input-country" class="select">
+                        <option value="US">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="CA">Canada</option>
+                        <option value="AU">Australia</option>
+                        <option value="IN">India</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Gender</label>
+                    <select id="input-gender" class="select">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Occupation</label>
+                    <input type="text" id="input-occ" class="input" value="Senior Product Designer">
+                </div>
+
+                <div class="input-group col-span-2">
+                    <label class="label">Your commitment</label>
+                    <textarea id="input-bio" class="textarea">Passionate UI/UX designer with 10+ years of experience crafting premium digital experiences. I specialize in design systems, micro-interactions, and accessibility.</textarea>
+                </div>
+
+                <div class="flex gap-4 col-span-2" style="justify-content: flex-end; margin-top: 1rem;">
+                    <button type="button" class="btn btn-outline" onclick="toggleEditMode()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- ==============================
+             MY HABITS
+             ============================== -->
+        <section class="card animate-fade delay-1" id="my-habits-section" style="margin-bottom: 2rem;">
+            <h2>
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="text-primary"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                My Habits
+            </h2>
+            <p class="mb-4">Select up to 8 habits to track daily. Once selected, a habit cannot be removed for 30 days.</p>
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-sm font-medium">Selected: <span id="habit-count" class="text-primary font-bold">0</span>/8</span>
+                <span class="badge badge-premium" id="premium-badge" style="display:none; cursor:pointer;" onclick="showPremiumPopup()">Unlock Premium</span>
+            </div>
+            
+            <div style="position: relative; width: 100%;">
+                <div onclick="document.getElementById('habits-list').classList.toggle('hidden')" style="padding: 1rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Select Habits...</span>
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <div class="hidden" id="habits-list" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; margin-top: 0.5rem; max-height: 300px; overflow-y: auto; z-index: 10; box-shadow: 0 10px 25px rgba(0,0,0,0.5); padding: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <!-- JS will populate habits here -->
+                </div>
+            </div>
+            
+            <div class="flex justify-end mt-4">
+                <button class="btn btn-primary" onclick="saveHabits()">Save Habits</button>
+            </div>
+        </section>
+
+        <!-- ==============================
+             MEMBERSHIP & QUICK ACTIONS
+             ============================== -->
+        <div class="grid grid-cols-2 gap-8 animate-fade delay-2">
+            
+            <!-- Membership -->
+            <section class="card membership-card">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="flex items-center gap-2 m-0 text-white" style="color: #ffffff !important;">
+                            <div class="gold-crown-icon" title="Premium Feature" style="width: 24px; height: 24px; border-width: 1px;">
+                                <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 12px; height: 12px;">
+                                    <path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/>
+                                </svg>
+                            </div>
+                            <span id="plan-name">Free Plan</span>
+                        </h3>
+                        <span class="badge" id="plan-badge" style="background: rgba(255,255,255,0.15); color: #ffffff !important; border: 1px solid rgba(255,255,255,0.3); display: none;">Premium</span>
+                    </div>
+                    <p class="text-sm mb-6" style="color: rgba(255,255,255,0.8) !important;">Status: <strong class="text-white" id="plan-status" style="color: #ffffff !important;">Basic</strong></p>
+                </div>
+                
+                <button class="btn btn-premium-action w-full justify-center mt-auto" onclick="managePremium()">
+                    Manage Subscription
+                </button>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="card">
+                <h3 class="mb-5">Quick Actions</h3>
+                <div class="flex flex-col gap-4">
+                    <button class="btn btn-outline w-full justify-start text-sm" style="padding: 0.875rem 1.25rem;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        Purchases
+                    </button>
+                    <button class="btn btn-outline w-full justify-start text-sm" style="padding: 0.875rem 1.25rem;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        Support
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==============================
+             ACCOUNT SETTINGS
+             ============================== -->
+        <section class="card animate-fade delay-2">
+            <h2>
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="text-primary"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Account Settings
+            </h2>
+            <div class="list-group mt-4">
+                
+                <!-- Change Password -->
+                <div class="list-item">
+                    <div class="list-item-left">
+                        <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg></div>
+                        <div>
+                            <div class="list-title">Change Password</div>
+                            <div class="list-desc">Update your login credentials</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="list-item">
+                    <div class="list-item-left">
+                        <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+                        <div>
+                            <div class="list-title">Notification Settings</div>
+                            <div class="list-desc">Manage emails and alerts</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+                <!-- Language -->
+                <div class="list-item">
+                    <div class="list-item-left">
+                        <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></div>
+                        <div>
+                            <div class="list-title">Language & Region</div>
+                            <div class="list-desc">English (US), New York time</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+                <!-- Manage Devices -->
+                <div class="list-item">
+                    <div class="list-item-left">
+                        <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div>
+                        <div>
+                            <div class="list-title">Manage Devices</div>
+                            <div class="list-desc">3 devices currently logged in</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+                <!-- Export Data -->
+                <div class="list-item">
+                    <div class="list-item-left">
+                        <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></div>
+                        <div>
+                            <div class="list-title">Export Data</div>
+                            <div class="list-desc">Download a copy of your info</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gold Crown Premium Icon on the Right -->
+                    <div class="list-item-right">
+                        <div class="gold-crown-icon" title="Premium Feature">
+                            <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 16px; height: 16px;">
+                                <path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/>
+                            </svg>
+                        </div>
+                        <div class="text-tertiary">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Account -->
+                <div class="list-item" style="border-color: rgba(239, 68, 68, 0.2);">
+                    <div class="list-item-left">
+                        <div class="list-icon" style="color: var(--danger); background: rgba(239, 68, 68, 0.1);"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></div>
+                        <div>
+                            <div class="list-title" style="color: var(--danger);">Delete Account</div>
+                            <div class="list-desc">Permanently delete your data</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer / Logout -->
+        <div class="flex justify-center mt-4 mb-8">
+            <button class="btn btn-ghost text-secondary hover:text-danger w-full max-w-xs justify-center" onclick="logout()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Secure Logout
+            </button>
+        </div>
+
+    </main>
+
+    <!-- ==========================================================================
+         JAVASCRIPT
+         ========================================================================== -->
+    <script>
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+
+        // Profile Edit Toggle Logic
+        function toggleEditMode() {
+            const profileView = document.getElementById('profile-view');
+            const editView = document.getElementById('edit-view');
+            
+            if (profileView.classList.contains('hidden')) {
+                // Show Profile, Hide Edit
+                profileView.classList.remove('hidden');
+                setTimeout(() => editView.classList.add('hidden'), 50); // slight delay for smooth reflow
+            } else {
+                // Show Edit, Hide Profile
+                editView.classList.remove('hidden');
+                setTimeout(() => profileView.classList.add('hidden'), 50);
+            }
+        }
+
+        // Save Profile Logic (UI Update Only)
+        function saveProfile(event) {
+            event.preventDefault(); // Prevent form submission reload
+            
+            // Get values from inputs
+            const name = document.getElementById('input-name').value;
+            const dob = document.getElementById('input-dob').value;
+            const email = document.getElementById('input-email').value;
+            
+            // Format Date safely
+            let formattedDate = dob;
+            if(dob) {
+                const dateObj = new Date(dob);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                formattedDate = dateObj.toLocaleDateString('en-US', options);
+                if (formattedDate === "Invalid Date") formattedDate = dob;
+            }
+
+            // Update UI elements
+            document.getElementById('val-name').innerHTML = name;
+            document.getElementById('val-dob').innerHTML = formattedDate;
+            document.getElementById('val-email').innerHTML = email;
+            
+            // Close edit mode
+            toggleEditMode();
+            
+            // Subtle flash effect to show success
+            const profileCard = document.getElementById('profile-view');
+            profileCard.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.3)';
+            setTimeout(() => {
+                profileCard.style.boxShadow = '';
+            }, 1000);
+        }
+
+        // Check local storage for theme preference globally
+        if(localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+        } else {
+            document.body.classList.remove('light-mode');
+        }
+
+        // ==========================================
+        // Habits Logic
+        // ==========================================
+        const habitsList = [
+            { id: 'h1', name: 'Wake up (Time)', type: 'time' },
+            { id: 'h2', name: 'Exercise (Duration)', type: 'duration' },
+            { id: 'h3', name: 'Book Reading + Study', type: 'duration' },
+            { id: 'h4', name: 'Screen Time', type: 'duration' },
+            { id: 'h5', name: 'Porn/Masturbation/Bad Habit', type: 'binary' },
+            { id: 'h6', name: 'Sleep Time (Time)', type: 'time' },
+            { id: 'h7', name: 'Sleep Duration', type: 'calculated' },
+            { id: 'h8', name: 'Meditation', type: 'duration' },
+            { id: 'h9', name: 'Gratitude', type: 'binary' },
+            { id: 'h10', name: 'Focus Hours', type: 'duration' },
+            { id: 'h11', name: 'Healthy Meals', type: 'binary' },
+            { id: 'h12', name: 'New Skill Work', type: 'duration' },
+            { id: 'h13', name: 'Any Bad Habit', type: 'custom_binary' },
+            { id: 'h14', name: 'Time Wasted', type: 'duration' }
+        ];
+
+        let userHabits = JSON.parse(localStorage.getItem('userHabits')) || {}; 
+        let tempUserHabits = JSON.parse(JSON.stringify(userHabits));
+        let customHabitName = localStorage.getItem('customHabitName') || 'Custom Bad Habit';
+        const isPremium = localStorage.getItem('isPremium') === 'true';
+
+        function renderHabits() {
+            const container = document.getElementById('habits-list');
+            container.innerHTML = '';
+            let selectedCount = Object.keys(tempUserHabits).length;
+            document.getElementById('habit-count').textContent = selectedCount;
+
+            if(selectedCount >= 8 && !isPremium) {
+                document.getElementById('premium-badge').style.display = 'inline-flex';
+            } else {
+                document.getElementById('premium-badge').style.display = 'none';
+            }
+            
+            // Update Plan UI
+            if (isPremium) {
+                document.getElementById('plan-name').textContent = 'Premium Plan';
+                document.getElementById('plan-badge').style.display = 'inline-flex';
+                document.getElementById('plan-status').textContent = 'Active (Monthly)';
+            } else {
+                document.getElementById('plan-name').textContent = 'Free Plan';
+                document.getElementById('plan-badge').style.display = 'none';
+                document.getElementById('plan-status').textContent = 'Basic (8 Habits Max)';
+            }
+
+            habitsList.forEach(habit => {
+                const isSelected = !!tempUserHabits[habit.id];
+                const habitData = userHabits[habit.id] || {}; // Check actual saved data for lock
+                let isLocked = false;
+
+                if (habitData.addedAt) {
+                    const addedDate = new Date(habitData.addedAt);
+                    const diffDays = (new Date() - addedDate) / (1000 * 60 * 60 * 24);
+                    if (diffDays < 30) {
+                        isLocked = true;
+                    }
+                }
+
+                let customHtml = '';
+                if (habit.id === 'h13') {
+                    customHtml = `<input type="text" id="custom-name-input" class="input mt-2" placeholder="Name your bad habit" value="${customHabitName}" onchange="saveCustomName(this.value)" ${isSelected ? (isLocked ? 'disabled' : '') : ''} style="font-size: 0.8rem; padding: 0.3rem 0.5rem; background: rgba(0,0,0,0.2);">`;
+                }
+
+                const itemHtml = `
+                    <div class="list-item" style="padding: 0.75rem; display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; border-color: ${isSelected ? 'var(--primary)' : 'var(--border)'}; background: ${isSelected ? 'rgba(37, 99, 235, 0.1)' : 'transparent'}">
+                        <div class="w-full flex justify-between items-center">
+                            <label class="flex items-center gap-2" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}; width: 100%;">
+                                <input type="checkbox" id="cb-${habit.id}" ${isSelected ? 'checked' : ''} ${isLocked ? 'disabled' : ''} onchange="toggleHabit('${habit.id}', this)" style="width: 18px; height: 18px;">
+                                <span class="text-sm font-medium" style="color: ${isSelected ? 'var(--text-primary)' : 'var(--text-secondary)'}">${habit.name}</span>
+                            </label>
+                            ${isLocked ? '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="text-warning" title="Locked for 30 days"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>' : ''}
+                        </div>
+                        ${customHtml}
+                    </div>
+                `;
+                container.innerHTML += itemHtml;
+            });
+        }
+
+        function saveCustomName(val) {
+            customHabitName = val;
+            localStorage.setItem('customHabitName', val);
+        }
+
+        function toggleHabit(id, checkboxElem) {
+            let selectedCount = Object.keys(tempUserHabits).length;
+            
+            if (checkboxElem.checked) {
+                if (selectedCount >= 8 && !isPremium) {
+                    checkboxElem.checked = false;
+                    showPremiumPopup();
+                    return;
+                }
+                tempUserHabits[id] = { addedAt: null }; // Will set on save
+            } else {
+                delete tempUserHabits[id];
+            }
+            renderHabits();
+        }
+
+        function saveHabits() {
+            if (confirm("Warning: You cannot remove or modify selected habits until 30 days from now. Are you sure you want to save?")) {
+                Object.keys(tempUserHabits).forEach(id => {
+                    if (!userHabits[id] || !userHabits[id].addedAt) {
+                        tempUserHabits[id].addedAt = new Date().toISOString();
+                    } else {
+                        tempUserHabits[id].addedAt = userHabits[id].addedAt;
+                    }
+                });
+                userHabits = JSON.parse(JSON.stringify(tempUserHabits));
+                localStorage.setItem('userHabits', JSON.stringify(userHabits));
+                
+                // Flash effect
+                const section = document.getElementById('my-habits-section');
+                section.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.3)';
+                setTimeout(() => { section.style.boxShadow = ''; }, 1000);
+                
+                document.getElementById('habits-list').classList.add('hidden');
+                renderHabits();
+            }
+        }
+
+        function showPremiumPopup() {
+            document.getElementById('premium-modal').classList.remove('hidden');
+        }
+
+        function closePremiumPopup() {
+            document.getElementById('premium-modal').classList.add('hidden');
+        }
+        
+        function buyPremium() {
+            localStorage.setItem('isPremium', 'true');
+            alert('Mock Payment Successful! Premium Unlocked.');
+            closePremiumPopup();
+            location.reload();
+        }
+        
+        function managePremium() {
+            if (isPremium) {
+                if(confirm('Do you want to cancel your Premium subscription?')) {
+                    localStorage.setItem('isPremium', 'false');
+                    location.reload();
+                }
+            } else {
+                showPremiumPopup();
+            }
+        }
+
+        // Initialize
+        renderHabits();
+    </script>
+    <!-- Premium Modal -->
+    <div id="premium-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div class="card animate-fade" style="max-width: 400px; text-align: center; margin: 1rem;">
+            <div class="gold-crown-icon mx-auto mb-4" style="margin: 0 auto 1rem auto; width: 64px; height: 64px; border-width: 3px;">
+                <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 32px; height: 32px;"><path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/></svg>
+            </div>
+            <h2 class="justify-center">Unlock Premium</h2>
+            <p class="mb-6">You have reached the free limit of 8 habits. Upgrade to Premium to track all 14 habits!</p>
+            <div class="flex gap-4 w-full">
+                <button class="btn btn-outline w-full justify-center" onclick="closePremiumPopup()">Maybe Later</button>
+                <button class="btn btn-premium-action w-full justify-center" onclick="buyPremium()">Buy Monthly</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+

@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Choose Your Daily Habits</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================================
+           1. CSS VARIABLES (COLORS, SHADOWS, RADII)
+           ========================================================== */
+        :root {
+            --bg-page: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text-main: #0F172A;
+            --text-sub: #64748B;
+            --border-light: #E2E8F0;
+            
+            --primary: #6366F1; 
+            --primary-light: #EEF2FF;
+            --primary-border: #C7D2FE;
+            
+            --success: #10B981;
+            --warning-bg: #FEF2F2;
+            --warning-text: #EF4444;
+            --warning-border: #FCA5A5;
+            --gold: #F59E0B;
+            
+            --radius-xl: 16px;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --shadow-sm: 0 2px 5px rgba(0,0,0,0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --shadow-sticky: 0 -4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* ==========================================================
+           2. GLOBAL STYLES & RESET
+           ========================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-page); color: var(--text-main); line-height: 1.5; padding-bottom: 110px; overflow-x: hidden; }
+        svg { display: inline-block; vertical-align: middle; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 24px; }
+
+        /* ==========================================================
+           3. HEADER STYLES (TITLE, BADGES, FILTERS)
+           ========================================================== */
+        .header-top { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 24px; cursor: pointer; color: var(--text-main); font-weight: 600; padding: 8px 12px 8px 0; }
+        .header-main { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+        .header-left { flex: 1; min-width: 300px; }
+        .header-left h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; color: var(--text-main); }
+        .header-left p { color: var(--text-sub); font-size: 0.95rem; margin-bottom: 20px; font-weight: 500; }
+        
+        .badges-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; border: 1px solid var(--border-light); font-size: 0.8rem; font-weight: 600; color: var(--text-sub); background: white; box-shadow: var(--shadow-sm); }
+        .badge svg { color: var(--primary); width: 14px; }
+
+        .filters-container { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .filter-wrapper { display: flex; align-items: center; gap: 12px; background: white; padding: 8px 16px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); width: fit-content; box-shadow: var(--shadow-sm); }
+        .filter-wrapper label { font-size: 0.85rem; font-weight: 600; color: var(--text-sub); }
+        .filter-wrapper select { border: none; outline: none; background: transparent; font-size: 0.9rem; font-weight: 700; color: var(--primary); cursor: pointer; padding-right: 8px; }
+
+        /* Button to open Scoring Modal */
+        .btn-scoring { display: flex; align-items: center; gap: 8px; background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-border); padding: 8px 16px; border-radius: var(--radius-lg); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow-sm); }
+        .btn-scoring:hover { background: #E0E7FF; border-color: var(--primary); }
+
+        /* Progress Circular Widget Top Right */
+        .progress-widget { background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 280px; box-shadow: var(--shadow-sm); }
+        .progress-top { display: flex; justify-content: space-between; align-items: center; }
+        .progress-text h3 { font-size: 0.85rem; color: var(--text-sub); font-weight: 600; margin-bottom: 4px; }
+        .progress-text .count { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+        .progress-text .count span { color: var(--text-sub); font-size: 1.1rem; font-weight: 500; }
+        .progress-circle { width: 56px; height: 56px; border-radius: 50%; background: conic-gradient(var(--primary) 75%, #E2E8F0 0); display: flex; justify-content: center; align-items: center; }
+        .progress-inner { width: 44px; height: 44px; border-radius: 50%; background: white; display: flex; justify-content: center; align-items: center; font-weight: 800; font-size: 0.8rem; color: var(--text-main); }
+        .progress-widget p { font-size: 0.75rem; color: var(--text-sub); font-weight: 500; }
+
+        /* ==========================================================
+           4. MAIN LAYOUT & HABIT CARDS CSS
+           ========================================================== */
+        .layout-grid { display: grid; grid-template-columns: 1fr 340px; gap: 32px; align-items: start; }
+        .category-section { margin-bottom: 40px; transition: opacity 0.3s ease; }
+        .category-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .cat-icon { font-size: 1.5rem; background: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid var(--border-light); box-shadow: var(--shadow-sm); }
+        .cat-title { font-weight: 800; font-size: 1.1rem; color: var(--text-main); }
+        .cat-sub { font-size: 0.85rem; color: var(--text-sub); font-weight: 500;}
+
+        .habits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+
+        /* Common Habit Card Styles */
+        .habit-card { background: white; border: 2px solid var(--border-light); border-radius: var(--radius-xl); padding: 18px; cursor: pointer; transition: all 0s; position: relative; user-select: none; box-shadow: var(--shadow-sm); }
+        .habit-card:hover { border-color: var(--primary-border); }
+        .habit-card.selected { border: 2px solid var(--primary); background: var(--primary-light); }
+        .habit-card.exclude-count.selected { border: 2px solid var(--success); background: #F0FDF4; } 
+        
+        .hc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .hc-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        /* Card Top Action Area (Scoring Button + Selection Checkbox) */
+        .card-actions { display: flex; gap: 8px; align-items: center; }
+        
+        .card-score-btn {
+            background: var(--bg-page);
+            border: 1px solid var(--border-light);
+            color: var(--text-sub);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 100px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.2s;
+        }
+        .card-score-btn:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary-border); }
+        .habit-card.selected .card-score-btn { background: white; border-color: var(--primary-border); }
+        .card-score-btn svg { width: 12px; height: 12px; }
+
+        /* Habit Icons Background Colors */
+        .bg-indigo { background: linear-gradient(135deg, #6366F1, #4F46E5); } 
+        .bg-green { background: linear-gradient(135deg, #22C55E, #16A34A); } 
+        .bg-purple { background: linear-gradient(135deg, #A855F7, #9333EA); } 
+        .bg-pink { background: linear-gradient(135deg, #EC4899, #DB2777); }
+        .bg-blue { background: linear-gradient(135deg, #3B82F6, #2563EB); } 
+        .bg-emerald { background: linear-gradient(135deg, #10B981, #059669); } 
+        .bg-red { background: linear-gradient(135deg, #EF4444, #DC2626); } 
+        .bg-orange { background: linear-gradient(135deg, #F97316, #EA580C); }
+        .bg-gray { background: linear-gradient(135deg, #64748B, #475569); }
+        .bg-gold { background: linear-gradient(135deg, #F59E0B, #D97706); }
+
+        /* Selection Checkbox Styles */
+        .checkbox { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border-light); display: flex; justify-content: center; align-items: center; background: white; transition: 0.2s; flex-shrink: 0; }
+        .habit-card.selected .checkbox { background: var(--primary); border-color: var(--primary); }
+        .habit-card.exclude-count.selected .checkbox { background: var(--success); border-color: var(--success); }
+        .checkbox svg { width: 14px; stroke: white; opacity: 0; transition: 0.2s; }
+        .habit-card.selected .checkbox svg { opacity: 1; }
+
+        .hc-title { font-weight: 800; font-size: 1rem; margin-bottom: 16px; color: var(--text-main); display: flex; align-items: center; gap: 8px;}
+        
+        /* Inputs & Form Controls inside Habits */
+        .input-group { margin-bottom: 12px; }
+        .input-label { display: block; font-size: 0.75rem; color: var(--text-sub); margin-bottom: 6px; font-weight: 600; }
+        .control-row { display: flex; gap: 8px; }
+        .form-control { flex: 1; height: 40px; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 0 12px; font-size: 0.85rem; font-weight: 600; transition: border 0.2s; display: flex; justify-content: space-between; align-items: center; width: 100%; background: white; }
+        .form-control:focus-within { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-light); }
+        .form-control input, .form-control select { border: none; outline: none; width: 100%; font-weight: 700; font-size: 0.9rem; background: transparent; color: var(--text-main); }
+        .form-control input[readonly] { color: var(--text-sub); cursor: not-allowed; }
+        
+        /* Min/Hr Segmented Toggle */
+        .segment-control { display: flex; background: var(--bg-page); border-radius: 8px; padding: 4px; border: 1px solid var(--border-light); }
+        .seg-btn { padding: 4px 10px; font-size: 0.75rem; font-weight: 700; border-radius: 6px; border: none; background: transparent; color: var(--text-sub); cursor: pointer; transition: 0.2s; }
+        .seg-btn.active { background: white; color: var(--primary); box-shadow: var(--shadow-sm); }
+
+        /* Tolerance Stepper (+ / - Buttons) */
+        .stepper { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-light); border-radius: var(--radius-md); height: 40px; padding: 0 8px; background: white; }
+        .step-btn { border: none; background: var(--bg-page); border-radius: 6px; cursor: pointer; color: var(--text-main); display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; transition: 0.2s; font-weight: bold;}
+        .step-btn:active { background: var(--border-light); }
+        .step-val { font-size: 0.9rem; font-weight: 700; }
+
+        /* Custom Habit Builder Card Specific Styles */
+        .custom-builder-card { border: 2px dashed var(--primary); background: var(--primary-light); cursor: default; }
+        .custom-builder-card:hover { border-color: var(--primary); }
+        .custom-badge { background: #FEF3C7; color: #D97706; font-size: 0.65rem; font-weight: 800; padding: 4px 8px; border-radius: 100px; border: 1px solid #FDE68A; letter-spacing: 0.05em; }
+        .custom-remove { font-size: 0.75rem; color: var(--warning-text); font-weight: 700; cursor: pointer; text-decoration: underline; float: right; margin-top: 10px;}
+        
+        /* ==========================================================
+           5. SIDEBAR CSS
+           ========================================================== */
+        .sidebar { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 24px; }
+        .side-card { background: white; border: 1px solid var(--border-light); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-sm); }
+        .sc-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
+        .sc-desc { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 16px; font-weight: 500;}
+        
+        .summary-list { list-style: none; display: flex; flex-direction: column; gap: 14px; font-size: 0.9rem; font-weight: 600; }
+        .summary-list li { display: flex; align-items: center; gap: 12px; }
+        .summary-list li svg { width: 18px; color: var(--text-sub); }
+        .text-success { color: var(--success); }
+        .text-primary { color: var(--primary); }
+        .text-sub { color: var(--text-sub); font-size: 0.75rem; }
+
+        .tips-list { list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem; color: var(--text-sub); font-weight: 500; }
+        .tips-list li { display: flex; align-items: flex-start; gap: 10px; }
+        .tips-list li svg { width: 16px; color: var(--text-main); flex-shrink: 0; margin-top: 2px; }
+
+        .warning-card { background: var(--warning-bg); border-color: var(--warning-border); }
+        .warning-card .sc-title { color: var(--warning-text); }
+        .warning-card .sc-desc { color: #991B1B; }
+
+        /* Global Buttons */
+        .btn { width: 100%; height: 44px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn-outline { border: 2px solid var(--primary-border); background: white; color: var(--primary); }
+        .btn-outline:active { background: var(--primary-light); }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
+        .btn-primary:active { transform: translateY(2px); box-shadow: none; }
+
+        /* ==========================================================
+           6. VIEW 2: FINAL SUMMARY PAGE CSS
+           ========================================================== */
+        #view-summary { display: none; max-width: 800px; margin: 0 auto; width: 100%; }
+        .summary-header { text-align: center; margin-bottom: 32px; }
+        .summary-header h2 { font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+        .summary-header p { color: var(--text-sub); font-size: 1rem; font-weight: 500; }
+        
+        .summary-list-container { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+        .summary-item { background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px 24px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); }
+        .summary-item .hc-icon { width: 48px; height: 48px; }
+        .si-details { flex: 1; }
+        .si-title { font-weight: 800; font-size: 1.1rem; color: var(--text-main); margin-bottom: 4px; }
+        .si-target { font-size: 0.85rem; color: var(--text-sub); font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .si-divider { color: var(--border-light); }
+        .si-check svg { width: 24px; color: var(--success); }
+
+        /* ==========================================================
+           7. STICKY FOOTER CSS
+           ========================================================== */
+        .sticky-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid var(--border-light); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sticky); z-index: 50; }
+        .sf-left { display: flex; align-items: center; gap: 16px; }
+        .shield-icon { background: var(--bg-page); padding: 12px; border-radius: 12px; color: var(--text-main); border: 1px solid var(--border-light); flex-shrink: 0;}
+        .sf-text h4 { font-size: 1rem; font-weight: 800; color: var(--text-main); margin-bottom: 2px;}
+        .sf-text p { font-size: 0.85rem; color: var(--text-sub); font-weight: 500; }
+        
+        .sf-actions { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+        .btn-cancel { background: white; border: 2px solid var(--border-light); color: var(--text-main); padding: 0 24px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; height: 44px; transition: 0.2s; white-space: nowrap;}
+        .btn-save { padding: 0 32px; width: auto; height: 44px; white-space: nowrap; min-width: 180px; }
+
+
+        /* ==========================================================
+           8. SCORING MODAL (POP-UP) CSS
+           ========================================================== */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease; padding: 16px;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        
+        .scoring-modal {
+            background: var(--bg-page); width: 100%; max-width: 1000px; max-height: 90vh; border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow-y: auto; position: relative;
+            transform: translateY(20px); transition: transform 0.3s ease; display: flex; flex-direction: column;
+        }
+        .modal-overlay.active .scoring-modal { transform: translateY(0); }
+
+        .sm-header { padding: 32px 32px 24px; position: sticky; top: 0; background: var(--bg-page); z-index: 10; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: flex-start;}
+        .sm-header-text h2 { font-size: 1.8rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 12px; margin-bottom: 8px;}
+        .sm-header-text p { font-size: 0.95rem; color: var(--text-sub); font-weight: 500; max-width: 600px;}
+        .btn-close-modal { background: white; border: 1px solid var(--border-light); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main); box-shadow: var(--shadow-sm); transition: 0.2s;}
+        .btn-close-modal:hover { background: var(--border-light); }
+
+        .sm-body { padding: 32px; display: flex; flex-direction: column; gap: 32px; }
+        
+        /* Overview Blocks inside Modal */
+        .sm-overview { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .smo-card { background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow-sm); }
+        .smo-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--primary-light); color: var(--primary); }
+        .smo-card h4 { font-size: 0.9rem; font-weight: 800; color: var(--text-main); }
+        .smo-card p { font-size: 0.8rem; color: var(--text-sub); line-height: 1.4; }
+
+        .engine-section-title { font-size: 1.1rem; font-weight: 800; color: var(--text-sub); margin-bottom: -16px; text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        /* Individual Scoring Engine Row */
+        .engine-row { background: white; border: 1px solid var(--border-light); border-radius: var(--radius-xl); padding: 24px; display: grid; grid-template-columns: 250px 1fr 250px; gap: 32px; box-shadow: var(--shadow-sm); align-items: stretch;}
+        .er-info { display: flex; flex-direction: column; gap: 12px; }
+        .er-title { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 10px; color: var(--text-main);}
+        .er-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #F1F5F9; border: 1px solid var(--border-light); }
+        .er-badge { background: #DCFCE7; color: #15803D; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; width: fit-content; text-transform: uppercase;}
+        .er-desc { font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; }
+
+        /* Visualization Box in Modal */
+        .er-visual { border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px; background: #F8FAFC; display: flex; flex-direction: column; justify-content: center; position: relative; }
+        .er-visual-title { font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 12px; }
+        
+        /* Table Box in Modal */
+        .er-table-box { display: flex; flex-direction: column; gap: 16px; }
+        .er-example-title { font-size: 0.8rem; font-weight: 700; color: var(--text-main); }
+        .er-example-title span { color: var(--primary); font-weight: 600; }
+        .sm-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .sm-table th { text-align: left; padding: 6px 0; color: var(--text-sub); font-weight: 600; border-bottom: 1px solid var(--border-light); }
+        .sm-table td { padding: 6px 0; font-weight: 600; color: var(--text-main); }
+        .sm-table td.score-val { text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+        
+        .best-for { margin-top: auto; }
+        .best-for h5 { font-size: 0.8rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+        .best-for ul { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 0.8rem; color: var(--text-sub); font-weight: 500;}
+        .best-for li { display: flex; align-items: center; gap: 6px; }
+        .best-for li svg { width: 14px; color: var(--primary); }
+
+        .sm-footer { padding: 24px; background: #EEF2FF; border-radius: var(--radius-xl); border: 1px solid var(--primary-border); display: flex; align-items: center; gap: 16px; }
+        .sm-footer svg { color: var(--primary); width: 24px; flex-shrink: 0;}
+        .sm-footer p { font-size: 0.9rem; color: var(--text-main); font-weight: 600; }
+
+        /* SVG Graph Classes for Modals */
+        .chart-svg { width: 100%; height: 100px; overflow: visible; }
+        .chart-line { fill: none; stroke: var(--primary); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .chart-line-red { stroke: var(--warning-text); }
+        .chart-area { fill: var(--primary); opacity: 0.1; }
+        .chart-area-red { fill: var(--warning-text); opacity: 0.1; }
+        .chart-point { fill: white; stroke: var(--primary); stroke-width: 2; }
+        .chart-point-green { stroke: var(--success); }
+        .chart-point-red { stroke: var(--warning-text); }
+        .chart-text { font-size: 10px; fill: var(--text-sub); font-family: 'Inter', sans-serif; font-weight: 600; }
+        .axis-line { stroke: var(--border-light); stroke-width: 1; stroke-dasharray: 4; }
+
+        /* ==========================================================
+           9. RESPONSIVE DESIGN (MEDIA QUERIES)
+           ========================================================== */
+        @media (max-width: 1024px) {
+            /* Adjust Modal */
+            .engine-row { grid-template-columns: 1fr; gap: 24px; }
+            .sm-overview { grid-template-columns: 1fr 1fr; }
+            .er-visual { min-height: 180px; }
+            /* Adjust Layout Grid */
+            .layout-grid { grid-template-columns: 1fr; }
+            .sidebar { position: static; display: grid; grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            /* Mobile Adjustments */
+            body { padding-bottom: 160px; }
+            .container { padding: 16px; }
+            .header-main { flex-direction: column; gap: 16px; margin-bottom: 24px;}
+            .progress-widget { width: 100%; }
+            .filters-container { flex-direction: column; align-items: stretch; width: 100%; }
+            .filter-wrapper { width: 100%; justify-content: space-between; }
+            .btn-scoring { justify-content: center; }
+            
+            .sidebar { grid-template-columns: 1fr; }
+            .habits-grid { grid-template-columns: 1fr; gap: 12px; } 
+            .sticky-footer { flex-direction: row; justify-content: space-between; gap: 8px; padding: 10px 12px; }
+            .sf-left { flex-direction: row; gap: 10px; }
+            .shield-icon { padding: 6px; }
+            .shield-icon svg { width: 18px; height: 18px; }
+            .sf-text h4 { font-size: 0.9rem; }
+            .sf-text p { display: none; /* Hide description on mobile to save space */ }
+            .sf-actions { width: auto; gap: 8px; }
+            .btn-cancel, .btn-save { min-width: 0; padding: 0 12px; height: 36px; font-size: 0.85rem; }
+            
+            .summary-item { padding: 16px; flex-direction: column; text-align: center; align-items: center; }
+            .si-target { justify-content: center; }
+            .si-check { display: none; }
+
+            /* Modal Mobile */
+            .sm-overview { grid-template-columns: 1fr; }
+            .sm-header { padding: 20px; }
+            .sm-body { padding: 20px; gap: 24px;}
+            .engine-row { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Back Button -->
+    <div class="header-top" onclick="window.location.href='profile.html'">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back
+    </div>
+
+    <!-- ==========================================
+         VIEW 1: HABIT SELECTION PAGE
+         ========================================== -->
+    <div id="view-selection">
+        
+        <!-- Page Header & Filters -->
+        <header class="header-main">
+            <div class="header-left">
+                <h1>Choose Your Daily Habits</h1>
+                <p>Select the habits you want to track. You can add or remove habits after 30 days.</p>
+                <div class="badges-row">
+                    <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg> Smart Scoring</span>
+                    <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> Personalized Insights</span>
+                </div>
+                
+                <div class="filters-container">
+                    <!-- Dropdown Filter for Categories -->
+                    <div class="filter-wrapper">
+                        <label for="cat-filter">Filter Category:</label>
+                        <select id="cat-filter" onchange="filterHabits()">
+                            <option value="all">All Habits</option>
+                            <option value="morning">Morning Routine</option>
+                            <option value="learning">Learning & Growth</option>
+                            <option value="health">Health & Lifestyle</option>
+                            <option value="personal">Personal Control</option>
+                            <option value="custom">Custom Habits</option>
+                        </select>
+                    </div>
+                    
+                    <!-- MAIN SCORING BUTTON: Opens Modal with ALL engines -->
+                    <button class="btn-scoring" onclick="openScoringModal('all', event)">
+                        <svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        How Scoring Works
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Tracker (Top Right) -->
+            <div class="progress-widget">
+                <div class="progress-top">
+                    <div class="progress-text">
+                        <h3>Selected Habits</h3>
+                        <div class="count"><span id="selected-count">0</span><span> / 8</span></div>
+                    </div>
+                    <div class="progress-circle" id="progress-circle">
+                        <div class="progress-inner" id="progress-percent">0%</div>
+                    </div>
+                </div>
+                <p>You can select up to 8 habits on Free plan.</p>
+            </div>
+        </header>
+
+        <div class="layout-grid">
+            <main>
+                <!-- ==============================================
+                     CATEGORY: Morning Routine
+                     ============================================== -->
+                <div class="category-section" id="sec-morning">
+                    <div class="category-header">
+                        <span class="cat-icon">â˜€ï¸</span>
+                        <div>
+                            <div class="cat-title">Morning Routine</div>
+                            <div class="cat-sub">Start your day with purpose</div>
+                        </div>
+                    </div>
+                    <div class="habits-grid">
+                        
+                        <!-- 1. Wake Up Habit Card | Scoring: Target Time | Has Tolerance -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="wake_up" data-habit-type="target-time" data-category="morning" data-habit-name="Wake Up">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-indigo"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('target-time', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">1. Wake Up</div>
+                            <div class="input-group">
+                                <label class="input-label">Target Time</label>
+                                <div class="form-control" onclick="event.stopPropagation()"><input type="time" value="06:00" id="wake-up-time" onchange="calculateSleep()" data-extract="target_value"></div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Tolerance</label>
+                                <div class="stepper" onclick="event.stopPropagation()">
+                                    <button class="step-btn" onclick="stepVal(this, -5)">-</button>
+                                    <span class="step-val" data-extract="tolerance">15 min</span>
+                                    <button class="step-btn" onclick="stepVal(this, 5)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 2. Exercise Habit Card | Scoring: Duration | Has Min/Hr Toggle -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="exercise" data-habit-type="duration" data-category="morning" data-habit-name="Exercise">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-green"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('duration', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">2. Exercise</div>
+                            <div class="input-group">
+                                <label class="input-label">Target (Duration)</label>
+                                <div class="control-row">
+                                    <div class="form-control" onclick="event.stopPropagation()"><input type="number" value="45" data-extract="target_value"></div>
+                                    <div class="segment-control" onclick="event.stopPropagation()">
+                                        <button class="seg-btn active" onclick="toggleSeg(this, event)">Min</button>
+                                        <button class="seg-btn" onclick="toggleSeg(this, event)">Hr</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 8. Meditation Habit Card | Scoring: Duration | Has Min/Hr Toggle -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="meditation" data-habit-type="duration" data-category="morning" data-habit-name="Meditation">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-purple"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22C12 22 20 18 20 12V5l-8-3-8 3v7C4 18 12 22 12 22z"></path></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('duration', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">8. Meditation</div>
+                            <div class="input-group">
+                                <label class="input-label">Target (Duration)</label>
+                                <div class="control-row">
+                                    <div class="form-control" onclick="event.stopPropagation()"><input type="number" value="15" data-extract="target_value"></div>
+                                    <div class="segment-control" onclick="event.stopPropagation()">
+                                        <button class="seg-btn active" onclick="toggleSeg(this, event)">Min</button>
+                                        <button class="seg-btn" onclick="toggleSeg(this, event)">Hr</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 9. Gratitude Habit Card | Scoring: Yes/No -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="gratitude" data-habit-type="yes-no" data-category="morning" data-habit-name="Gratitude">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-pink"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('yes-no', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"></polyline></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">9. Gratitude</div>
+                            <div class="input-group">
+                                <label class="input-label">Type</label>
+                                <div class="form-control" onclick="event.stopPropagation()">
+                                    <select data-extract="target_value"><option value="yes">Yes / No</option></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==============================================
+                     CATEGORY: Learning & Growth
+                     ============================================== -->
+                <div class="category-section" id="sec-learning">
+                    <div class="category-header">
+                        <span class="cat-icon">ðŸ“–</span>
+                        <div>
+                            <div class="cat-title">Learning & Growth</div>
+                            <div class="cat-sub">Invest in yourself everyday</div>
+                        </div>
+                    </div>
+                    <div class="habits-grid">
+                        
+                        <!-- 3. Book Reading & Study Habit Card | Scoring: Duration -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="reading" data-habit-type="duration" data-category="learning" data-habit-name="Book Reading & Study">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-blue"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('duration', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">3. Book Reading & Study</div>
+                            <div class="input-group">
+                                <label class="input-label">Target (Duration)</label>
+                                <div class="control-row">
+                                    <div class="form-control" onclick="event.stopPropagation()"><input type="number" value="60" data-extract="target_value"></div>
+                                    <div class="segment-control" onclick="event.stopPropagation()">
+                                        <button class="seg-btn active" onclick="toggleSeg(this, event)">Min</button>
+                                        <button class="seg-btn" onclick="toggleSeg(this, event)">Hr</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 10. Focus Hours Habit Card | Scoring: Duration -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="focus_hours" data-habit-type="duration" data-category="learning" data-habit-name="Focus Hours">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-blue"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('duration', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">10. Focus Hours</div>
+                            <div class="input-group">
+                                <label class="input-label">Target (Duration)</label>
+                                <div class="control-row">
+                                    <div class="form-control" onclick="event.stopPropagation()"><input type="number" value="2" data-extract="target_value"></div>
+                                    <div class="segment-control" onclick="event.stopPropagation()">
+                                        <button class="seg-btn" onclick="toggleSeg(this, event)">Min</button>
+                                        <button class="seg-btn active" onclick="toggleSeg(this, event)">Hr</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 12. New Skill Work Habit Card | Scoring: Duration -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="new_skill" data-habit-type="duration" data-category="learning" data-habit-name="New Skill Work">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-orange"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('duration', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">12. New Skill Work</div>
+                            <div class="input-group">
+                                <label class="input-label">Target (Duration)</label>
+                                <div class="control-row">
+                                    <div class="form-control" onclick="event.stopPropagation()"><input type="number" value="30" data-extract="target_value"></div>
+                                    <div class="segment-control" onclick="event.stopPropagation()">
+                                        <button class="seg-btn active" onclick="toggleSeg(this, event)">Min</button>
+                                        <button class="seg-btn" onclick="toggleSeg(this, event)">Hr</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==============================================
+                     CATEGORY: Health & Lifestyle
+                     ============================================== -->
+                <div class="category-section" id="sec-health">
+                    <div class="category-header">
+                        <span class="cat-icon">â¤ï¸</span>
+                        <div>
+                            <div class="cat-title">Health & Lifestyle</div>
+                            <div class="cat-sub">Build a healthy body and mind</div>
+                        </div>
+                    </div>
+                    <div class="habits-grid">
+                        
+                        <!-- 6. Sleep Time Habit Card | Scoring: Target Time | Has Tolerance -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="sleep_time" data-habit-type="target-time" data-category="health" data-habit-name="Sleep Time">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-indigo"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('target-time', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">6. Sleep Time</div>
+                            <div class="input-group">
+                                <label class="input-label">Target Time</label>
+                                <div class="form-control" onclick="event.stopPropagation()">
+                                    <input type="time" value="22:30" id="sleep-time" onchange="calculateSleep()" data-extract="target_value">
+                                </div>
+                            </div>
+                            <!-- NEW: Tolerance added to Sleep Time -->
+                            <div class="input-group">
+                                <label class="input-label">Tolerance</label>
+                                <div class="stepper" onclick="event.stopPropagation()">
+                                    <button class="step-btn" onclick="stepVal(this, -5)">-</button>
+                                    <span class="step-val" data-extract="tolerance">20 min</span>
+                                    <button class="step-btn" onclick="stepVal(this, 5)">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 7. Sleep Target (Duration) Habit Card | Scoring: Optimal Range | EXCLUDED FROM FREE LIMIT -->
+                        <div class="habit-card exclude-count" onclick="toggleCard(this)" data-habit-id="sleep_duration" data-habit-type="optimal-range" data-category="health" data-habit-name="Sleep Target (Duration)">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-blue"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="8" width="18" height="12" rx="2" ry="2"></rect><path d="M3 12h18"></path><path d="M7 8v-2a4 4 0 0 1 8 0v2"></path></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('optimal-range', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">7. Sleep Target (Duration) <span class="text-sub" style="margin-left:auto; color:var(--success);">Free</span></div>
+                            <div class="input-group">
+                                <label class="input-label">Calculated from Wake/Sleep Time</label>
+                                <div class="control-row">
+                                    <div class="form-control" onclick="event.stopPropagation()">
+                                        <input type="text" id="sleep-duration-val" value="7 hr 30 min" readonly data-extract="target_value">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 4. Screen Time Limit Habit Card | Scoring: Reverse Duration -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="screen_time" data-habit-type="reverse-duration" data-category="health" data-habit-name="Screen Time limit">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-gray"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('reverse-duration', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">4. Screen Time limit</div>
+                            <div class="input-group">
+                                <label class="input-label">Max Target (Duration)</label>
+                                <div class="control-row">
+                                    <div class="form-control" onclick="event.stopPropagation()"><input type="number" value="2" data-extract="target_value"></div>
+                                    <div class="segment-control" onclick="event.stopPropagation()">
+                                        <button class="seg-btn" onclick="toggleSeg(this, event)">Min</button>
+                                        <button class="seg-btn active" onclick="toggleSeg(this, event)">Hr</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 11. Healthy Meals Habit Card | Scoring: Yes/No -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="healthy_meals" data-habit-type="yes-no" data-category="health" data-habit-name="Healthy Meals">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-emerald"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('yes-no', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"></polyline></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">11. Healthy Meals</div>
+                            <div class="input-group">
+                                <label class="input-label">Type</label>
+                                <div class="form-control" onclick="event.stopPropagation()">
+                                    <select data-extract="target_value"><option value="yes">Yes / No</option></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==============================================
+                     CATEGORY: Personal Control
+                     ============================================== -->
+                <div class="category-section" id="sec-personal">
+                    <div class="category-header">
+                        <span class="cat-icon" style="color: var(--primary)"><svg width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+                        <div>
+                            <div class="cat-title">Personal Control</div>
+                            <div class="cat-sub">Track habits that build self-discipline</div>
+                        </div>
+                    </div>
+                    <div class="habits-grid">
+                        
+                        <!-- 5. Porn / Masturbation Habit Card | Scoring: Yes/No -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="porn_masturbation" data-habit-type="yes-no" data-category="personal" data-habit-name="Porn / Masturbation">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-red"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('yes-no', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"></polyline></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">5. Porn / Masturbation</div>
+                            <div class="input-group">
+                                <label class="input-label">Avoided?</label>
+                                <div class="form-control" onclick="event.stopPropagation()">
+                                    <select data-extract="target_value"><option value="yes">Yes / No</option></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13. Any Bad Habit Habit Card | Scoring: Yes/No | Has Custom Text Input -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="bad_habit" data-habit-type="yes-no" data-category="personal" data-habit-name="Any Bad Habit">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-red"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('yes-no', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"></polyline></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">13. Any Bad Habit</div>
+                            <div class="input-group">
+                                <label class="input-label">Custom Name</label>
+                                <div class="form-control" onclick="event.stopPropagation()">
+                                    <input type="text" placeholder="e.g. Smoking, Fast Food" data-extract="custom_name">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Avoided?</label>
+                                <div class="form-control" onclick="event.stopPropagation()">
+                                    <select data-extract="target_value"><option value="yes">Yes / No</option></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 14. Time Wasted Limit Habit Card | Scoring: Reverse Duration -->
+                        <div class="habit-card" onclick="toggleCard(this)" data-habit-id="time_wasted" data-habit-type="reverse-duration" data-category="personal" data-habit-name="Time Wasted limit">
+                            <div class="hc-top">
+                                <div class="hc-icon bg-gray"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                                <div class="card-actions">
+                                    <button class="card-score-btn" onclick="openScoringModal('reverse-duration', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg> Scoring</button>
+                                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                            </div>
+                            <div class="hc-title">14. Time Wasted limit</div>
+                            <div class="input-group">
+                                <label class="input-label">Max Target (Duration)</label>
+                                <div class="control-row">
+                                    <div class="form-control" onclick="event.stopPropagation()"><input type="number" value="1" data-extract="target_value"></div>
+                                    <div class="segment-control" onclick="event.stopPropagation()">
+                                        <button class="seg-btn" onclick="toggleSeg(this, event)">Min</button>
+                                        <button class="seg-btn active" onclick="toggleSeg(this, event)">Hr</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==============================================
+                     CATEGORY: Custom Habits Builder
+                     ============================================== -->
+                <div class="category-section" id="sec-custom">
+                    <div class="category-header">
+                        <span class="cat-icon" style="background: linear-gradient(135deg, #F59E0B, #D97706); color:white; border:none;">âœ¨</span>
+                        <div>
+                            <div class="cat-title">Custom Habits</div>
+                            <div class="cat-sub">Create your own personalized habits (1 Free)</div>
+                        </div>
+                    </div>
+                    <div class="habits-grid" id="custom-habits-grid">
+                        
+                        <!-- 15. Free Custom Habit Builder Card | Scoring: Manual -->
+                        <div class="habit-card custom-builder-card" id="custom-builder">
+                            <div class="hc-top" style="justify-content: flex-end; margin-bottom: 0;">
+                                <!-- Link to full manual for custom habits -->
+                                <button class="card-score-btn" onclick="openScoringModal('all', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> Scoring Rules</button>
+                            </div>
+                            <div class="hc-title" style="color: var(--primary);">+ Create Custom Habit</div>
+                            <div class="input-group" style="width: 100%;">
+                                <label class="input-label">Habit Name</label>
+                                <div class="form-control"><input type="text" id="cb-name" placeholder="e.g. Drink 2L Water"></div>
+                            </div>
+                            <div class="input-group" style="width: 100%;">
+                                <label class="input-label">Type</label>
+                                <div class="form-control">
+                                    <select id="cb-type">
+                                        <option value="yn">Yes / No</option>
+                                        <option value="duration">Target (Duration)</option>
+                                        <option value="time">Target Time</option>
+                                        <option value="count">Number Count</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group" style="display:flex; align-items:center; gap:8px; margin-bottom: 0; width: 100%;">
+                                <input type="checkbox" id="cb-tolerance" style="width:16px;height:16px; accent-color: var(--primary);">
+                                <label class="input-label" style="margin:0; font-size:0.85rem; cursor:pointer;" for="cb-tolerance">Enable Tolerance Toggle</label>
+                            </div>
+                            <!-- Button adds the custom habit to the grid -->
+                            <button class="btn btn-primary" style="height: 38px; font-size: 0.85rem; margin-top: 16px;" onclick="addCustomHabit(event)">Add Habit</button>
+                        </div>
+
+                        <!-- Pro Upgrade Banner (Appears next to builder) -->
+                        <div class="habit-card" style="border: 2px dashed var(--border-light); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; cursor: default;">
+                            <div class="sc-title" style="margin-bottom: 0; font-size: 0.95rem;">
+                                <svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--primary);"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                Unlimited Habits 
+                                <span class="custom-badge">PRO</span>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-sub); margin: 12px 0 16px 0; font-weight: 500;">Upgrade to unlock unlimited custom habits and tracking.</p>
+                            <button class="btn btn-outline" style="border-radius: 100px; max-width: 160px; font-size: 0.85rem; height: 36px;"><svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Upgrade to Pro</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- ==============================================
+                 SIDEBAR: SUMMARY, TIPS & WARNINGS
+                 ============================================== -->
+            <aside class="sidebar">
+                <!-- Selection Summary Card -->
+                <div class="side-card">
+                    <div class="sc-title">Selection Summary</div>
+                    <ul class="summary-list">
+                        <li><svg class="text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><path d="M9 12l2 2 4-4"></path></svg> <span id="summary-selected">0</span> Habits Selected</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> <span class="text-primary" id="summary-slots">8 Slots</span> Remaining</li>
+                        <li style="align-items:flex-start; margin-top: 4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> <span style="color:var(--text-sub);">You can select up to<br>8 habits on Free plan (Sleep excluded)</span></li>
+                    </ul>
+                </div>
+
+                <!-- Tips Card -->
+                <div class="side-card">
+                    <div class="sc-title"><span style="color:var(--gold);">ðŸ’¡</span> Tips</div>
+                    <ul class="tips-list">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Be realistic with your targets.</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Consistency beats perfection.</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg> You can change habits after 30 days.</li>
+                    </ul>
+                </div>
+
+                <!-- 30 Days Warning Card -->
+                <div class="side-card warning-card">
+                    <div class="sc-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="18" height="18"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> 30 Days Warning</div>
+                    <div class="sc-desc" style="font-weight: 600;">You can only add or remove habits within 30 days of creating your plan.</div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         VIEW 2: FINAL SUMMARY PAGE
+         ========================================== -->
+    <div id="view-summary">
+        <div class="summary-header">
+            <h2>Review Your Plan</h2>
+            <p>Check your targets before locking them in. You can click 'Edit Selection' below if needed.</p>
+        </div>
+        
+        <!-- JS populates selected habits into this container -->
+        <div class="summary-list-container" id="final-summary-list"></div>
+    </div>
+</div>
+
+<!-- ==========================================
+     STICKY FOOTER (ACTIONS)
+     ========================================== -->
+<footer class="sticky-footer" id="main-footer">
+    <div class="sf-left">
+        <div class="shield-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <div class="sf-text">
+            <h4 id="footer-title">Your habits are locked for 30 days.</h4>
+            <p id="footer-desc">This helps you build consistency and see real results.</p>
+        </div>
+    </div>
+    <div class="sf-actions">
+        <!-- Cancels selection / Goes back -->
+        <button class="btn btn-cancel" id="btn-cancel" onclick="history.back()">Cancel</button>
+        <!-- Triggers Summary View generation -->
+        <button class="btn btn-primary btn-save" id="btn-save" onclick="generateSummary()">Save My Habits</button>
+    </div>
+</footer>
+
+<!-- ==============================================
+     MODAL: HOW SCORING WORKS (POP-UP)
+     ============================================== -->
+<!-- Omitted Modal Code for brevity, it's just visual -->
+<div class="modal-overlay" id="scoring-modal-overlay" onclick="closeScoringModal(event)">
+    <div class="scoring-modal" onclick="event.stopPropagation()">
+        
+        <!-- Modal Header -->
+        <div class="sm-header">
+            <div class="sm-header-text">
+                <h2><svg width="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> How Scoring Works</h2>
+                <p>We use smart scoring engines to evaluate your habits fairly. Each habit follows a specific logic based on its type, target and tolerance.</p>
+            </div>
+            <!-- Close Modal Button -->
+            <button class="btn-close-modal" onclick="closeScoringModal()">
+                <svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <!-- Modal Body (Dynamic depending on which scoring button was clicked) -->
+        <div class="sm-body">
+            
+            <!-- General Overview Blocks -->
+            <div class="sm-overview" id="scoring-overview">
+                <div class="smo-card">
+                    <div class="smo-icon"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
+                    <h4>Target Based</h4>
+                    <p>Every habit has a target you set.</p>
+                </div>
+                <div class="smo-card">
+                    <div class="smo-icon" style="color:#10B981; background:#D1FAE5;"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                    <h4>Tolerance Window</h4>
+                    <p>You get full score within your tolerance range.</p>
+                </div>
+                <div class="smo-card">
+                    <div class="smo-icon" style="color:#3B82F6; background:#DBEAFE;"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></div>
+                    <h4>Score Adjusts</h4>
+                    <p>Score increases or decreases gradually.</p>
+                </div>
+                <div class="smo-card">
+                    <div class="smo-icon" style="color:#F59E0B; background:#FEF3C7;"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 21h8M12 17v4M7 4h10M5 4h14a2 2 0 0 1 2 2v2a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V6a2 2 0 0 1 2-2z"></path></svg></div>
+                    <h4>100 to 0 Scale</h4>
+                    <p>All habits are scored between 0 and 100.</p>
+                </div>
+            </div>
+
+            <div class="engine-section-title" id="scoring-section-title">Scoring Engines</div>
+
+            <!-- Engine 1: Target Time (Used by Wake Up, Sleep Time) -->
+            <div class="engine-row" id="engine-target-time">
+                <div class="er-info">
+                    <div class="er-title">
+                        <div class="er-icon" style="color:#10B981;"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                        1. Target Time
+                    </div>
+                    <div class="er-badge">Most Used</div>
+                    <div class="er-desc">You get full score when you complete the habit within the tolerance window around the target time.</div>
+                </div>
+                
+                <div class="er-visual">
+                    <div class="er-visual-title">How it works</div>
+                    <svg class="chart-svg" viewBox="0 0 300 100">
+                        <line x1="10" y1="80" x2="290" y2="80" class="axis-line" />
+                        <path class="chart-area" fill="#10B981" d="M 20 80 L 80 80 L 120 20 L 180 20 L 220 80 L 280 80 Z" />
+                        <path class="chart-line chart-point-green" stroke="#10B981" d="M 20 80 L 80 80 L 120 20 L 180 20 L 220 80 L 280 80" />
+                        <circle cx="150" cy="20" r="4" class="chart-point chart-point-green"/>
+                        <text x="150" y="10" text-anchor="middle" class="chart-text" fill="#10B981">Target Time</text>
+                        <text x="50" y="50" text-anchor="middle" class="chart-text">Drops</text>
+                        <text x="250" y="50" text-anchor="middle" class="chart-text">Drops</text>
+                    </svg>
+                </div>
+
+                <div class="er-table-box">
+                    <div class="er-example-title">Example <span>(Target: 7:00 AM)</span></div>
+                    <table class="sm-table">
+                        <tr><th>You Complete</th><th style="text-align:right;">Score</th></tr>
+                        <tr><td>6:50 AM</td><td class="score-val">100 <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>7:15 AM</td><td class="score-val">100 <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>7:45 AM</td><td class="score-val">75 <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>8:15 AM</td><td class="score-val">40 <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>9:00 AM</td><td class="score-val">0 <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" width="14" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td></tr>
+                    </table>
+                    <div class="best-for">
+                        <h5>Best for</h5>
+                        <ul>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Wake Up</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Sleep Time</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engine 2: Duration (Used by Exercise, Study, Skills) -->
+            <div class="engine-row" id="engine-duration">
+                <div class="er-info">
+                    <div class="er-title">
+                        <div class="er-icon" style="color:#3B82F6;"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div>
+                        2. Duration
+                    </div>
+                    <div class="er-desc">The longer you stay consistent (up to your target duration), the higher your score.</div>
+                </div>
+                
+                <div class="er-visual">
+                    <div class="er-visual-title">How it works</div>
+                    <svg class="chart-svg" viewBox="0 0 300 100">
+                        <line x1="10" y1="80" x2="290" y2="80" class="axis-line" />
+                        <path class="chart-area" fill="#3B82F6" opacity="0.1" d="M 20 80 L 150 20 L 280 20 L 280 80 Z" />
+                        <path class="chart-line" stroke="#3B82F6" d="M 20 80 L 150 20 L 280 20" />
+                        <circle cx="150" cy="20" r="4" class="chart-point" stroke="#3B82F6"/>
+                        <text x="150" y="10" text-anchor="middle" class="chart-text" fill="#3B82F6">Target Duration</text>
+                        <text x="20" y="95" class="chart-text">0 min</text>
+                    </svg>
+                </div>
+
+                <div class="er-table-box">
+                    <div class="er-example-title">Example <span>(Target: 45 min)</span></div>
+                    <table class="sm-table">
+                        <tr><th>You Do</th><th style="text-align:right;">Score</th></tr>
+                        <tr><td>45m or more</td><td class="score-val">100 <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>30 min</td><td class="score-val">70 <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>15 min</td><td class="score-val">40 <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>0 min</td><td class="score-val">0 <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" width="14" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td></tr>
+                    </table>
+                    <div class="best-for">
+                        <h5>Best for</h5>
+                        <ul>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Exercise, Meditation</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Study, Focus Hours</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> New Skill Work</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engine 3: Reverse Duration (Used by Screen Time, Time Wasted) -->
+            <div class="engine-row" id="engine-reverse-duration">
+                <div class="er-info">
+                    <div class="er-title">
+                        <div class="er-icon" style="color:#EF4444;"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>
+                        3. Reverse Duration
+                    </div>
+                    <div class="er-desc">Lower duration is better. Score decreases as time increases beyond the ideal limit.</div>
+                </div>
+                
+                <div class="er-visual">
+                    <div class="er-visual-title">How it works</div>
+                    <svg class="chart-svg" viewBox="0 0 300 100">
+                        <line x1="10" y1="80" x2="290" y2="80" class="axis-line" />
+                        <path class="chart-area-red" d="M 20 20 L 100 20 L 250 80 L 20 80 Z" />
+                        <path class="chart-line chart-line-red" d="M 20 20 L 100 20 L 250 80" />
+                        <circle cx="100" cy="20" r="4" class="chart-point chart-point-red"/>
+                        <text x="100" y="10" text-anchor="middle" class="chart-text" fill="#EF4444">Ideal Limit</text>
+                        <text x="260" y="95" class="chart-text">Time Wasted &rarr;</text>
+                    </svg>
+                </div>
+
+                <div class="er-table-box">
+                    <div class="er-example-title">Example <span>(Max: 2 hrs)</span></div>
+                    <table class="sm-table">
+                        <tr><th>You Spend</th><th style="text-align:right;">Score</th></tr>
+                        <tr><td>0 - 2 hrs</td><td class="score-val">100 <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>2 - 3 hrs</td><td class="score-val">80 <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>3 - 4 hrs</td><td class="score-val">50 <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>5+ hrs</td><td class="score-val">0 <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" width="14" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td></tr>
+                    </table>
+                    <div class="best-for">
+                        <h5>Best for</h5>
+                        <ul>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Screen Time limit</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Time Wasted limit</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engine 4: Optimal Range (Used by Sleep Duration) -->
+            <div class="engine-row" id="engine-optimal-range">
+                <div class="er-info">
+                    <div class="er-title">
+                        <div class="er-icon" style="color:#A855F7;"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg></div>
+                        4. Optimal Range
+                    </div>
+                    <div class="er-desc">You get highest score when your duration stays in the optimal sweet spot. Too high or low drops score.</div>
+                </div>
+                
+                <div class="er-visual">
+                    <div class="er-visual-title">How it works</div>
+                    <svg class="chart-svg" viewBox="0 0 300 100">
+                        <line x1="10" y1="80" x2="290" y2="80" class="axis-line" />
+                        <path fill="#A855F7" opacity="0.1" d="M 20 80 Q 80 80, 100 20 L 200 20 Q 220 80, 280 80 Z" />
+                        <path stroke="#A855F7" fill="none" stroke-width="2.5" stroke-linecap="round" d="M 20 80 Q 80 80, 100 20 L 200 20 Q 220 80, 280 80" />
+                        <line x1="100" y1="20" x2="200" y2="20" stroke="#A855F7" stroke-width="3" />
+                        <text x="150" y="10" text-anchor="middle" class="chart-text" fill="#A855F7">Optimal Range</text>
+                        <text x="40" y="95" text-anchor="middle" class="chart-text">Too Low</text>
+                        <text x="260" y="95" text-anchor="middle" class="chart-text">Too High</text>
+                    </svg>
+                </div>
+
+                <div class="er-table-box">
+                    <div class="er-example-title">Example <span>(Sleep Duration)</span></div>
+                    <table class="sm-table">
+                        <tr><th>You Sleep</th><th style="text-align:right;">Score</th></tr>
+                        <tr><td>7 - 8.5 hrs</td><td class="score-val">100 <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>6 - 7 hrs</td><td class="score-val">80 <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>5 - 6 hrs</td><td class="score-val">50 <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>< 4 or > 10 hrs</td><td class="score-val">0 <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" width="14" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td></tr>
+                    </table>
+                    <div class="best-for">
+                        <h5>Best for</h5>
+                        <ul>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Sleep Target (Duration)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engine 5: Yes / No (Used by Gratitude, Meals, Bad Habits) -->
+            <div class="engine-row" id="engine-yes-no">
+                <div class="er-info">
+                    <div class="er-title">
+                        <div class="er-icon" style="color:#F59E0B;"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div>
+                        5. Yes / No
+                    </div>
+                    <div class="er-desc">Simple binary habits. Completed = 100, Not completed = 0.</div>
+                </div>
+                
+                <div class="er-visual" style="flex-direction: row; gap: 16px; align-items:center;">
+                    <div style="text-align:center; padding:16px; background:#F0FDF4; border:1px solid #BBF7D0; border-radius:12px; flex:1;">
+                        <div style="font-size:0.75rem; color:#15803D; font-weight:700; margin-bottom:8px;">Yes / Done</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:#16A34A; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <svg width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg> 100
+                        </div>
+                    </div>
+                    <div style="text-align:center; padding:16px; background:#FEF2F2; border:1px solid #FCA5A5; border-radius:12px; flex:1;">
+                        <div style="font-size:0.75rem; color:#991B1B; font-weight:700; margin-bottom:8px;">No / Missed</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:#DC2626; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <svg width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> 0
+                        </div>
+                    </div>
+                </div>
+
+                <div class="er-table-box">
+                    <div class="er-example-title">Example <span>(Any Task)</span></div>
+                    <table class="sm-table">
+                        <tr><th>Status</th><th style="text-align:right;">Score</th></tr>
+                        <tr><td>Done / Avoided</td><td class="score-val">100 <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" width="14" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td></tr>
+                        <tr><td>Not Done / Failed</td><td class="score-val">0 <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" width="14" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td></tr>
+                    </table>
+                    <div class="best-for">
+                        <h5>Best for</h5>
+                        <ul>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Gratitude, Healthy Meals</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Porn / Masturbation (Avoided)</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Any Bad Habit (Avoided)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engine 6: Manual Score (Used by Custom Habits) -->
+            <div class="engine-row" id="engine-manual">
+                <div class="er-info">
+                    <div class="er-title">
+                        <div class="er-icon" style="color:#0EA5E9;"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                        6. Manual Score
+                    </div>
+                    <div class="er-desc">You rate your custom habit manually based on your daily effort or quality.</div>
+                </div>
+                
+                <div class="er-visual">
+                    <div class="er-visual-title">How it works (You choose)</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                        <div style="width:36px; height:36px; border-radius:50%; border:2px solid #CBD5E1; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; color:#64748B;">0</div>
+                        <div style="width:36px; height:36px; border-radius:50%; border:2px solid #94A3B8; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; color:#475569;">25</div>
+                        <div style="width:36px; height:36px; border-radius:50%; border:2px solid #F59E0B; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; color:#D97706;">50</div>
+                        <div style="width:36px; height:36px; border-radius:50%; border:2px solid #10B981; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; color:#059669;">75</div>
+                        <div style="width:36px; height:36px; border-radius:50%; border:2px solid var(--primary); background:var(--primary-light); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; color:var(--primary);">100</div>
+                    </div>
+                </div>
+
+                <div class="er-table-box">
+                    <div class="er-example-title">Example <span>(Productive Day)</span></div>
+                    <p style="font-size:0.85rem; color:var(--text-sub); line-height:1.5; font-weight:500;">Instead of a strict target, you reflect on your day and log a score from 0 to 100.</p>
+                    <div class="best-for">
+                        <h5>Best for</h5>
+                        <ul>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Custom Habits</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Overall Day Mood / Focus</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sm-footer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <p>Tip: Focus on consistency, not perfection. Small daily wins lead to big results!</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================================
+     JAVASCRIPT LOGIC
+     ========================================================== -->
+<script src="firebase-config.js" type="module"></script>
+<script>
+    // Wait for auth before anything
+    window.addEventListener('load', () => {
+        if (window.firebaseAuth) {
+            window.onAuthStateChanged(window.firebaseAuth, user => {
+                if (!user) {
+                    window.location.href = 'login.html';
+                } else {
+            window.currentUser = user;
+            // Potentially load existing habits here if needed to pre-fill
+            const stored = localStorage.getItem('userHabits');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    const habitValues = Object.values(parsed);
+                    if (habitValues.length > 0 && typeof habitValues[0] === 'object' && habitValues[0].addedAt) {
+                        const addedAtStr = habitValues[0].addedAt;
+                        const lockDate = new Date(new Date(addedAtStr).getTime() + 30 * 24 * 60 * 60 * 1000);
+                        if (new Date() < lockDate) {
+                            // Habits are locked!
+                            document.querySelector('.container').innerHTML = `
+                                <div style="text-align:center; padding: 4rem 1rem;">
+                                    <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="#F59E0B" stroke-width="2" style="margin: 0 auto 1rem;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                    <h2 style="margin-bottom: 1rem; color: #0F172A; font-size: 1.5rem; font-weight: 800;">Habits Locked</h2>
+                                    <p style="color: #64748B; margin-bottom: 2rem;">You have finalized your habits. Stay committed! You can change them after 30 days.</p>
+                                    <button style="padding: 12px 24px; border-radius: 8px; background: linear-gradient(135deg, #F59E0B, #EA580C); color: white; border: none; font-weight: 600; cursor: pointer;" onclick="window.location.href='index.html'">Go to Dashboard</button>
+                                </div>
+                            `;
+                            
+                            // Hide the sticky footer completely if habits are locked
+                            const mainFooter = document.getElementById('main-footer');
+                            if (mainFooter) mainFooter.style.display = 'none';
+
+                            return;
+                        }
+                    }
+                    prefillHabits(parsed);
+                } catch(e) { console.error("Prefill error:", e); }
+            }
+        } // end if (!user) else
+    }); // end onAuthStateChanged
+    } // end if (window.firebaseAuth)
+}); // end addEventListener
+
+    function prefillHabits(savedHabits) {
+        // Find cards matching the ids and mark them selected
+        // Set values
+        Object.keys(savedHabits).forEach(id => {
+            const data = savedHabits[id];
+            
+            // If it's a custom habit, recreate it first
+            if (id.startsWith('custom_habit_')) {
+                document.getElementById('cb-name').value = data.habit_name;
+                document.getElementById('cb-type').value = data.habit_type === 'yes-no' ? 'yn' : (data.habit_type === 'reverse-duration' ? 'duration' : (data.habit_type === 'target-time' ? 'time' : 'duration'));
+                document.getElementById('cb-tolerance').checked = data.tolerance ? true : false;
+                addCustomHabit({ stopPropagation: () => {} });
+                
+                // Now fix the ID so it maps to the existing one
+                const newlyAdded = document.querySelector('.custom-created:not([data-id-fixed])');
+                if (newlyAdded) {
+                    newlyAdded.setAttribute('data-habit-id', id);
+                    newlyAdded.setAttribute('data-id-fixed', 'true');
+                }
+            }
+
+            const card = document.querySelector(`.habit-card[data-habit-id="${id}"]`);
+            if (card) {
+                card.classList.add('selected');
+                
+                // Prefill logic
+                if (data.target_value) {
+                    const input = card.querySelector('[data-extract="target_value"]');
+                    if (input) input.value = data.target_value;
+                }
+                if (data.tolerance) {
+                    const tolInput = card.querySelector('[data-extract="tolerance"]');
+                    if (tolInput) tolInput.innerText = data.tolerance + (data.unit ? ' ' + data.unit : '');
+                }
+                if (data.custom_name) {
+                    const cname = card.querySelector('[data-extract="custom_name"]');
+                    if (cname) cname.value = data.custom_name;
+                }
+                // Handle Min/Hr toggle
+                if (data.unit) {
+                    const segs = card.querySelectorAll('.seg-btn');
+                    segs.forEach(s => {
+                        if (s.innerText.toLowerCase() === data.unit.toLowerCase()) {
+                            card.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+                            s.classList.add('active');
+                        }
+                    });
+                }
+            }
+        });
+        updateProgress();
+    }
+</script>
+<script>
+    const MAX_FREE_HABITS = 8;
+    let customHabitsCount = 0;
+    
+    // UI Function: Toggle Min/Hr segments inside Habit Cards
+    function toggleSeg(btn, e) {
+        if(e) e.stopPropagation();
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    // UI Function: Stepper (+/-) for Tolerance
+    function stepVal(btn, amount) {
+        const span = btn.parentElement.querySelector('.step-val');
+        let text = span.innerText;
+        let val = parseInt(text);
+        let unit = text.replace(val, '').trim();
+        let newVal = val + amount;
+        if(newVal < 0) newVal = 0;
+        span.innerText = newVal + ' ' + unit;
+    }
+
+    // Logic Function: Auto Calculate Sleep Target (Duration) based on inputs
+    function calculateSleep() {
+        const wakeInput = document.getElementById('wake-up-time').value;
+        const sleepInput = document.getElementById('sleep-time').value;
+        const durationDisplay = document.getElementById('sleep-duration-val');
+        
+        if(!wakeInput || !sleepInput) return;
+        
+        let [wakeH, wakeM] = wakeInput.split(':').map(Number);
+        let [sleepH, sleepM] = sleepInput.split(':').map(Number);
+        
+        let sleepDate = new Date(2000, 0, 1, sleepH, sleepM);
+        let wakeDate = new Date(2000, 0, (sleepH > wakeH) ? 2 : 1, wakeH, wakeM);
+        
+        let diffMs = wakeDate - sleepDate;
+        if (diffMs < 0) diffMs += 24 * 60 * 60 * 1000; 
+        
+        let diffMins = Math.floor(diffMs / 60000);
+        let hrs = Math.floor(diffMins / 60);
+        let mins = diffMins % 60;
+        
+        durationDisplay.value = `${hrs} hr ${mins > 0 ? mins + ' min' : ''}`;
+    }
+
+    // Interaction Function: Select or Deselect a Habit Card
+    function toggleCard(card) {
+        // Ignore clicks on the custom builder itself
+        if(card.id === 'custom-builder') return;
+        
+        // Check if card is excluded from limit (like Sleep Duration)
+        const isExcluded = card.classList.contains('exclude-count');
+        
+        if(!card.classList.contains('selected')) {
+            const selectedCount = document.querySelectorAll('.habit-card.selected:not(.exclude-count)').length;
+            if(!isExcluded && selectedCount >= MAX_FREE_HABITS) {
+                document.getElementById('premium-modal-text').innerText = "You can only select up to 8 habits on the Free plan. Upgrade to Pro to track more.";
+                document.getElementById('premium-modal').style.display = 'flex';
+                return;
+            }
+        }
+        
+        card.classList.toggle('selected');
+        updateProgress();
+    }
+
+    // Interaction Function: Add Custom Habit (Max 1 allowed)
+    function addCustomHabit(e) {
+        e.stopPropagation();
+        
+        // Prevent exceeding 1 custom habit
+        if(customHabitsCount >= 1) {
+            document.getElementById('premium-modal-text').innerText = "You have reached the limit of 1 Free Custom Habit. Upgrade to Pro to add more.";
+            document.getElementById('premium-modal').style.display = 'flex';
+            return;
+        }
+        
+        // Prevent exceeding global max 8 limit
+        const selectedCount = document.querySelectorAll('.habit-card.selected:not(.exclude-count)').length;
+        if(selectedCount >= MAX_FREE_HABITS) {
+            document.getElementById('premium-modal-text').innerText = "You have reached the maximum limit of 8 habits on the Free plan. Upgrade to Pro to add more.";
+            document.getElementById('premium-modal').style.display = 'flex';
+            return;
+        }
+
+        const name = document.getElementById('cb-name').value.trim() || "My Custom Habit";
+        const type = document.getElementById('cb-type').value;
+        const hasTol = document.getElementById('cb-tolerance').checked;
+        
+        let inputsHTML = '';
+        if(type === 'yn') {
+            inputsHTML += `<div class="input-group"><label class="input-label">Type</label><div class="form-control" onclick="event.stopPropagation()"><select data-extract="target_value"><option>Yes / No</option></select></div></div>`;
+        } else if(type === 'duration') {
+            inputsHTML += `<div class="input-group"><label class="input-label">Target (Duration)</label><div class="control-row"><div class="form-control" onclick="event.stopPropagation()"><input type="number" value="30" data-extract="target_value"></div><div class="segment-control" onclick="event.stopPropagation()"><button class="seg-btn active" onclick="toggleSeg(this, event)">Min</button><button class="seg-btn" onclick="toggleSeg(this, event)">Hr</button></div></div></div>`;
+        } else if(type === 'time') {
+            inputsHTML += `<div class="input-group"><label class="input-label">Target Time</label><div class="form-control" onclick="event.stopPropagation()"><input type="time" value="12:00" data-extract="target_value"></div></div>`;
+        } else if(type === 'count') {
+            inputsHTML += `<div class="input-group"><label class="input-label">Target Count</label><div class="form-control" onclick="event.stopPropagation()"><input type="number" value="1" data-extract="target_value"></div></div>`;
+        }
+        
+        if(hasTol) {
+            inputsHTML += `<div class="input-group"><label class="input-label">Tolerance</label><div class="stepper" onclick="event.stopPropagation()"><button class="step-btn" onclick="stepVal(this, -5)">-</button><span class="step-val" data-extract="tolerance">10 min</span><button class="step-btn" onclick="stepVal(this, 5)">+</button></div></div>`;
+        }
+
+        const cardHTML = `
+            <div class="hc-top">
+                <div class="hc-icon bg-gold"><svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></div>
+                <div class="card-actions">
+                    <button class="card-score-btn" onclick="openScoringModal('all', event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Scoring</button>
+                    <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                </div>
+            </div>
+            <div class="hc-title">${name} <span class="custom-badge">CUSTOM</span></div>
+            ${inputsHTML}
+            <div class="custom-remove" onclick="deleteCustomHabit(this, event)">Delete</div>
+        `;
+        
+        let mappedType = type === 'yn' ? 'yes-no' : (type === 'time' ? 'target-time' : (type === 'duration' ? 'duration' : 'manual'));
+
+        const newCard = document.createElement('div');
+        newCard.className = 'habit-card selected custom-created';
+        newCard.setAttribute('data-habit-id', 'custom_habit_' + Date.now());
+        newCard.setAttribute('data-habit-type', mappedType);
+        newCard.setAttribute('data-category', 'custom');
+        newCard.setAttribute('data-habit-name', name);
+        newCard.onclick = function() { toggleCard(this); };
+        newCard.innerHTML = cardHTML;
+        
+        const builder = document.getElementById('custom-builder');
+        builder.parentNode.insertBefore(newCard, builder);
+        
+        customHabitsCount++;
+        builder.style.display = 'none'; // Hide builder after 1 custom habit
+        
+        // Reset Builder Form
+        document.getElementById('cb-name').value = '';
+        document.getElementById('cb-tolerance').checked = false;
+        
+        updateProgress();
+    }
+    
+    // Interaction Function: Delete Custom Habit
+    function deleteCustomHabit(btn, e) {
+        e.stopPropagation();
+        btn.closest('.habit-card').remove();
+        customHabitsCount--;
+        document.getElementById('custom-builder').style.display = 'block';
+        updateProgress();
+    }
+
+    // Logic Function: Update Top Ring widget & Sidebar numbers
+    function updateProgress() {
+        const selectedCount = document.querySelectorAll('.habit-card.selected:not(.exclude-count)').length;
+        document.getElementById('selected-count').innerText = selectedCount;
+        document.getElementById('summary-selected').innerText = selectedCount;
+        
+        let remaining = MAX_FREE_HABITS - selectedCount;
+        if(remaining < 0) remaining = 0;
+        document.getElementById('summary-slots').innerText = remaining + ' Slots';
+
+        let percent = Math.round((selectedCount / MAX_FREE_HABITS) * 100);
+        if(percent > 100) percent = 100;
+        document.getElementById('progress-percent').innerText = percent + '%';
+        document.getElementById('progress-circle').style.background = `conic-gradient(var(--primary) ${percent}%, #E2E8F0 0)`;
+    }
+
+    // Interaction Function: Dropdown Category Filter Logic
+    function filterHabits() {
+        const filterVal = document.getElementById('cat-filter').value;
+        const sections = {
+            'morning': document.getElementById('sec-morning'),
+            'learning': document.getElementById('sec-learning'),
+            'health': document.getElementById('sec-health'),
+            'personal': document.getElementById('sec-personal'),
+            'custom': document.getElementById('sec-custom')
+        };
+
+        if(filterVal === 'all') {
+            Object.values(sections).forEach(sec => { if(sec) sec.style.display = 'block'; });
+        } else {
+            Object.keys(sections).forEach(key => {
+                if(sections[key]) {
+                    sections[key].style.display = (key === filterVal) ? 'block' : 'none';
+                }
+            });
+        }
+    }
+
+    // -------------------------------------------------------------
+    // LOGIC: GENERATE FINAL SUMMARY (TRANSITION TO VIEW 2)
+    // -------------------------------------------------------------
+    function generateSummary() {
+        const selected = document.querySelectorAll('.habit-card.selected:not(#custom-builder)');
+        
+        if (selected.length === 0) {
+            alert("Please select at least 1 habit to save your plan.");
+            return;
+        }
+
+        const list = document.getElementById('final-summary-list');
+        list.innerHTML = '';
+
+        selected.forEach(card => {
+            let rawTitle = card.querySelector('.hc-title').innerText;
+            // Remove button text content from title if any
+            rawTitle = rawTitle.replace('Scoring', '').replace('Delete', '').trim();
+            
+            const iconHTML = card.querySelector('.hc-icon').outerHTML;
+            
+            let targetText = '';
+            // Ignore builder inputs and checkboxes
+            const inputs = card.querySelectorAll('input:not([type="checkbox"])'); 
+            const select = card.querySelector('select');
+            const activeSeg = card.querySelector('.seg-btn.active');
+            const stepVal = card.querySelector('.step-val');
+            
+            let nameCustom = '';
+            if(inputs.length > 0 && inputs[0].type === 'text' && !inputs[0].readOnly && !card.classList.contains('custom-created')) {
+                nameCustom = inputs[0].value ? `("${inputs[0].value}")` : "(Unnamed)";
+            }
+
+            inputs.forEach(inp => {
+                if(inp.type === 'time') {
+                    targetText = `Target: ${inp.value}`;
+                } else if(inp.type === 'number') {
+                    targetText = `Target (Duration): ${inp.value} ${activeSeg ? activeSeg.innerText : ''}`;
+                } else if(inp.readOnly && inp.type === 'text') {
+                    targetText = `Target (Duration): ${inp.value}`;
+                }
+            });
+
+            if(!targetText && select) {
+                targetText = `Type: ${select.options[select.selectedIndex].text}`;
+            }
+
+            const toleranceText = stepVal ? `Tolerance: ${stepVal.innerText}` : '';
+
+            // Create row in summary page
+            const item = document.createElement('div');
+            item.className = 'summary-item';
+            item.innerHTML = `
+                ${iconHTML}
+                <div class="si-details">
+                    <div class="si-title">${rawTitle} ${nameCustom}</div>
+                    <div class="si-target">
+                        ${targetText} 
+                        ${toleranceText ? `<span class="si-divider">â€¢</span> ${toleranceText}` : ''}
+                    </div>
+                </div>
+                <div class="si-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+            `;
+            list.appendChild(item);
+        });
+        
+        document.getElementById('view-selection').style.display = 'none';
+        document.getElementById('view-summary').style.display = 'block';
+        window.scrollTo(0,0);
+        
+        document.getElementById('footer-title').innerText = "Confirm Your Setup";
+        document.getElementById('footer-desc').innerText = "Double check your targets before proceeding.";
+        
+        const btnCancel = document.getElementById('btn-cancel');
+        const btnSave = document.getElementById('btn-save');
+        
+        btnCancel.innerText = "Edit Selection";
+        btnCancel.onclick = backToSelection;
+        
+        btnSave.innerText = "Confirm & Start Tracking";
+        btnSave.onclick = finishSetup;
+    }
+
+    // Logic Function: Go back to Selection View
+    function backToSelection() {
+        document.getElementById('view-summary').style.display = 'none';
+        document.getElementById('view-selection').style.display = 'block';
+        
+        document.getElementById('footer-title').innerText = "Your habits are locked for 30 days.";
+        document.getElementById('footer-desc').innerText = "This helps you build consistency and see real results.";
+        
+        const btnCancel = document.getElementById('btn-cancel');
+        const btnSave = document.getElementById('btn-save');
+        
+        btnCancel.innerText = "Cancel";
+        btnCancel.onclick = () => history.back();
+        
+        btnSave.innerText = "Save My Habits";
+        btnSave.onclick = generateSummary;
+    }
+
+    // -------------------------------------------------------------
+    // ACTUAL BACKEND INTEGRATION: JSON PAYLOAD EXTRACTION & FIREBASE
+    // -------------------------------------------------------------
+    async function finishSetup() {
+        const btnSave = document.getElementById('btn-save');
+        btnSave.innerText = "Saving...";
+        btnSave.disabled = true;
+
+        const selectedCards = document.querySelectorAll('.habit-card.selected:not(#custom-builder)');
+        const payload = {}; // Storing as object mapped by habit_id for easier lookups
+
+        selectedCards.forEach(card => {
+            const id = card.getAttribute('data-habit-id');
+            const type = card.getAttribute('data-habit-type');
+            const category = card.getAttribute('data-category');
+            let name = card.getAttribute('data-habit-name');
+            const iconSvg = card.querySelector('.hc-icon').innerHTML;
+            const iconClass = card.querySelector('.hc-icon').className;
+
+            // Extract custom name if it's the "Any Bad Habit" card
+            const customNameInput = card.querySelector('[data-extract="custom_name"]');
+            if(customNameInput && customNameInput.value.trim() !== '') {
+                name = customNameInput.value.trim();
+            }
+
+            // Extract Target
+            let targetVal = null;
+            const targetEl = card.querySelector('[data-extract="target_value"]');
+            if (targetEl) {
+                targetVal = targetEl.value;
+            }
+
+            // Extract Unit (Min/Hr)
+            let unit = null;
+            const activeSeg = card.querySelector('.seg-btn.active');
+            if (activeSeg) {
+                unit = activeSeg.innerText.toLowerCase();
+            } else if (type === 'duration') {
+                // Default to min if no segment but is duration
+                unit = 'min';
+            }
+
+            // Extract Tolerance
+            let toleranceVal = "0";
+            const tolEl = card.querySelector('[data-extract="tolerance"]');
+            if (tolEl) {
+                // "15 min" -> "15"
+                toleranceVal = tolEl.innerText.replace(/[^0-9]/g, '');
+            }
+
+            payload[id] = {
+                habit_id: id,
+                habit_name: name,
+                habit_type: type,
+                category: category,
+                target_value: targetVal,
+                unit: unit,
+                tolerance: toleranceVal,
+                icon_svg: iconSvg,
+                icon_class: iconClass,
+                addedAt: new Date().toISOString()
+            };
+        });
+
+        // Save to localStorage immediately for quick frontend load
+        localStorage.setItem('userHabits', JSON.stringify(payload));
+        
+        // Compute 30 days lock timestamp
+        const lockedUntil = Date.now() + (30 * 24 * 60 * 60 * 1000);
+        localStorage.setItem('habitsLockedUntil', lockedUntil.toString());
+
+        // Save to Firebase
+        if (window.currentUser && window.firebaseDb) {
+            try {
+                // Using the exact setDoc and doc references from firebase-config.js (window scope)
+                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), {
+                    userHabits: payload,
+                    habitsLockedUntil: lockedUntil
+                });
+                window.location.href = 'index.html'; // Go to dashboard
+            } catch(e) {
+                console.error("Error saving to Firebase:", e);
+                alert("Saved locally but failed to sync to cloud: " + e.message);
+                window.location.href = 'index.html';
+            }
+        } else {
+            // No auth user, just redirect
+            window.location.href = 'index.html';
+        }
+    }
+
+    // -------------------------------------------------------------
+    // MODAL CONTROL FUNCTIONS (HOW SCORING WORKS)
+    // -------------------------------------------------------------
+    function openScoringModal(engineType = 'all', e) {
+        if (e) e.stopPropagation(); // prevent card selection when clicking scoring button
+
+        const allRows = document.querySelectorAll('.engine-row');
+        const overview = document.getElementById('scoring-overview');
+        const sectionTitle = document.getElementById('scoring-section-title');
+
+        if (engineType === 'all') {
+            // Show full manual
+            overview.style.display = 'grid';
+            sectionTitle.style.display = 'block';
+            allRows.forEach(row => row.style.display = 'grid');
+        } else {
+            // Show only relevant engine
+            overview.style.display = 'none';
+            sectionTitle.style.display = 'none';
+            allRows.forEach(row => {
+                if(row.id === 'engine-' + engineType) {
+                    row.style.display = 'grid';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        document.getElementById('scoring-modal-overlay').classList.add('active');
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    function closeScoringModal(e) {
+        if (e && e.target !== document.getElementById('scoring-modal-overlay')) return;
+        document.getElementById('scoring-modal-overlay').classList.remove('active');
+        document.body.style.overflow = 'auto'; 
+    }
+
+    // -------------------------------------------------------------
+    // INITIALIZATION SCRIPT
+    // -------------------------------------------------------------
+    function checkLockStatus() {
+        const lockedUntilStr = localStorage.getItem('habitsLockedUntil');
+        if (lockedUntilStr) {
+            const lockedUntil = parseInt(lockedUntilStr, 10);
+            if (Date.now() < lockedUntil) {
+                const unlockDate = new Date(lockedUntil).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+                
+                // Show banner
+                const banner = document.createElement('div');
+                banner.style = "background: var(--warning-bg); color: var(--warning-text); padding: 16px; text-align: center; font-weight: 700; font-size: 1.1rem; position: sticky; top: 0; z-index: 100; border-bottom: 2px solid var(--warning-border);";
+                banner.innerHTML = `Your habits are locked for 30 days to build consistency. They will unlock on ${unlockDate}.`;
+                document.body.prepend(banner);
+
+                // Disable interactions
+                setTimeout(() => {
+                    document.querySelectorAll('.habit-card, .btn-scoring, .header-top').forEach(el => {
+                        el.style.pointerEvents = 'none';
+                        el.style.opacity = '0.7';
+                    });
+                    
+                    const nextBtn = document.getElementById('btn-next');
+                    if(nextBtn) {
+                        nextBtn.innerText = "Habits Locked";
+                        nextBtn.style.background = "var(--text-sub)";
+                        nextBtn.onclick = (e) => {
+                            e.preventDefault();
+                            window.location.href = 'index.html';
+                        };
+                    }
+                }, 100);
+            } else {
+                // Lock expired, clean it up
+                localStorage.removeItem('habitsLockedUntil');
+            }
+        }
+    }
+
+    checkLockStatus();
+    calculateSleep();
+    updateProgress();
+</script>
+    <!-- Premium Modal -->
+    <div id="premium-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div style="max-width: 400px; text-align: center; margin: 1rem; background: #FFFFFF; padding: 24px; border-radius: 16px; width: 90%; animation: fadeUp 0.01s forwards; opacity: 0; transform: translateY(20px);">
+            <div style="margin: 0 auto 1rem auto; width: 64px; height: 64px; border-radius: 50%; border: 3px solid #F59E0B; display: flex; align-items: center; justify-content: center; background: #111827;">
+                <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 32px; height: 32px;"><path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/></svg>
+            </div>
+            <h2 style="font-weight: 800; font-size: 1.5rem; margin-bottom: 8px; color: #0F172A;">Upgrade to Pro</h2>
+            <p style="color: #64748B; margin-bottom: 24px;" id="premium-modal-text">You have reached the free limit. Upgrade to Premium to track more habits!</p>
+            <div style="display: flex; gap: 12px; width: 100%;">
+                <button style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #E2E8F0; background: transparent; font-weight: 600; cursor: pointer; color: #0F172A;" onclick="document.getElementById('premium-modal').style.display='none'">Maybe Later</button>
+                <button style="flex: 1; padding: 12px; border-radius: 8px; background: linear-gradient(135deg, #F59E0B, #EA580C); color: white; border: none; font-weight: 600; cursor: pointer;" onclick="window.location.href='subscription.html'">Upgrade to Pro</button>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>
+
+
