@@ -827,14 +827,12 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="flex items-center gap-2 m-0 text-white" style="color: #ffffff !important;">
-                            <div class="gold-crown-icon" title="Premium Feature" style="width: 24px; height: 24px; border-width: 1px;">
-                                <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 12px; height: 12px;">
-                                    <path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/>
-                                </svg>
+                            <div id="plan-icon-container" title="Plan Status" style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 6px;">
+                                <span id="plan-badge-icon" style="font-size: 10px; font-weight: 800; letter-spacing: 1px; color: rgba(255,255,255,0.8);">FREE</span>
                             </div>
                             <span id="plan-name">Free Plan</span>
                         </h3>
-                        <span class="badge" id="plan-badge" style="background: rgba(255,255,255,0.15); color: #ffffff !important; border: 1px solid rgba(255,255,255,0.3); display: none;">Premium</span>
+                        <span class="badge" id="plan-badge" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: #ffffff !important; border: none; display: none; font-weight: 700; letter-spacing: 0.5px;">PRO</span>
                     </div>
                     <p class="text-sm mb-6" style="color: rgba(255,255,255,0.8) !important;">Status: <strong class="text-white" id="plan-status" style="color: #ffffff !important;">Basic</strong></p>
                 </div>
@@ -1168,7 +1166,7 @@
                     
                     // Update cache
                     localStorage.setItem('cachedProfile', JSON.stringify({
-                        name: data.name || tempName,
+                        name: tempName,
                         email: currentUser.email,
                         joinedDate: currentUser.metadata.creationTime
                     }));
@@ -1204,6 +1202,39 @@
 
         function refreshUI() {
             updateProgress();
+            applyPremiumUI();
+        }
+
+        function applyPremiumUI() {
+            const planBadgeIcon = document.getElementById('plan-badge-icon');
+            const planIconContainer = document.getElementById('plan-icon-container');
+            const planName = document.getElementById('plan-name');
+            const planBadge = document.getElementById('plan-badge');
+            const planStatus = document.getElementById('plan-status');
+            
+            if (isPremium) {
+                if (planBadgeIcon) {
+                    planBadgeIcon.textContent = 'PRO';
+                    planBadgeIcon.style.color = '#ffffff';
+                }
+                if (planIconContainer) {
+                    planIconContainer.style.background = 'linear-gradient(135deg, #F59E0B, #D97706)';
+                }
+                if (planName) planName.textContent = 'Pro Plan';
+                if (planBadge) planBadge.style.display = 'inline-block';
+                if (planStatus) planStatus.textContent = 'Premium';
+            } else {
+                if (planBadgeIcon) {
+                    planBadgeIcon.textContent = 'FREE';
+                    planBadgeIcon.style.color = 'rgba(255,255,255,0.8)';
+                }
+                if (planIconContainer) {
+                    planIconContainer.style.background = 'rgba(255,255,255,0.1)';
+                }
+                if (planName) planName.textContent = 'Free Plan';
+                if (planBadge) planBadge.style.display = 'none';
+                if (planStatus) planStatus.textContent = 'Basic';
+            }
         }
 
         function updateProgress() {
@@ -1246,7 +1277,6 @@
             const newGender = document.getElementById('input-gender').value;
             const newOcc = document.getElementById('input-occ').value;
             const newBio = document.getElementById('input-bio').value;
-            const newDob = document.getElementById('input-dob').value;
             
             document.getElementById('val-name').textContent = newName;
             const avatarEl = document.getElementById('display-avatar');
