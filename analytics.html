@@ -436,14 +436,14 @@
             z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; opacity: 0; transition: opacity var(--transition-smooth);
         }
         .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-card { background: #111315; border-radius: 20px; width: 100%; max-width: 440px; box-shadow: var(--shadow-lg); overflow: hidden; transform: scale(0.95); transition: transform var(--transition-smooth); }
+        .modal-card { background: var(--card-bg); border-radius: 20px; width: 100%; max-width: 440px; box-shadow: var(--shadow-lg); overflow: hidden; transform: scale(0.95); transition: transform var(--transition-smooth); }
         .modal-overlay.active .modal-card { transform: scale(1); }
         .modal-header { padding: 24px 24px 32px 24px; position: relative; color: #ffffff; }
         .btn-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.15); color: #ffffff; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); border: none; cursor: pointer; z-index: 10; pointer-events: auto; }
         .btn-close:hover { background: rgba(0,0,0,0.3); transform: scale(1.05); }
         .modal-date { font-size: 15px; font-weight: 500; opacity: 0.9; margin-bottom: 4px; }
         .modal-score { font-size: 64px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
-        .modal-body { padding: 24px; background: var(--bg-default); }
+        .modal-body { padding: 24px; background: var(--bg-base); }
         .modal-habit-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
         .modal-habit-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
         .mh-top { display: flex; justify-content: space-between; align-items: center; }
@@ -1547,7 +1547,7 @@
                     `<div class="mh-icon fail" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>`;
                 
                 cardsHtml += `
-                    <div class="modal-habit-card" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
+                    <div class="modal-habit-card">
                         <div class="mh-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                             <span class="mh-title" style="font-size: 15px; font-weight: 600; color: var(--text-primary);">${hName}</span>
                             ${iconHtml}
