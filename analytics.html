@@ -1256,13 +1256,20 @@
         }
         
         if (days === 'all_time') {
-            let accStr = localStorage.getItem('accountCreationTime');
             let start = new Date();
-            start.setMonth(start.getMonth() - 2); // default to ~90 days if no acc time
-            if (accStr) {
-                let acD = new Date(accStr);
-                if (acD < new Date()) {
-                    start = acD;
+            let logs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
+            let logDates = Object.keys(logs).sort();
+            
+            if (logDates.length > 0) {
+                start = new Date(logDates[0]);
+            } else {
+                let accStr = localStorage.getItem('accountCreationTime');
+                start.setMonth(start.getMonth() - 2); // default to ~90 days if no acc time
+                if (accStr) {
+                    let acD = new Date(accStr);
+                    if (acD < new Date()) {
+                        start = acD;
+                    }
                 }
             }
             start.setHours(0,0,0,0);
@@ -1604,16 +1611,7 @@
             startDate.setDate(now.getDate() - days + 1);
         }
         
-        // Dynamic Start Date constraint
-        let accStr = localStorage.getItem('accountCreationTime');
-        if (accStr && !customStart) {
-            let accDate = new Date(accStr);
-            accDate.setHours(0,0,0,0);
-            if (accDate > startDate && accDate <= now) {
-                startDate = new Date(accDate);
-            }
-        }
-        
+        // Dynamic Start Date constraint removed to allow showing historical manually logged data
         startDate.setHours(0,0,0,0);
         
         let dates = [];
