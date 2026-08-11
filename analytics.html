@@ -1663,6 +1663,16 @@
             startDate.setDate(now.getDate() - days + 1);
         }
         
+        // Dynamic Start Date constraint: do not show dates before the user's first log
+        let logDates = Object.keys(logs).sort();
+        if (logDates.length > 0) {
+            let firstLogDate = new Date(logDates[0]);
+            firstLogDate.setHours(0,0,0,0);
+            if (startDate < firstLogDate) {
+                startDate = firstLogDate;
+            }
+        }
+        
         // Dynamic Start Date constraint removed to allow showing historical manually logged data
         startDate.setHours(0,0,0,0);
         
