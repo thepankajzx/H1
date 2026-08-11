@@ -1190,47 +1190,47 @@
                 let typeDisplay = habit.habit_type ? habit.habit_type.replace('-', ' ') : 'custom';
                 
                 html += `
-                <div class="habit-dash-card" style="background: var(--bg, #ffffff); border: 1px solid var(--border, #E2E8F0); border-radius: 16px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 16px; transition: transform 0s;">
+                <div class="habit-dash-card" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 16px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 16px; transition: transform 0s;">
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(99, 102, 241, 0.1); color: var(--primary, #6366F1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(100, 100, 100, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                             ${svgIcon}
                         </div>
                         <div style="flex-grow: 1; overflow: hidden;">
-                            <h4 style="font-weight: 700; font-size: 1.05rem; color: var(--text-primary, #0F172A); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${displayName}</h4>
-                            <span style="font-size: 0.75rem; color: var(--text-tertiary, #64748B); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">${typeDisplay}</span>
+                            <h4 style="font-weight: 700; font-size: 1.05rem; color: var(--text-primary); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${displayName}</h4>
+                            <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">${typeDisplay}</span>
                         </div>
                     </div>
                     
-                    <div style="background: rgba(0,0,0,0.02); padding: 12px; border-radius: 12px; border: 1px solid var(--border, #E2E8F0);">
+                    <div style="background: var(--bg-surface-hover); padding: 12px; border-radius: 12px; border: 1px solid var(--border-subtle);">
                 `;
                 
                 if (habit.habit_type === 'target-time') {
                     html += `
-                        <label for="habit-${id}" style="display:block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary, #475569); margin-bottom: 8px;">Log your time</label>
-                        <input type="time" id="habit-${id}" class="form-field" style="width: 100%; height: 44px; border-radius: 8px; border: 1px solid var(--border, #CBD5E1); background: var(--bg, #ffffff); color: var(--text-primary, #000); padding: 0 12px; font-weight: 700; font-size: 1rem; outline: none; font-family: inherit;">
+                        <label for="habit-${id}" style="display:block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px;">Log your time</label>
+                        <input type="time" id="habit-${id}" class="form-field" style="width: 100%; height: 44px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--text-primary); padding: 0 12px; font-weight: 700; font-size: 1rem; outline: none; font-family: inherit;">
                     `;
                 } else if (habit.habit_type === 'duration' || habit.habit_type === 'reverse-duration') {
                     let targetText = habit.target_value ? `${habit.target_value} ${habit.unit}` : '';
                     html += `
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <label style="display:block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary, #475569);">Log duration</label>
-                            ${targetText ? `<span style="font-size: 0.7rem; font-weight: 700; color: var(--primary, #6366F1); background: rgba(99, 102, 241, 0.1); padding: 2px 8px; border-radius: 100px;">Target: ${targetText}</span>` : ''}
+                            <label style="display:block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">Log duration</label>
+                            ${targetText ? `<span style="font-size: 0.7rem; font-weight: 700; color: var(--primary); background: rgba(100, 100, 100, 0.1); padding: 2px 8px; border-radius: 100px;">Target: ${targetText}</span>` : ''}
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <div style="flex: 1; display: flex; align-items: center; background: var(--bg, #ffffff); border: 1px solid var(--border, #CBD5E1); border-radius: 8px; padding-right: 12px; overflow: hidden; min-width: 0;">
-                                <input type="number" id="habit-${id}-hrs" class="form-field" placeholder="0" min="0" max="24" style="flex: 1; width: 100%; min-width: 0; height: 44px; border: none; background: transparent; color: var(--text-primary, #000); padding: 0 12px; font-weight: 700; font-size: 1rem; outline: none; font-family: inherit;">
-                                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary, #94A3B8);">Hrs</span>
+                            <div style="flex: 1; display: flex; align-items: center; background: var(--bg-surface); border: 1px solid var(--border-strong); border-radius: 8px; padding-right: 12px; overflow: hidden; min-width: 0;">
+                                <input type="number" id="habit-${id}-hrs" class="form-field" placeholder="0" min="0" max="24" style="flex: 1; width: 100%; min-width: 0; height: 44px; border: none; background: transparent; color: var(--text-primary); padding: 0 12px; font-weight: 700; font-size: 1rem; outline: none; font-family: inherit;">
+                                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary);">Hrs</span>
                             </div>
-                            <div style="flex: 1; display: flex; align-items: center; background: var(--bg, #ffffff); border: 1px solid var(--border, #CBD5E1); border-radius: 8px; padding-right: 12px; overflow: hidden; min-width: 0;">
-                                <input type="number" id="habit-${id}-mins" class="form-field" placeholder="0" min="0" max="59" style="flex: 1; width: 100%; min-width: 0; height: 44px; border: none; background: transparent; color: var(--text-primary, #000); padding: 0 12px; font-weight: 700; font-size: 1rem; outline: none; font-family: inherit;">
-                                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary, #94A3B8);">Mins</span>
+                            <div style="flex: 1; display: flex; align-items: center; background: var(--bg-surface); border: 1px solid var(--border-strong); border-radius: 8px; padding-right: 12px; overflow: hidden; min-width: 0;">
+                                <input type="number" id="habit-${id}-mins" class="form-field" placeholder="0" min="0" max="59" style="flex: 1; width: 100%; min-width: 0; height: 44px; border: none; background: transparent; color: var(--text-primary); padding: 0 12px; font-weight: 700; font-size: 1rem; outline: none; font-family: inherit;">
+                                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary);">Mins</span>
                             </div>
                         </div>
                     `;
                 } else if (habit.habit_type === 'yes-no') {
                     html += `
-                        <label for="habit-${id}" style="display:block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary, #475569); margin-bottom: 8px;">Did you complete this?</label>
-                        <select id="habit-${id}" class="form-field" style="width: 100%; height: 44px; border-radius: 8px; border: 1px solid var(--border, #CBD5E1); background: var(--bg, #ffffff); color: var(--text-primary, #000); padding: 0 12px; font-weight: 700; font-size: 1rem; outline: none; appearance: none; font-family: inherit;">
+                        <label for="habit-${id}" style="display:block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px;">Did you complete this?</label>
+                        <select id="habit-${id}" class="form-field" style="width: 100%; height: 44px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--text-primary); padding: 0 12px; font-weight: 700; font-size: 1rem; outline: none; appearance: none; font-family: inherit;">
                             <option value="">Select...</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
@@ -1238,8 +1238,8 @@
                     `;
                 } else if (habit.habit_type === 'optimal-range') {
                     html += `
-                        <label for="habit-${id}" style="display:block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary, #475569); margin-bottom: 8px;">Auto Calculated</label>
-                        <input type="text" id="habit-${id}" class="form-field" placeholder="Calculated from Wake/Sleep" readonly style="width: 100%; height: 44px; border-radius: 8px; border: 1px dashed var(--border, #CBD5E1); background: transparent; color: var(--text-tertiary, #64748B); padding: 0 12px; font-weight: 700; font-size: 1rem; outline: none; cursor: not-allowed; font-family: inherit;">
+                        <label for="habit-${id}" style="display:block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px;">Auto Calculated</label>
+                        <input type="text" id="habit-${id}" class="form-field" placeholder="Calculated from Wake/Sleep" readonly style="width: 100%; height: 44px; border-radius: 8px; border: 1px dashed var(--border-strong); background: transparent; color: var(--text-tertiary); padding: 0 12px; font-weight: 700; font-size: 1rem; outline: none; cursor: not-allowed; font-family: inherit;">
                     `;
                 }
                 
