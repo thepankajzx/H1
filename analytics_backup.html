@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -184,7 +184,7 @@
             border-radius: 50%;
             color: var(--text-secondary);
             display: flex; align-items: center; justify-content: center;
-            transition: all var(--transition-smooth);
+            transition: transform var(--transition-smooth);
         }
         .icon-btn:hover { color: var(--text-primary); background: var(--hover-bg); }
 
@@ -239,7 +239,7 @@
             top: 6px; bottom: 6px; left: 6px;
             background: var(--card-bg);
             border-radius: var(--radius-full);
-            transition: all var(--transition-smooth);
+            transition: transform var(--transition-smooth);
             z-index: 1;
             box-shadow: var(--shadow-sm);
         }
@@ -309,7 +309,7 @@
         .btn-secondary {
             height: 44px; padding: 0 24px; background: var(--card-bg); color: var(--text-primary);
             border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; font-weight: 600;
-            display: flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition-smooth);
+            display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform var(--transition-smooth);
         }
         .btn-secondary:hover { background: var(--hover-bg); border-color: var(--text-muted); }
 
@@ -318,7 +318,7 @@
            ========================================================================== */
         .heatmap-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .info-icon-sm { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--text-muted); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; cursor: pointer; }
-        .btn-icon-sq { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+        .btn-icon-sq { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; transition: transform var(--transition-fast); }
         .btn-icon-sq:hover { background: var(--hover-bg); color: var(--text-primary); }
         .months-container { display: flex; gap: 48px; overflow-x: auto; padding-bottom: 16px; }
         .month-block { display: flex; flex-direction: column; }
@@ -382,14 +382,14 @@
             padding: 10px 18px; border-radius: 24px; border: 1px solid var(--border);
             background: transparent; color: var(--text-secondary);
             font-size: 13px; font-weight: 500; cursor: pointer;
-            transition: all var(--transition-fast); display: flex; align-items: center; gap: 6px;
+            transition: transform var(--transition-fast); display: flex; align-items: center; gap: 6px;
         }
         .chip:hover { border-color: var(--text-muted); color: var(--text-primary); }
         .chip.active { background: var(--primary); color: var(--primary-invert); border-color: var(--primary); }
         
         .chip-icon {
             width: 36px; height: 36px; border-radius: 50%; background: transparent; border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition-fast); color: var(--text-secondary);
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform var(--transition-fast); color: var(--text-secondary);
         }
         .chip-icon:hover { border-color: var(--text-muted); color: var(--text-primary); }
 
@@ -398,13 +398,13 @@
             border-radius: var(--radius-full); padding: 4px; height: 44px; align-items: center;
         }
         .dm-btn {
-            padding: 8px 20px; font-size: 13px; font-weight: 500; border-radius: var(--radius-full); color: var(--text-muted); transition: all var(--transition-fast);
+            padding: 8px 20px; font-size: 13px; font-weight: 500; border-radius: var(--radius-full); color: var(--text-muted); transition: transform var(--transition-fast);
         }
         .dm-btn.active { background: var(--card-secondary); color: var(--text-primary); box-shadow: var(--shadow-sm); }
 
         .btn-primary {
             height: 44px; padding: 0 24px; background: var(--primary); color: var(--primary-invert);
-            border-radius: var(--radius-md); font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition-smooth);
+            border-radius: var(--radius-md); font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform var(--transition-smooth);
         }
         .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
 
@@ -439,7 +439,7 @@
         .modal-card { background: #111315; border-radius: 20px; width: 100%; max-width: 440px; box-shadow: var(--shadow-lg); overflow: hidden; transform: scale(0.95); transition: transform var(--transition-smooth); }
         .modal-overlay.active .modal-card { transform: scale(1); }
         .modal-header { padding: 24px 24px 32px 24px; position: relative; color: #ffffff; }
-        .btn-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.15); color: #ffffff; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); border: none; cursor: pointer; }
+        .btn-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.15); color: #ffffff; display: flex; align-items: center; justify-content: center; transition: transform var(--transition-fast); border: none; cursor: pointer; }
         .btn-close:hover { background: rgba(0,0,0,0.3); transform: scale(1.05); }
         .modal-date { font-size: 15px; font-weight: 500; opacity: 0.9; margin-bottom: 4px; }
         .modal-score { font-size: 64px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
@@ -789,7 +789,7 @@
                     </div>
                     <div class="mc-stats">
                         <div class="mc-score">92%</div>
-                        <div class="mc-trend"><span style="color:var(--success); font-size:13px; font-weight:600;">â†‘ 12%</span> <span>vs last 90 days</span></div>
+                        <div class="mc-trend"><span style="color:var(--success); font-size:13px; font-weight:600;">↑ 12%</span> <span>vs last 90 days</span></div>
                     </div>
                     <div style="height:60px; background:linear-gradient(180deg, rgba(59,130,246,0.1) 0%, transparent 100%); border-top: 2px solid #3b82f6; border-radius:4px;"></div>
                     <div class="mc-footer"><span>Target: 07:00 AM</span> <span>Best: 100%</span></div>
@@ -802,7 +802,7 @@
                     </div>
                     <div class="mc-stats">
                         <div class="mc-score">78%</div>
-                        <div class="mc-trend"><span style="color:var(--success); font-size:13px; font-weight:600;">â†‘ 8%</span> <span>vs last 90 days</span></div>
+                        <div class="mc-trend"><span style="color:var(--success); font-size:13px; font-weight:600;">↑ 8%</span> <span>vs last 90 days</span></div>
                     </div>
                     <div style="height:60px; background:linear-gradient(180deg, rgba(168,85,247,0.1) 0%, transparent 100%); border-top: 2px solid #a855f7; border-radius:4px;"></div>
                     <div class="mc-footer"><span>Target: 7-8 Hours</span> <span>Best: 100%</span></div>
@@ -815,7 +815,7 @@
                     </div>
                     <div class="mc-stats">
                         <div class="mc-score">65%</div>
-                        <div class="mc-trend"><span style="color:var(--danger); font-size:13px; font-weight:600;">â†“ 5%</span> <span>vs last 90 days</span></div>
+                        <div class="mc-trend"><span style="color:var(--danger); font-size:13px; font-weight:600;">↓ 5%</span> <span>vs last 90 days</span></div>
                     </div>
                     <div style="height:60px; background:linear-gradient(180deg, rgba(34,197,94,0.1) 0%, transparent 100%); border-top: 2px solid #22c55e; border-radius:4px;"></div>
                     <div class="mc-footer"><span>Target: 3 Hours</span> <span>Best: 95%</span></div>
@@ -828,7 +828,7 @@
                     </div>
                     <div class="mc-stats">
                         <div class="mc-score">71%</div>
-                        <div class="mc-trend"><span style="color:var(--success); font-size:13px; font-weight:600;">â†‘ 10%</span> <span>vs last 90 days</span></div>
+                        <div class="mc-trend"><span style="color:var(--success); font-size:13px; font-weight:600;">↑ 10%</span> <span>vs last 90 days</span></div>
                     </div>
                     <div style="height:60px; background:linear-gradient(180deg, rgba(249,115,22,0.1) 0%, transparent 100%); border-top: 2px solid #f97316; border-radius:4px;"></div>
                     <div class="mc-footer"><span>Target: 45 Min</span> <span>Best: 100%</span></div>

@@ -339,7 +339,7 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: 16px; border: 2px solid var(--border-light);
             border-radius: var(--radius-md); cursor: pointer;
-            background: #FFF; transition: all 0.2s;
+            background: #FFF; transition: transform 0.2s;
         }
         .radio-label.active { border: 2px solid var(--brand-blue); background: var(--pro-pill-bg); }
         
@@ -364,7 +364,7 @@
         .btn {
             width: 100%; padding: 16px; border-radius: var(--radius-md);
             font-size: 1rem; font-weight: 700; display: flex; align-items: center;
-            justify-content: center; gap: 8px; cursor: pointer; transition: all 0.3s; border: none;
+            justify-content: center; gap: 8px; cursor: pointer; transition: transform 0.3s; border: none;
             margin-top: auto; /* Push button to bottom */
         }
         .btn-outline { background: transparent; border: 2px solid var(--text-main); color: var(--text-main); }
@@ -448,7 +448,7 @@
 
 <div class="container">
     <!-- Back Button -->
-    <a href="javascript:history.back()" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: #FFFFFF; border: 2px solid #E2E8F0; border-radius: 50%; color: #0F172A; text-decoration: none; margin-bottom: 24px; transition: all 0.2s;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='#FFFFFF'">
+    <a href="javascript:history.back()" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: #FFFFFF; border: 2px solid #E2E8F0; border-radius: 50%; color: #0F172A; text-decoration: none; margin-bottom: 24px; transition: transform 0.2s;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='#FFFFFF'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
     </a>
     
