@@ -546,10 +546,9 @@
 
         <!-- TABS -->
         <nav class="tabs-container">
-            <div class="segmented-control" id="tab-control">
-                <div class="segment-highlight" id="segment-bg"></div>
-                <button class="segmented-btn active" onclick="switchTab('heatmap', this)">Heatmap</button>
-                <button class="segmented-btn" onclick="switchTab('charts', this)">Charts</button>
+            <div class="display-mode-toggle" id="tab-control" style="height: 48px; padding: 6px; background: var(--card-secondary);">
+                <button class="dm-btn active" style="font-size: 15px; padding: 8px 32px;" onclick="switchTab('heatmap', this)">Heatmap</button>
+                <button class="dm-btn" style="font-size: 15px; padding: 8px 32px;" onclick="switchTab('charts', this)">Charts</button>
             </div>
         </nav>
 
@@ -628,66 +627,54 @@
         <section class="shared-filters-bar" style="display:flex; flex-direction:column; gap:16px; margin-bottom:16px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;">
                 <div class="filter-item">
-                    <span class="label">Date Range</span>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <select class="premium-select" id="dateRangeSelect" onchange="handleDateRangeChange(this)">
-                            <option value="30">Last 30 Days</option>
-                            <option value="60">Last 60 Days</option>
-                            <option value="90" class="premium-option">Last 90 Days (PRO)</option>
-                            <option value="180" class="premium-option">Last 6 Months (PRO)</option>
-                            <option value="ytd" class="premium-option">Year to Date (PRO)</option>
-                            <option value="custom" class="premium-option">Custom (PRO)</option>
+                    <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                        <div class="input-group" style="flex: 1;">
+                            <label class="form-label" style="color: var(--text-secondary);">Date Range</label>
+                            <select id="dateRangeSelect" class="premium-input form-field" onchange="handleDateRangeChange(this)">
+                                <option value="all_time">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="15">Last 15 Days</option>
+                                <option value="30" selected>Last 30 Days</option>
+                                <option value="90">Last 90 Days</option>
+                                <option value="custom" class="premium-option">Custom (PRO)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="customDatePickers" style="display: none; gap: 8px; align-items: center; margin-bottom: 24px;">
+                        <input type="date" id="customStartDate" class="premium-select" style="padding: 6px 12px; flex: 1;">
+                        <span style="color: var(--text-muted);">-</span>
+                        <input type="date" id="customEndDate" class="premium-select" style="padding: 6px 12px; flex: 1;">
+                    </div>
+                    
+                    <div id="heatmap-toggles" style="align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                        <span class="text-sm font-medium" style="color: var(--text-secondary);">Show % on Cells</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showPercentsToggle" onchange="window.updateAnalytics()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="charts-toggles" style="display: none; align-items: center; justify-content: space-between; margin-top: 16px;">
+                        <select class="premium-select" style="height:44px; min-width:auto; padding-right:32px;" id="globalChartTypeSelect">
+                            <option value="line">Line Chart</option>
+                            <option value="bar">Bar Chart</option>
                         </select>
-                        <div id="customDatePickers" style="display: none; gap: 8px; align-items: center;">
-                            <input type="date" id="customStartDate" class="premium-select" style="padding: 6px 12px;">
-                            <span>to</span>
-                            <input type="date" id="customEndDate" class="premium-select" style="padding: 6px 12px;">
-                            <script>
-                                // Set default values for custom date pickers
-                                (function(){
-                                    const today = new Date();
-                                    const past = new Date();
-                                    past.setDate(today.getDate() - 30);
-                                    document.getElementById('customEndDate').value = today.toISOString().split('T')[0];
-                                    document.getElementById('customStartDate').value = past.toISOString().split('T')[0];
-                                })();
-                            </script>
+                        <div class="display-mode-toggle" style="background: var(--card-secondary); padding: 4px; border-radius: 8px;">
+                            <button class="dm-btn active" onclick="setChartMode('combined', this)">Combined</button>
+                            <button class="dm-btn" onclick="setChartMode('separate', this)">Separate</button>
                         </div>
                     </div>
                 </div>
-                
-                <div id="heatmap-toggles" style="display:flex; align-items:center; gap:16px;">
-                    <div class="filter-item">
-                        <span class="label">Show % on Cells</span>
-                        <label class="toggle-wrapper" style="margin-top:0; border:none; padding:0; background:transparent; height:auto;">
-                            <input type="checkbox" id="showPctToggle" style="display:none;" onchange="togglePercentages()">
-                            <div class="toggle-switch"></div>
-                        </label>
-                    </div>
-                </div>
-                
-                <div id="charts-toggles" style="display:none; align-items:center; gap:16px;">
-                    <select class="premium-select" style="height:44px; min-width:auto; padding-right:32px;" id="globalChartTypeSelect" onchange="window.updateAnalytics()">
-                        <option value="line">Line Chart</option>
-                        <option value="bar">Bar Chart</option>
-                    </select>
-                    <div class="display-mode-toggle" style="background: var(--card-secondary); padding: 4px; border-radius: 8px;">
-                        <button class="dm-btn active" onclick="setChartMode('combined', this)">Combined</button>
-                        <button class="dm-btn" onclick="setChartMode('separate', this)">Separate</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="filter-item" style="width: 100%;">
-                <span class="label">Select Habits</span>
-                <div class="chip-group" id="dynamic-pills-container">
+
+                <div id="habit-selector-scroll">
                     <button class="chip active" data-habit="overall" onclick="togglePill(this)">Overall Score</button>
-                    <!-- JS will populate -->
                 </div>
-            </div>
-            <div style="display: flex; justify-content: flex-end; width: 100%;">
-                <button class="btn btn-primary" id="btn-generate-chart" onclick="window.updateAnalytics()" style="display: none;">Generate Chart</button>
-                <button class="btn btn-primary" id="btn-show-heatmap" onclick="window.updateAnalytics()">Show Heatmap</button>
+                
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" id="btn-generate-chart" onclick="window.updateAnalytics()" style="display: none; width: 100%; justify-content: center; font-size: 16px; padding: 12px;">Generate Chart</button>
+                    <button class="btn btn-primary" id="btn-show-heatmap" onclick="window.updateAnalytics()" style="width: 100%; justify-content: center; font-size: 16px; padding: 12px;">Show Heatmap</button>
+                </div>
             </div>
         </section>
 
@@ -889,12 +876,10 @@
     window.currentTab = 'heatmap';
 
     function switchTab(tab, element) {
-        document.querySelectorAll('.segmented-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('#tab-control .dm-btn').forEach(btn => btn.classList.remove('active'));
         element.classList.add('active');
         
-        const bg = document.getElementById('segment-bg');
-        bg.style.width = element.offsetWidth + 'px';
-        bg.style.transform = `translateX(${element.offsetLeft - 4}px)`;
+        // Removed segment-bg logic
 
         const hmBlock = document.getElementById('view-heatmap');
         const chBlock = document.getElementById('view-charts');
@@ -1078,7 +1063,8 @@
         
         let html = '<button class="chip ' + (selectedPills.includes('overall') ? 'active' : '') + '" data-habit="overall" onclick="togglePill(this)">Overall Score</button>';
         Object.values(userHabits).forEach(habit => {
-            html += `<button class="chip ${selectedPills.includes(habit.habit_id) ? 'active' : ''}" data-habit="${habit.habit_id}" onclick="togglePill(this)">${habit.habit_name}</button>`;
+            let svgIcon = habit.icon_svg ? habit.icon_svg.replace(/width="[0-9]+"/, 'width="16"').replace(/height="[0-9]+"/, 'height="16"') : (habit.icon || '');
+            html += `<button class="chip ${selectedPills.includes(habit.habit_id) ? 'active' : ''}" data-habit="${habit.habit_id}" onclick="togglePill(this)">${svgIcon} ${habit.habit_name}</button>`;
         });
         container.innerHTML = html;
     };
@@ -1089,19 +1075,26 @@
             // Single selection
             selectedPills = [habitId];
             window.renderPills();
+            window.updateAnalytics();
         } else {
             // Multi selection
-            if(selectedPills.includes(habitId)) {
-                if(selectedPills.length > 1) {
-                    selectedPills = selectedPills.filter(id => id !== habitId);
-                    btn.classList.remove('active');
-                }
+            if(habitId === 'overall') {
+                selectedPills = ['overall'];
             } else {
-                selectedPills.push(habitId);
-                btn.classList.add('active');
+                if(selectedPills.includes('overall')) {
+                    selectedPills = [habitId];
+                } else if(selectedPills.includes(habitId)) {
+                    if(selectedPills.length > 1) {
+                        selectedPills = selectedPills.filter(id => id !== habitId);
+                    } else {
+                        selectedPills = ['overall'];
+                    }
+                } else {
+                    selectedPills.push(habitId);
+                }
             }
+            window.renderPills();
         }
-        // updateAnalytics() is removed from here; user must click Generate/Show
     };
 
     window.renderInsights = function(days, customStart, customEnd) {
@@ -1243,12 +1236,29 @@
         let customStart = null;
         let customEnd = null;
 
-        if (!isPremium && (days === '90' || days === '180' || days === 'ytd' || days === 'custom')) {
+        if (!isPremium && (days === '90' || days === '180' || days === 'ytd' || days === 'custom' || days === 'all_time')) {
             dateSelect.value = '30';
             days = '30';
         }
         
-        if (days === 'custom') {
+        if (days === 'all_time') {
+            let accStr = localStorage.getItem('accountCreationTime');
+            let start = new Date();
+            start.setMonth(start.getMonth() - 2); // default to ~90 days if no acc time
+            if (accStr) {
+                let acD = new Date(accStr);
+                if (acD < new Date()) {
+                    start = acD;
+                }
+            }
+            start.setHours(0,0,0,0);
+            let end = new Date();
+            end.setHours(23,59,59,999);
+            
+            customStart = start;
+            customEnd = end;
+            days = 'custom'; // Trick the rest of the code into using custom date range logic
+        } else if (days === 'custom') {
             const startInput = document.getElementById('customStartDate').value;
             const endInput = document.getElementById('customEndDate').value;
             if (!startInput || !endInput) {
@@ -1276,15 +1286,16 @@
     };
 
     window.setChartMode = function(mode, btn) {
-        document.querySelectorAll('.dm-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#charts-toggles .dm-btn').forEach(b => b.classList.remove('active'));
         if (btn) btn.classList.add('active');
         localStorage.setItem('chartMode', mode);
         // Only re-render the chart, don't update everything since pill state might differ
-        const ds = document.getElementById('dateRangeSelect').value;
-        if (ds !== 'custom') {
-            renderEChart(parseInt(ds));
-        } else {
+        const timeRangeSelect = document.getElementById('dateRangeSelect');
+        const ds = timeRangeSelect ? timeRangeSelect.value : '30';
+        if (ds === 'custom' || ds === 'all_time') {
             window.updateAnalytics();
+        } else {
+            renderEChart(parseInt(ds));
         }
     };
 
@@ -1483,7 +1494,7 @@
         modalHeader.style.backgroundColor = bgColor;
         
         // Dynamic habit cards
-        let selectedPills = Array.from(document.querySelectorAll('.filter-pill.active')).map(p => p.dataset.val);
+        // Use global selectedPills
         
         let habitsToRender = [];
         if (selectedPills.includes('overall')) {
