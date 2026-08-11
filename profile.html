@@ -777,6 +777,66 @@
             </section>
         </div>
 
+<!-- ==============================
+             MY HABITS
+             ============================== -->
+        <section class="card animate-fade delay-1" style="margin-bottom: 2rem;">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 style="margin:0;"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="text-primary"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> My Habits</h2>
+                    <p style="margin-top: 5px;" id="selected-summary">0 / 8 Habits Selected</p>
+                </div>
+                <button class="btn btn-primary" onclick="window.location.href='setup-habits.html'">Choose Habits</button>
+            </div>
+        </section>
+
+<!-- ==============================
+             MEMBERSHIP & QUICK ACTIONS
+             ============================== -->
+        <div class="grid grid-cols-2 gap-8 animate-fade delay-2">
+            
+            <!-- Membership -->
+            <section class="card membership-card">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="flex items-center gap-2 m-0 text-white" style="color: #ffffff !important;">
+                            <div class="gold-crown-icon" title="Premium Feature" style="width: 24px; height: 24px; border-width: 1px;">
+                                <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 12px; height: 12px;">
+                                    <path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/>
+                                </svg>
+                            </div>
+                            <span id="plan-name">Free Plan</span>
+                        </h3>
+                        <span class="badge" id="plan-badge" style="background: rgba(255,255,255,0.15); color: #ffffff !important; border: 1px solid rgba(255,255,255,0.3); display: none;">Premium</span>
+                    </div>
+                    <p class="text-sm mb-6" style="color: rgba(255,255,255,0.8) !important;">Status: <strong class="text-white" id="plan-status" style="color: #ffffff !important;">Basic</strong></p>
+                </div>
+                
+                <button class="btn btn-premium-action w-full justify-center mt-auto" onclick="managePremium()">
+                    Manage Subscription
+                </button>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="card">
+                <h3 class="mb-5">Quick Actions</h3>
+                <div class="flex flex-col gap-4">
+                    <button class="btn btn-outline w-full justify-start text-sm" style="padding: 0.875rem 1.25rem;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        Purchases
+                    </button>
+                    <button class="btn btn-outline w-full justify-start text-sm" style="padding: 0.875rem 1.25rem;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        Support
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        
+
+
+
         <!-- ==============================
              ACCOUNT SETTINGS
              ============================== -->
