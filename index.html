@@ -1185,7 +1185,7 @@
             
             validHabits.forEach(habit => {
                 let id = habit.habit_id;
-                let svgIcon = habit.icon_svg ? habit.icon_svg.replace(/width="[0-9]+"/, 'width="20"').replace(/height="[0-9]+"/, 'height="20"') : (habit.icon || '⭐');
+                let svgIcon = (typeof habit.icon_svg === 'string') ? habit.icon_svg.replace(/width="[0-9]+"/, 'width="20"').replace(/height="[0-9]+"/, 'height="20"') : (habit.icon || '⭐');
                 let displayName = habit.habit_name || habit.name || 'Unknown Habit';
                 let typeDisplay = habit.habit_type ? habit.habit_type.replace('-', ' ') : 'custom';
                 

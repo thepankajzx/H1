@@ -1065,10 +1065,20 @@
         if(!container) return;
         
         let html = '<button class="chip ' + (selectedPills.includes('overall') ? 'active' : '') + '" data-habit="overall" onclick="togglePill(this)">Overall Score</button>';
-        Object.values(userHabits).forEach(habit => {
-            let svgIcon = habit.icon_svg ? habit.icon_svg.replace(/width="[0-9]+"/, 'width="16"').replace(/height="[0-9]+"/, 'height="16"') : (habit.icon || '');
+        
+        let validHabits = Object.keys(userHabits).map(key => {
+            let h = userHabits[key];
+            if (typeof h === 'object' && h !== null) {
+                h.resolved_id = h.habit_id || key;
+                return h;
+            }
+            return null;
+        }).filter(h => h !== null);
+
+        validHabits.forEach(habit => {
+            let svgIcon = (typeof habit.icon_svg === 'string') ? habit.icon_svg.replace(/width="[0-9]+"/, 'width="16"').replace(/height="[0-9]+"/, 'height="16"') : (habit.icon || '');
             let hName = habit.habit_name || habit.name || 'Unknown Habit';
-            html += `<button class="chip ${selectedPills.includes(habit.habit_id) ? 'active' : ''}" data-habit="${habit.habit_id}" onclick="togglePill(this)">${svgIcon} ${hName}</button>`;
+            html += `<button class="chip ${selectedPills.includes(habit.resolved_id) ? 'active' : ''}" data-habit="${habit.resolved_id}" onclick="togglePill(this)">${svgIcon} ${hName}</button>`;
         });
         container.innerHTML = html;
     };
