@@ -696,6 +696,9 @@
                         <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                     </button>
                 </div>
+                
+                <!-- Averages Container for Heatmap -->
+                <div id="heatmap-averages-container" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom: 16px;"></div>
 
                 <div class="months-container" id="heatmap-months-container">
                     <!-- JS will populate heatmap months here -->
@@ -707,6 +710,8 @@
              VIEW 2: CHARTS
              ========================================================= -->
         <div id="view-charts">
+            <!-- Averages Container for Charts -->
+            <div id="charts-averages-container" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom: 24px;"></div>
             <!-- DYNAMIC CHARTS CONTAINER -->
             <div id="dynamic-charts-container" style="display:flex; flex-direction:column; gap:24px;">
                 <!-- JS will inject ECharts instances here -->
@@ -1108,6 +1113,7 @@
                 }
             }
             window.renderPills();
+            window.updateAnalytics();
         }
     };
 
@@ -1302,8 +1308,54 @@
         }
 
         renderInsights(days, customStart, customEnd);
+        renderAverages();
         renderEChart(days, customStart, customEnd);
         renderHeatmap(days, customStart, customEnd);
+    };
+
+    window.renderAverages = function() {
+        let logs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
+        let dates = Object.keys(logs);
+        
+        let averagesHTML = '';
+        if (dates.length > 0) {
+            selectedPills.forEach(pill => {
+                let sum = 0;
+                let count = 0;
+                dates.forEach(d => {
+                    let log = logs[d];
+                    if (!log) return;
+                    if (pill === 'overall') {
+                        if (typeof log.score !== 'undefined') {
+                            sum += log.score;
+                            count++;
+                        }
+                    } else {
+                        if (log.habits && typeof log.habits[pill] !== 'undefined') {
+                            sum += log.habits[pill];
+                            count++;
+                        }
+                    }
+                });
+                let avg = count > 0 ? (sum / count).toFixed(1) : '0.0';
+                let name = pill === 'overall' ? 'Overall Score' : (userHabits[pill] ? (userHabits[pill].habit_name || userHabits[pill].name) : pill);
+                
+                averagesHTML += `
+                    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 12px 16px; border-radius: 12px; flex: 1; min-width: 140px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">${name} (All-Time Avg)</div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--text-primary); display: flex; align-items: baseline; gap: 4px;">
+                            ${avg}<span style="font-size: 14px; color: var(--text-tertiary); font-weight: 500;">%</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        const heatmapContainer = document.getElementById('heatmap-averages-container');
+        if (heatmapContainer) heatmapContainer.innerHTML = averagesHTML;
+        
+        const chartsContainer = document.getElementById('charts-averages-container');
+        if (chartsContainer) chartsContainer.innerHTML = averagesHTML;
     };
 
     window.setChartMode = function(mode, btn) {
