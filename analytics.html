@@ -649,9 +649,9 @@
                     
                     <div id="heatmap-toggles" style="align-items: center; justify-content: space-between; margin-bottom: 16px;">
                         <span class="text-sm font-medium" style="color: var(--text-secondary);">Show % on Cells</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="showPercentsToggle" onchange="window.updateAnalytics()">
-                            <span class="slider"></span>
+                        <label class="toggle-wrapper" style="margin-top:0; border:none; padding:0; background:transparent; height:auto;">
+                            <input type="checkbox" id="showPctToggle" style="display:none;" onchange="window.togglePercentages()">
+                            <div class="toggle-switch"></div>
                         </label>
                     </div>
 
@@ -667,8 +667,11 @@
                     </div>
                 </div>
 
-                <div id="habit-selector-scroll">
-                    <button class="chip active" data-habit="overall" onclick="togglePill(this)">Overall Score</button>
+                <div class="filter-item" style="width: 100%;">
+                    <span class="label">Select Habits</span>
+                    <div class="chip-group" id="dynamic-pills-container">
+                        <button class="chip active" data-habit="overall" onclick="togglePill(this)">Overall Score</button>
+                    </div>
                 </div>
                 
                 <div style="margin-top: 24px;">
