@@ -817,6 +817,7 @@
          ========================================================================== -->
     
 <script type="module">
+        import { ensureSummaryBackfill, updateSummaryTransaction } from './summary-engine.js';
         import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signInWithPhoneNumber, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
@@ -1007,6 +1008,16 @@
                                 fetchedLogs[d.id] = d.data();
                             });
                             localStorage.setItem('dailyLogs', JSON.stringify(fetchedLogs));
+                            
+                            // SUMMARY ENGINE: ONE-TIME BACKFILL (DUAL-RUN MODE)
+                            try {
+                                await ensureSummaryBackfill(window.firebaseDb, user.uid, fetchedLogs);
+                                // DUAL-RUN VERIFICATION
+                                import('./verify_summary.js').then(module => {
+                                    module.verifySummaryMetrics(window.firebaseDb, user.uid, fetchedLogs);
+                                });
+                            } catch(e) { console.error("Summary backfill error:", e); }
+                            
                             if (window.updateStatsUI) window.updateStatsUI(fetchedLogs);
                         } catch(e) { console.error("Error fetching logs", e); }
                         
@@ -1392,6 +1403,10 @@
             
             const dateStr = document.getElementById('entryDate').value;
             let logs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
+            
+            // SUMMARY ENGINE: Get old log BEFORE overwriting it for transaction delta
+            const oldLog = logs[dateStr] ? Object.assign({}, logs[dateStr]) : null;
+            
             logs[dateStr] = dailyLog;
             localStorage.setItem('dailyLogs', JSON.stringify(logs));
             
@@ -1399,7 +1414,10 @@
             if(currentUser) {
                 try {
                     await setDoc(doc(window.firebaseDb, "users", currentUser.uid, "logs", dateStr), dailyLog);
-                } catch(e) { console.error("Firebase log save error:", e); }
+                    
+                    // SUMMARY ENGINE: Update Summary Transactionally
+                    await updateSummaryTransaction(window.firebaseDb, currentUser.uid, dateStr, oldLog, dailyLog, logs);
+                } catch(e) { console.error("Firebase log save/transaction error:", e); }
             }
             
             if (window.updateStatsUI) window.updateStatsUI(logs);
