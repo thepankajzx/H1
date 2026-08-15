@@ -1102,7 +1102,7 @@
                 sunIcon.style.display = 'block';
             }
             // Re-render chart to match new theme
-            setTimeout(() => { if (typeof renderEChart === 'function') renderEChart(); }, 50);
+            setTimeout(() => { if (typeof window.updateAnalytics === 'function') window.updateAnalytics(); }, 50);
         });
     }
 
@@ -1247,11 +1247,11 @@
                     
                     await syncLogsFromFirebase();
                 } else {
-                    renderEChart();
+                    window.updateAnalytics();
                 }
             });
         } else {
-            renderEChart();
+            window.updateAnalytics();
         }
     });
 
