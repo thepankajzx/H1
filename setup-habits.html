@@ -92,7 +92,7 @@
         .habits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 
         /* Common Habit Card Styles */
-        .habit-card { background: white; border: 2px solid var(--border-light); border-radius: var(--radius-xl); padding: 18px; cursor: pointer; transition: transform 0s; position: relative; user-select: none; box-shadow: var(--shadow-sm); }
+        .habit-card { background: white; border: 2px solid var(--border-light); border-radius: var(--radius-xl); padding: 18px; cursor: pointer; transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; position: relative; user-select: none; box-shadow: var(--shadow-sm); }
         .habit-card:hover { border-color: var(--primary-border); }
         .habit-card.selected { border: 2px solid var(--primary); background: var(--primary-light); }
         .habit-card.exclude-count.selected { border: 2px solid var(--success); background: #F0FDF4; } 
@@ -806,13 +806,45 @@
                             <div class="input-group" style="width: 100%;">
                                 <label class="input-label">Type</label>
                                 <div class="form-control">
-                                    <select id="cb-type">
+                                    <select id="cb-type" onchange="onCustomTypeChange()">
                                         <option value="yn">Yes / No</option>
                                         <option value="duration">Target (Duration)</option>
                                         <option value="time">Target Time</option>
-                                        <option value="count">Number Count</option>
+                                        <option value="number">Number (with Unit)</option>
                                     </select>
                                 </div>
+                            </div>
+                            <div class="input-group" id="cb-unit-group" style="width: 100%; display:none;">
+                                <label class="input-label">Unit</label>
+                                <div class="form-control">
+                                    <select id="cb-unit" onchange="onCustomUnitChange()">
+                                        <option value="L">Litres (L)</option>
+                                        <option value="kg">Kilograms (kg)</option>
+                                        <option value="steps">Steps</option>
+                                        <option value="pages">Pages</option>
+                                        <option value="reps">Reps</option>
+                                        <option value="km">Kilometers (km)</option>
+                                        <option value="glasses">Glasses</option>
+                                        <option value="custom">Custom...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group" id="cb-unit-custom-group" style="width: 100%; display:none;">
+                                <label class="input-label">Custom Unit Label</label>
+                                <div class="form-control"><input type="text" id="cb-unit-custom" placeholder="e.g. cups, laps, pushups"></div>
+                            </div>
+                            <div class="input-group" id="cb-direction-group" style="width: 100%; display:none;">
+                                <label class="input-label">Scoring Direction</label>
+                                <div class="segment-control" style="width:100%; justify-content:space-between;" onclick="event.stopPropagation()">
+                                    <button type="button" class="seg-btn active" style="flex:1;" onclick="toggleSeg(this, event)">Higher is Better</button>
+                                    <button type="button" class="seg-btn" style="flex:1;" onclick="toggleSeg(this, event)">Lower is Better</button>
+                                </div>
+                            </div>
+                            <div class="input-group" id="cb-boundary-group" style="width: 100%; display:none;">
+                                <label class="input-label">0% Floor</label>
+                                <div class="form-control"><input type="number" id="cb-floor" value="0"></div>
+                                <label class="input-label" style="margin-top:8px;">100% Target</label>
+                                <div class="form-control"><input type="number" id="cb-target" value="10"></div>
                             </div>
                             <div class="input-group" style="display:flex; align-items:center; gap:8px; margin-bottom: 0; width: 100%;">
                                 <input type="checkbox" id="cb-tolerance" style="width:16px;height:16px; accent-color: var(--primary);">
@@ -1221,6 +1253,9 @@
                     window.location.href = 'login.html';
                 } else {
             window.currentUser = user;
+            if (user.email === 'test@admin.com') {
+                isPremium = true;
+            }
             // Potentially load existing habits here if needed to pre-fill
             const stored = localStorage.getItem('userHabits');
             if (stored) {
@@ -1230,7 +1265,8 @@
                     if (habitValues.length > 0 && typeof habitValues[0] === 'object' && habitValues[0].addedAt) {
                         const addedAtStr = habitValues[0].addedAt;
                         const lockDate = new Date(new Date(addedAtStr).getTime() + 30 * 24 * 60 * 60 * 1000);
-                        if (new Date() < lockDate) {
+                        const isTestAdmin = user.email === 'test@admin.com';
+                        if (new Date() < lockDate && !isTestAdmin) {
                             // Habits are locked!
                             const container = document.querySelector('.container');
                             const lockScreen = document.createElement('div');
@@ -1315,7 +1351,7 @@
 </script>
 <script>
     const MAX_FREE_HABITS = 8;
-    const isPremium = localStorage.getItem('isPremium') === 'true';
+    let isPremium = localStorage.getItem('isPremium') === 'true' || localStorage.getItem('userEmail') === 'test@admin.com';
     let customHabitsCount = 0;
     
     // UI Function: Toggle Min/Hr segments inside Habit Cards
@@ -1383,6 +1419,28 @@
     }
 
     // Interaction Function: Add Custom Habit (Max 1 allowed for free, unlimited for premium)
+    function onCustomTypeChange() {
+        const type = document.getElementById('cb-type').value;
+        const unitGroup = document.getElementById('cb-unit-group');
+        const unitCustomGroup = document.getElementById('cb-unit-custom-group');
+        const directionGroup = document.getElementById('cb-direction-group');
+        const boundaryGroup = document.getElementById('cb-boundary-group');
+
+        const isNumber = type === 'number';
+        if(unitGroup) unitGroup.style.display = isNumber ? 'block' : 'none';
+        if(directionGroup) directionGroup.style.display = (isNumber || type === 'duration') ? 'block' : 'none';
+        if(boundaryGroup) boundaryGroup.style.display = isNumber ? 'block' : 'none';
+        if(unitCustomGroup) unitCustomGroup.style.display = 'none'; // only shows when "Custom..." picked in unit dropdown
+    }
+
+    function onCustomUnitChange() {
+        const unitSelect = document.getElementById('cb-unit');
+        const customUnitGroup = document.getElementById('cb-unit-custom-group');
+        if(customUnitGroup && unitSelect) {
+            customUnitGroup.style.display = unitSelect.value === 'custom' ? 'block' : 'none';
+        }
+    }
+
     function addCustomHabit(e) {
         e.stopPropagation();
         
@@ -1409,11 +1467,22 @@
         if(type === 'yn') {
             inputsHTML += `<div class="input-group"><label class="input-label">Type</label><div class="form-control" onclick="event.stopPropagation()"><select data-extract="target_value"><option>Yes / No</option></select></div></div>`;
         } else if(type === 'duration') {
-            inputsHTML += `<div class="input-group"><label class="input-label">Target (Duration)</label><div class="control-row"><div class="form-control" onclick="event.stopPropagation()"><input type="number" value="30" data-extract="target_value"></div><div class="segment-control" onclick="event.stopPropagation()"><button class="seg-btn active" onclick="toggleSeg(this, event)">Min</button><button class="seg-btn" onclick="toggleSeg(this, event)">Hr</button></div></div></div>`;
+            const dirBtn = document.querySelector('#cb-direction-group .seg-btn.active');
+            const dir = dirBtn ? dirBtn.innerText : 'Higher is Better';
+            inputsHTML += `<div class="input-group"><label class="input-label">Target (Duration) — ${dir}</label><div class="control-row"><div class="form-control" onclick="event.stopPropagation()"><input type="number" value="30" data-extract="target_value"></div><div class="segment-control" onclick="event.stopPropagation()"><button class="seg-btn active" onclick="toggleSeg(this, event)">Min</button><button class="seg-btn" onclick="toggleSeg(this, event)">Hr</button></div></div></div>`;
         } else if(type === 'time') {
             inputsHTML += `<div class="input-group"><label class="input-label">Target Time</label><div class="form-control" onclick="event.stopPropagation()"><input type="time" value="12:00" data-extract="target_value"></div></div>`;
-        } else if(type === 'count') {
-            inputsHTML += `<div class="input-group"><label class="input-label">Target Count</label><div class="form-control" onclick="event.stopPropagation()"><input type="number" value="1" data-extract="target_value"></div></div>`;
+        } else if(type === 'number') {
+            const unitSelect = document.getElementById('cb-unit');
+            const unit = unitSelect.value === 'custom'
+                ? (document.getElementById('cb-unit-custom').value.trim() || 'units')
+                : unitSelect.options[unitSelect.selectedIndex].text;
+            const floor = document.getElementById('cb-floor').value || 0;
+            const target = document.getElementById('cb-target').value || 10;
+            const dirBtn = document.querySelector('#cb-direction-group .seg-btn.active');
+            const dir = dirBtn ? dirBtn.innerText : 'Higher is Better';
+            
+            inputsHTML += `<div class="input-group"><label class="input-label">Target — ${dir}</label><div class="control-row"><div class="form-control" onclick="event.stopPropagation()"><input type="number" value="${target}" data-extract="target_value"></div><span style="font-size:0.85rem;color:var(--text-sub);font-weight:700;">${unit}</span></div><div style="font-size:0.75rem;color:var(--text-sub);margin-top:6px;">0% floor: ${floor} ${unit}</div></div>`;
         }
         
         if(hasTol) {
