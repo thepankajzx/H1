@@ -35,8 +35,8 @@
             --radius-xl: 22px;
             --radius-full: 9999px;
             
-            --transition-fast: 0.15s ease;
-            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: 0s;
+            --transition-smooth: 0s;
             --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
@@ -70,7 +70,7 @@
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            transition: opacity var(--transition-fast), color var(--transition-fast);
+            transition: background-color var(--transition-smooth), color var(--transition-smooth);
         }
 
         /* Custom Scrollbar */
@@ -98,6 +98,7 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
+            transition: padding var(--transition-smooth);
         }
 
         .flex { display: flex; }
@@ -147,11 +148,13 @@
         /* Cards */
         .card {
             background: linear-gradient(145deg, rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.4));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--border);
             border-radius: var(--radius-xl);
             padding: 2rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+            transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), background var(--transition-smooth), border-color var(--transition-smooth), padding var(--transition-smooth);
         }
 
         body.light-mode .card {
@@ -197,7 +200,7 @@
             font-weight: 500;
             cursor: pointer;
             border: 1px solid transparent;
-            transition: transform var(--transition-fast), opacity var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+            transition: var(--transition-smooth);
             user-select: none;
             white-space: nowrap;
         }
@@ -269,6 +272,7 @@
             font-size: 0.875rem;
             font-weight: 500;
             color: var(--text-secondary);
+            transition: color var(--transition-smooth);
         }
 
         .input, .select, .textarea {
@@ -280,7 +284,7 @@
             border-radius: var(--radius-md);
             font-family: inherit;
             font-size: 0.95rem;
-            transition: opacity var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+            transition: var(--transition-fast);
             outline: none;
         }
 
@@ -374,7 +378,7 @@
             border: 3px solid var(--border);
             padding: 4px;
             background: var(--bg);
-            transition: opacity var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+            transition: var(--transition-smooth);
         }
 
         .avatar-container:hover .avatar {
@@ -401,6 +405,7 @@
             letter-spacing: 0.05em;
             color: var(--text-tertiary);
             font-weight: 600;
+            transition: color var(--transition-smooth);
         }
 
         .info-value {
@@ -410,9 +415,13 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: color var(--transition-smooth);
         }
 
-        .edit-btn-pos { position: absolute; top: 0; right: 0; }
+        .edit-btn-pos { 
+            flex-shrink: 0;
+            margin-left: auto; /* Pushes it to the far right */
+        }
 
         /* Lists (Settings) */
         .list-group {
@@ -429,7 +438,7 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+            transition: var(--transition-fast);
             cursor: pointer;
         }
 
@@ -489,34 +498,49 @@
             background: linear-gradient(135deg, #1E1B4B, #312E81);
         }
 
+        .membership-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.2) 0%, transparent 60%);
+            animation: pulse-glow 8s infinite alternate;
+            pointer-events: none;
+        }
+
         /* Animations */
         @keyframes fadeUp {
             0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes pulse-glow {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.1); opacity: 0.8; }
+        }
+
         .animate-fade {
             opacity: 0;
-            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeUp 0.01s forwards;
         }
         
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
+        .delay-1 { animation-delay: 0s; }
+        .delay-2 { animation-delay: 0s; }
 
         /* ==========================================================================
            6. RESPONSIVE DESIGN (All Screen Optimization)
            ========================================================================== */
         @media (max-width: 768px) {
             .container { padding: 1.5rem 1rem 2.5rem 1rem; gap: 1.5rem; }
-            .card { padding: 1.5rem; border-radius: var(--radius-lg); }
+            .card { padding: 1.5rem; border-radius: var(--radius-lg); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
             
             .profile-header { flex-direction: column; align-items: center; text-align: center; }
-            .edit-btn-pos { position: static; width: 100%; margin-top: 1rem; justify-content: center; }
+            .edit-btn-pos { position: static; width: 100%; margin-top: 1rem; justify-content: center; margin-left: 0; }
             
             .info-grid { grid-template-columns: 1fr; width: 100%; text-align: left; gap: 1rem; }
             
             /* Overriding grid columns for mobile edit profile form */
-            .grid-cols-2 { grid-template-columns: 1fr; gap: 1.25rem; }
+            .grid-cols-2 { grid-template-columns: 1fr; gap: 1rem; }
             .col-span-2 { grid-column: span 1; }
             
             .list-item { padding: 1rem; }
@@ -549,47 +573,107 @@
             .btn { font-size: 0.875rem; padding: 0.5rem 1rem; }
             .avatar { width: 90px; height: 90px; }
         }
+    
+/* Slide Over Panel */
+.slide-over {
+    position: fixed;
+    top: 0; right: -100%; width: 100%; height: 100vh;
+    background: var(--bg);
+    z-index: 9999;
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.slide-over.open { right: 0; }
 
-        /* Performance-safe motion accessibility */
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
+.slide-header {
+    position: sticky;
+    top: 0; background: var(--bg);
+    padding: 1rem 1.5rem;
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+}
+.slide-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.back-btn { display: flex; align-items: center; gap: 8px; color: var(--primary); font-weight: 600; font-size: 16px; cursor: pointer; }
+.progress-bar-container { width: 100%; height: 6px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+.progress-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
 
-            .animate-fade {
-                opacity: 1 !important;
-                transform: none !important;
-            }
-        }
+.search-bar { width: 100%; padding: 12px 40px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-primary); font-size: 16px; outline: none; }
+.search-container { position: relative; padding: 0 1.5rem; margin-top: 1rem; }
+.search-icon { position: absolute; left: 2.5rem; top: 12px; color: var(--text-secondary); }
 
-        /* Extra mobile safeguards */
-        @media (max-width: 768px) {
-            .container { width: 100%; overflow-x: hidden; }
-            .profile-header { width: 100%; }
-            .info-grid { min-width: 0; }
-            .info-value { min-width: 0; overflow-wrap: anywhere; }
-            .membership-card,
-            .list-item,
-            .card { min-width: 0; }
-            .list-item-left { min-width: 0; }
-            .list-title,
-            .list-desc { overflow-wrap: anywhere; }
-        }
+.category-title { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin: 2rem 1.5rem 1rem; font-weight: bold; }
 
-        @media (max-width: 480px) {
-            .container { width: 100%; }
-            .profile-header { gap: 1.25rem; }
-            .card { padding: 1rem; }
-            .membership-card .btn { width: 100%; }
-        }
-    </style>
-    <link rel="stylesheet" href="style.css">
-    <script src="app.js" defer></script>
+/* Habit Cards */
+.habit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; padding: 0 1.5rem; }
+@media (max-width: 600px) { .habit-grid { grid-template-columns: 1fr; } }
+
+.h-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1rem; cursor: pointer; transition: transform 0s, box-shadow 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+}
+.h-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+.h-card.selected { border-color: var(--primary); background: rgba(37, 99, 235, 0.05); box-shadow: 0 0 15px rgba(37,99,235,0.2); }
+.h-card.locked { opacity: 0.8; pointer-events: none; }
+
+.h-card-header { display: flex; align-items: center; gap: 12px; }
+.h-icon { font-size: 24px; }
+.h-info { flex: 1; }
+.h-title { font-weight: bold; font-size: 16px; color: var(--text-primary); }
+.h-status { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+.h-card.selected .h-status { color: var(--primary); font-weight: 600; }
+.h-check { display: none; color: var(--primary); }
+.h-card.selected .h-check { display: block; }
+
+/* Accordion Expansion */
+.h-target-config {
+    max-height: 0; overflow: hidden; transition: max-height 0.3s ease, margin-top 0.3s ease, opacity 0.3s ease;
+    opacity: 0; margin-top: 0; border-top: 1px dashed var(--border);
+}
+.h-card.expanded .h-target-config { max-height: 200px; opacity: 1; margin-top: 1rem; padding-top: 1rem; }
+
+.config-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.config-label { font-size: 12px; color: var(--text-secondary); }
+.config-input { width: 100px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-primary); text-align: right; }
+.config-select { padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-primary); }
+
+.done-btn { width: 100%; padding: 8px; background: var(--primary); color: white; border-radius: 8px; font-weight: bold; margin-top: 10px; }
+
+/* Premium Custom Habit */
+.h-card.premium { border-color: #F59E0B; background: rgba(245, 158, 11, 0.05); }
+.h-card.premium .h-title { color: #F59E0B; }
+.premium-badge { font-size: 10px; background: #F59E0B; color: black; padding: 2px 6px; border-radius: 10px; font-weight: bold; margin-left: 8px; vertical-align: middle; }
+
+/* Bottom Sheet */
+.bottom-sheet-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(4px);
+}
+.bottom-sheet-overlay.active { opacity: 1; pointer-events: auto; }
+
+.bottom-sheet {
+    position: fixed; bottom: -100%; left: 0; width: 100%; background: var(--card-bg);
+    border-radius: 24px 24px 0 0; padding: 2rem; z-index: 10001;
+    transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
+}
+.bottom-sheet.active { bottom: 0; }
+.bs-handle { width: 40px; height: 5px; background: var(--border); border-radius: 5px; margin: 0 auto 1.5rem; }
+
+/* Save Modal */
+.save-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000;
+    display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+}
+.save-modal { background: var(--card-bg); border-radius: 20px; padding: 2rem; width: 90%; max-width: 400px; text-align: center; border: 1px solid var(--border); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.save-modal.show { transform: scale(1); }
+.save-icon { font-size: 60px; margin-bottom: 1rem; color: var(--primary); }
+
+</style>
 </head>
 <body>
 
@@ -598,7 +682,7 @@
         <!-- Top Navigation / Back Button / Theme Toggle -->
         <header class="flex justify-between items-center w-full animate-fade">
             <div class="flex items-center gap-3">
-                <button class="btn btn-ghost" style="padding: 0.5rem;" onclick="history.back()" aria-label="Go Back">
+                <button class="btn btn-ghost" style="padding: 0.5rem;" onclick="window.location.href='index.html'" aria-label="Go Back">
                     <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <line x1="19" y1="12" x2="5" y2="12"></line>
                         <polyline points="12 19 5 12 12 5"></polyline>
@@ -606,29 +690,14 @@
                 </button>
                 <h1 style="color: var(--text-primary);">My Account</h1>
             </div>
-            
-            <button id="themeToggle" onclick="toggleTheme()" class="btn btn-outline" style="border-radius: var(--radius-full); width: 44px; height: 44px; padding: 0; flex-shrink: 0;" aria-label="Toggle Theme">
-                <!-- Moon Icon (For Dark Mode) -->
-                <svg id="moonIcon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-                <!-- Sun Icon (For Light Mode) -->
-                <svg id="sunIcon" class="hidden" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-            </button>
+            <div class="flex items-center gap-3">
+                <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+                    <svg id="moonIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <svg id="sunIcon" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+            </div>
         </header>
         
-        
-
         <!-- ==============================
              PROFILE HEADER & VIEW MODE
              ============================== -->
@@ -637,31 +706,23 @@
                 
                 <!-- Avatar -->
                 <div class="avatar-container">
-                    <img loading="lazy" src="https://ui-avatars.com/api/?name=Alexander+Sterling&size=240&background=2563EB&color=fff&rounded=true" alt="User Profile Image" id="display-avatar" class="avatar">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="User Profile Image" id="display-avatar" class="avatar" style="opacity: 0; transition: opacity 0.3s;">
                 </div>
 
                 <!-- Info Grid -->
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="info-label">Full Name</span>
-                        <span class="info-value text-xl font-semibold" id="val-name">Alexander Sterling</span>
+                        <span class="info-value text-xl font-semibold" id="val-name"></span>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Account Status</span>
-                        <span class="info-value">
-                            <span class="badge badge-success">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                Verified
-                            </span>
-                        </span>
-                    </div>
+
                     <div class="info-item">
                         <span class="info-label">Email Address</span>
-                        <span class="info-value" id="val-email">alexander.sterling@example.com</span>
+                        <span class="info-value" id="val-email"></span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Date of Birth</span>
-                        <span class="info-value" id="val-dob">October 12, 1990</span>
+                        <span class="info-label">Joined Date</span>
+                        <span class="info-value" id="val-joined"></span>
                     </div>
                 </div>
 
@@ -684,27 +745,28 @@
                 
                 <div class="input-group">
                     <label class="label">Full Name</label>
-                    <input type="text" id="input-name" class="input" value="Alexander Sterling" required>
+                    <input type="text" id="input-name" class="input" value="" required>
                 </div>
                 
                 <div class="input-group">
                     <label class="label">Email Address</label>
-                    <input type="email" id="input-email" class="input" value="alexander.sterling@example.com" required>
+                    <input type="email" id="input-email" class="input" value="" required>
                 </div>
 
                 <div class="input-group">
                     <label class="label">Date of Birth</label>
-                    <input type="date" id="input-dob" class="input" value="1990-10-12">
+                    <input type="date" id="input-dob" class="input" value="">
                 </div>
 
                 <div class="input-group">
                     <label class="label">Phone Number</label>
-                    <input type="tel" id="input-phone" class="input" value="+1 (555) 123-4567">
+                    <input type="tel" id="input-phone" class="input" value="" placeholder="Your phone number">
                 </div>
 
                 <div class="input-group">
                     <label class="label">Country</label>
                     <select id="input-country" class="select">
+                        <option value="" selected disabled>Select country</option>
                         <option value="US">United States</option>
                         <option value="UK">United Kingdom</option>
                         <option value="CA">Canada</option>
@@ -716,6 +778,7 @@
                 <div class="input-group">
                     <label class="label">Gender</label>
                     <select id="input-gender" class="select">
+                        <option value="" selected disabled>Select gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                         <option value="Other">Other</option>
@@ -725,12 +788,12 @@
 
                 <div class="input-group">
                     <label class="label">Occupation</label>
-                    <input type="text" id="input-occ" class="input" value="Senior Product Designer">
+                    <input type="text" id="input-occ" class="input" value="" placeholder="Your occupation">
                 </div>
 
                 <div class="input-group col-span-2">
                     <label class="label">Your commitment</label>
-                    <textarea id="input-bio" class="textarea">Passionate UI/UX designer with 10+ years of experience crafting premium digital experiences. I specialize in design systems, micro-interactions, and accessibility.</textarea>
+                    <textarea id="input-bio" class="textarea" placeholder="Write something about your goals..."></textarea>
                 </div>
 
                 <div class="flex gap-4 col-span-2" style="justify-content: flex-end; margin-top: 1rem;">
@@ -740,46 +803,8 @@
             </form>
         </section>
 
+        <!-- =========
         <!-- ==============================
-             MEMBERSHIP & QUICK ACTIONS
-             ============================== -->
-        <div class="grid grid-cols-2 gap-8 animate-fade delay-2">
-            
-            <!-- Membership -->
-            <section class="card membership-card">
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="flex items-center gap-2 m-0 text-white" style="color: #ffffff !important;">
-                            <span class="badge badge-premium">PRO</span>
-                            Current Plan
-                        </h3>
-                        <span class="badge" style="background: rgba(255,255,255,0.15); color: #ffffff !important; border: 1px solid rgba(255,255,255,0.3);">Premium</span>
-                    </div>
-                    <p class="text-sm mb-6" style="color: rgba(255,255,255,0.8) !important;">Your next renewal is on <strong class="text-white" style="color: #ffffff !important;">Monthly</strong></p>
-                </div>
-                
-                <button class="btn btn-premium-action w-full justify-center mt-auto" onclick="window.location.href='subscription.html'">
-                    Manage Subscription
-                </button>
-            </section>
-
-            <!-- Quick Actions -->
-            <section class="card">
-                <h3 class="mb-5">Quick Actions</h3>
-                <div class="flex flex-col gap-4">
-                    <button class="btn btn-outline w-full justify-start text-sm" style="padding: 0.875rem 1.25rem;">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                        Purchases
-                    </button>
-                    <button class="btn btn-outline w-full justify-start text-sm" style="padding: 0.875rem 1.25rem;">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                        Support
-                    </button>
-                </div>
-            </section>
-        </div>
-
-<!-- ==============================
              MY HABITS
              ============================== -->
         <section class="card animate-fade delay-1" style="margin-bottom: 2rem;">
@@ -802,14 +827,12 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="flex items-center gap-2 m-0 text-white" style="color: #ffffff !important;">
-                            <div class="gold-crown-icon" title="Premium Feature" style="width: 24px; height: 24px; border-width: 1px;">
-                                <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 12px; height: 12px;">
-                                    <path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/>
-                                </svg>
+                            <div id="plan-icon-container" title="Plan Status" style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 6px;">
+                                <span id="plan-badge-icon" style="font-size: 10px; font-weight: 800; letter-spacing: 1px; color: rgba(255,255,255,0.8);">FREE</span>
                             </div>
                             <span id="plan-name">Free Plan</span>
                         </h3>
-                        <span class="badge" id="plan-badge" style="background: rgba(255,255,255,0.15); color: #ffffff !important; border: 1px solid rgba(255,255,255,0.3); display: none;">Premium</span>
+                        <span class="badge" id="plan-badge" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: #ffffff !important; border: none; display: none; font-weight: 700; letter-spacing: 0.5px;">PRO</span>
                     </div>
                     <p class="text-sm mb-6" style="color: rgba(255,255,255,0.8) !important;">Status: <strong class="text-white" id="plan-status" style="color: #ffffff !important;">Basic</strong></p>
                 </div>
@@ -834,10 +857,6 @@
                 </div>
             </section>
         </div>
-
-        
-
-
 
         <!-- ==============================
              ACCOUNT SETTINGS
@@ -874,12 +893,12 @@
                 </div>
 
                 <!-- Language -->
-                <div class="list-item">
+                <div class="list-item" onclick="document.getElementById('language-region-modal').classList.remove('hidden');" style="cursor: pointer;">
                     <div class="list-item-left">
                         <div class="list-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></div>
                         <div>
                             <div class="list-title">Language & Region</div>
-                            <div class="list-desc">English (US), New York time</div>
+                            <div class="list-desc" id="lang-region-desc">English, Auto-detect</div>
                         </div>
                     </div>
                     <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
@@ -909,7 +928,11 @@
                     
                     <!-- Gold Crown Premium Icon on the Right -->
                     <div class="list-item-right">
-                        <span class="badge badge-premium">PRO</span>
+                        <div class="gold-crown-icon" title="Premium Feature">
+                            <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 16px; height: 16px;">
+                                <path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/>
+                            </svg>
+                        </div>
                         <div class="text-tertiary">
                             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </div>
@@ -917,7 +940,7 @@
                 </div>
 
                 <!-- Delete Account -->
-                <div class="list-item" style="border-color: rgba(239, 68, 68, 0.2);" onclick="openDeleteAccountModal()">
+                <div class="list-item" style="border-color: rgba(239, 68, 68, 0.2); cursor: pointer;" onclick="openDeleteAccountModal()">
                     <div class="list-item-left">
                         <div class="list-icon" style="color: var(--danger); background: rgba(239, 68, 68, 0.1);"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></div>
                         <div>
@@ -940,14 +963,14 @@
         </div>
 
     </main>
-    
-<div><!-- Old delete modal removed --></div>
-    
-    
 
+    <!-- ==========================================================================
+         JAVASCRIPT
+         ========================================================================== -->
+    
 <script type="module">
-        
-        
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // Globals for UI
         window.buyPremium = () => { window.location.href = 'subscription.html'; };
@@ -1031,7 +1054,7 @@
                     }
                     if (c.joinedDate) {
                         const joinDate = new Date(c.joinedDate);
-                        document.getElementById('val-dob').textContent = joinDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                        document.getElementById('val-joined').textContent = joinDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                     }
                 } catch(e) {}
             }
@@ -1071,11 +1094,7 @@
         window.addEventListener('load', () => {
             if (window.firebaseAuth) {
                 onAuthStateChanged(window.firebaseAuth, async (user) => {
-                    if (user) {
-                        currentUser = user;
-                        localStorage.setItem('accountCreationTime', user.metadata.creationTime);
-                        await loadUserDataFromFirebase();
-                    }
+                    if (user) { currentUser = user; window.currentUser = user; await loadUserDataFromFirebase(); }
                     else { window.location.href = 'login.html'; }
                 });
             } else {
@@ -1092,7 +1111,7 @@
                 // Handle Joined Date
                 if (currentUser.metadata.creationTime) {
                     const joinDate = new Date(currentUser.metadata.creationTime);
-                    document.getElementById('val-dob').textContent = joinDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    document.getElementById('val-joined').textContent = joinDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 }
 
 
@@ -1112,12 +1131,8 @@
                         avatarEl.style.opacity = '1';
                     }
                     if(data.dob) {
-        document.getElementById('input-dob').value = data.dob;
-        let fd = data.dob;
-        const dObj = new Date(data.dob);
-        if(!isNaN(dObj)) fd = dObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        document.getElementById('val-dob').textContent = fd;
-    }
+                        document.getElementById('input-dob').value = data.dob;
+                    }
                     if(data.phone) document.getElementById('input-phone').value = data.phone;
                     if(data.country) document.getElementById('input-country').value = data.country;
                     if(data.gender) document.getElementById('input-gender').value = data.gender;
@@ -1253,69 +1268,50 @@
             }
         };
 
-        
-        window.saveProfile = async function(event) {
-            event.preventDefault(); // Prevent form submission reload
+        window.saveProfile = async function(e) {
+            e.preventDefault();
+            const newName = document.getElementById('input-name').value;
+            const newDob = document.getElementById('input-dob').value;
+            const newPhone = document.getElementById('input-phone').value;
+            const newCountry = document.getElementById('input-country').value;
+            const newGender = document.getElementById('input-gender').value;
+            const newOcc = document.getElementById('input-occ').value;
+            const newBio = document.getElementById('input-bio').value;
             
-            // Get values from inputs
-            const name = document.getElementById('input-name').value;
-            const dob = document.getElementById('input-dob').value;
-            const email = document.getElementById('input-email').value;
-            const phone = document.getElementById('input-phone').value;
-            const country = document.getElementById('input-country').value;
-            const gender = document.getElementById('input-gender').value;
-            const occ = document.getElementById('input-occ').value;
-            const bio = document.getElementById('input-bio').value;
-            
-            // Format Date safely
-            let formattedDate = dob;
-            if(dob) {
-                const dateObj = new Date(dob);
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                formattedDate = dateObj.toLocaleDateString('en-US', options);
-                if (formattedDate === "Invalid Date") formattedDate = dob;
-            }
-
-            // Update UI elements
-            document.getElementById('val-name').textContent = name;
-            document.getElementById('val-dob').innerHTML = formattedDate;
-            document.getElementById('val-email').textContent = email;
-            
-            // Avatar
+            document.getElementById('val-name').textContent = newName;
             const avatarEl = document.getElementById('display-avatar');
-            avatarEl.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name) + '&size=240&background=2563EB&color=fff&rounded=true';
+            avatarEl.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(newName) + '&size=240&background=2563EB&color=fff&rounded=true';
+            avatarEl.style.opacity = '1';
             
-            if(window.currentUser) {
-                try {
-                    const { setDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
-                    await setDoc(doc(window.firebaseDb, "users", window.currentUser.uid), {
-                        name: name,
-                        dob: dob,
-                        phone: phone,
-                        country: country,
-                        gender: gender,
-                        occupation: occ,
-                        bio: bio
-                    }, { merge: true });
-                    
-                    // Update cache
-                    const cached = JSON.parse(localStorage.getItem('cachedProfile') || '{}');
-                    cached.name = name;
-                    localStorage.setItem('cachedProfile', JSON.stringify(cached));
-                } catch(e) {
-                    console.error('Error saving profile:', e);
-                }
+            if(currentUser) {
+                await setDoc(doc(window.firebaseDb, "users", currentUser.uid), {
+                    name: newName,
+                    dob: newDob,
+                    phone: newPhone,
+                    country: newCountry,
+                    gender: newGender,
+                    occupation: newOcc,
+                    dateOfBirth: newDob,
+                    bio: newBio,
+                    userHabits: userHabits,
+                    customHabitsData: customHabitsData,
+                    isPremium: isPremium
+                }, { merge: true });
+                
+                // Update cache
+                const cached = JSON.parse(localStorage.getItem('cachedProfile') || '{}');
+                cached.name = newName;
+                localStorage.setItem('cachedProfile', JSON.stringify(cached));
             }
-
-            // Close edit mode
-            toggleEditMode();
             
-            // Subtle flash effect to show success
-            const profileCard = document.getElementById('profile-view');
-            profileCard.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.3)';
-            setTimeout(() => {
-                profileCard.style.boxShadow = '';
-            }, 1000);
+            localStorage.removeItem('tempFullName'); // Clean up
+            
+            if (isNewUser) {
+                window.location.href = 'index.html'; // Redirect to dashboard after first setup
+            } else {
+                toggleEditMode();
+            }
+            document.getElementById('save-modal-overlay').style.display = 'none';
         };
 
         // Lock "Choose Habits" if habits were finalized within 30 days
@@ -1357,7 +1353,7 @@
 </script>
 
     <!-- Lock Warning Modal -->
-    <div id="lock-warning-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; ">
+    <div id="lock-warning-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
         <div class="card animate-fade" style="background: #FFFFFF !important; max-width: 400px; width: calc(100% - 2rem); margin: 1rem; text-align: center; border-radius: var(--radius-xl); border-top: 4px solid var(--primary); padding: 2rem;">
             <div style="margin: 0 auto 1.5rem auto; width: 64px; height: 64px; background: rgba(99, 102, 241, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
@@ -1371,7 +1367,7 @@
     </div>
     
     <!-- Language & Region Modal -->
-    <div id="language-region-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; ">
+    <div id="language-region-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
         <div class="card animate-fade" style="background: #FFFFFF !important; max-width: 400px; width: calc(100% - 2rem); margin: 1rem; border-radius: var(--radius-lg);">
             <h2 class="mb-4 text-center" style="color: #0F172A !important;">Language & Region</h2>
             
@@ -1402,52 +1398,169 @@
     </div>
     
     <!-- Delete Account Modal -->
-<div id="delete-account-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-    <div class="card animate-fade" style="background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-xl); max-width: 420px; width: calc(100% - 2rem); margin: 1rem; text-align: center; padding: 2.5rem 2rem;">
-        
-        <div style="margin: 0 auto 1.5rem auto; width: 64px; height: 64px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--danger);">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-        </div>
-        
-        <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">Delete Account?</h2>
-        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.75rem;">
-            This action is permanent and cannot be undone. All your habits, history, and personal data will be erased.
-        </p>
+    <style>
+        /* --- MODAL CONTAINER --- */
+        .del-popup-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 360px;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
 
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 2rem; text-align: left;">
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                <div style="color: var(--success); background: rgba(34, 197, 94, 0.1); border-radius: 8px; padding: 6px;">
+        /* --- 1. WARNING SECTION (Top) --- */
+        .warning-section {
+            background-color: #fff5f5;
+            padding: 30px 20px 25px 20px;
+        }
+        .icon-circle-red {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            background-color: #ffe4e6;
+            color: #e11d48;
+            border-radius: 50%;
+            margin-bottom: 12px;
+            border: 1px solid #fecdd3;
+        }
+        .warning-title {
+            color: #9f1239;
+            font-size: 20px;
+            margin: 0 0 8px 0;
+            font-weight: 800;
+        }
+        .warning-text {
+            color: #be123c;
+            font-size: 14px;
+            line-height: 1.4;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* --- 2. RETENTION SECTION (Middle) --- */
+        .retention-section {
+            background-color: #f0fdf4;
+            border-top: 1px dashed #86efac;
+            padding: 25px 20px;
+        }
+        .icon-circle-green {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            background-color: #dcfce7;
+            color: #16a34a;
+            border-radius: 50%;
+            margin-bottom: 12px;
+        }
+        .retention-title {
+            color: #14532d;
+            font-size: 16px;
+            margin: 0 0 6px 0;
+            font-weight: 700;
+        }
+        .retention-text {
+            color: #15803d;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* --- 3. ACTIONS SECTION (Bottom) --- */
+        .action-section {
+            background: #FFFFFF;
+            padding: 16px 20px 20px;
+            display: flex;
+            flex-direction: row; /* Ensures buttons are side-by-side */
+            gap: 12px;
+        }
+
+        /* Base Button Styles */
+        .btn-del {
+            flex: 1; /* Makes both buttons take exactly 50% space */
+            padding: 12px 0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            
+            /* These 3 lines ensure icon and text are perfectly centered inside the button */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            
+            transition: all 0.2s ease;
+        }
+
+        /* Keep Building Button */
+        .btn-del-cancel {
+            background: #F8FAFC;
+            color: #475569;
+            border: 1.5px solid #E2E8F0;
+        }
+        .btn-del-cancel:hover { 
+            background: #F1F5F9; 
+            color: #0F172A; 
+        }
+
+        /* Delete Button */
+        .btn-del-delete {
+            background: #FFFFFF;
+            color: #DC2626;
+            border: 1.5px solid #FECACA;
+        }
+        .btn-del-delete:hover { 
+            background: #FEF2F2; 
+        }
+    </style>
+    <!-- OVERLAY & MODAL -->
+    <div id="delete-account-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: none; align-items: center; justify-content: center;">
+        
+        <div class="del-popup-container">
+            
+            <!-- 1. Top Warning Area -->
+            <div class="warning-section">
+                <div class="icon-circle-red">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+                <h2 class="warning-title">Delete Account?</h2>
+                <p class="warning-text">This will permanently erase all your habits, history, and personal data.</p>
+            </div>
+
+            <!-- 2. Emotional/Retention Area -->
+            <div class="retention-section">
+                <div class="icon-circle-green">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                     </svg>
                 </div>
-                <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin: 0;">Don't sacrifice your momentum</h3>
+                <h3 class="retention-title">Don't sacrifice your momentum</h3>
+                <p class="retention-text">“First we make our habits, then they make us. You showed up. You improved. You grew.”</p>
             </div>
-            <p style="color: var(--text-muted); font-size: 0.85rem; font-style: italic; margin: 0;">
-                “First we make our habits, then they make us. You showed up. You improved. You grew.”
-            </p>
-        </div>
 
-        <div style="display: flex; gap: 1rem; width: 100%;">
-            <button class="btn btn-outline" style="flex: 1; justify-content: center;" onclick="closeDeleteAccountModal()">Keep Building</button>
-            <button class="btn btn-primary btn-del-delete" style="flex: 1; justify-content: center; background: var(--danger); border-color: var(--danger); color: #fff;" onclick="confirmDeleteAccount()">
-                Delete
-            </button>
-        </div>
+            <!-- 3. Action Buttons -->
+            <div class="action-section">
+                <button class="btn-del btn-del-cancel" onclick="closeDeleteAccountModal()">Keep Building</button>
+                <button class="btn-del btn-del-delete" onclick="confirmDeleteAccount()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span>Delete</span>
+                </button>
+            </div>
 
+        </div>
     </div>
-    <style>
-        .btn-del-delete:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-    </style>
-</div>
-
     
     <!-- Custom Habit Modal -->
     <div id="custom-habit-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
@@ -1474,7 +1587,9 @@
     <!-- Premium Modal -->
     <div id="premium-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
         <div class="card animate-fade" style="max-width: 400px; text-align: center; margin: 1rem;">
-            <span class="badge badge-premium" style="font-size: 1.5rem; padding: 0.5rem 1rem;">PRO</span>
+            <div class="gold-crown-icon mx-auto mb-4" style="margin: 0 auto 1rem auto; width: 64px; height: 64px; border-width: 3px;">
+                <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 32px; height: 32px;"><path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/></svg>
+            </div>
             <h2 class="justify-center">Unlock Premium</h2>
             <p class="mb-6">You have reached the free limit of 8 habits. Upgrade to Premium to track all 14 habits!</p>
             <div class="flex gap-4 w-full">
@@ -1487,21 +1602,21 @@
 
     <script>
         function openDeleteAccountModal() {
-            document.getElementById('delete-account-modal').classList.remove('hidden');
+            document.getElementById('delete-account-modal').style.display = 'flex';
         }
 
         function closeDeleteAccountModal() {
-            document.getElementById('delete-account-modal').classList.add('hidden');
+            document.getElementById('delete-account-modal').style.display = 'none';
         }
 
         async function confirmDeleteAccount() {
-            console.log("confirmDeleteAccount triggered!");
             if(!currentUser && !window.currentUser) {
                 alert("Error: User session not found. Please log in again.");
                 return;
             }
             const userToDelete = currentUser || window.currentUser;
-            const deleteBtn = document.querySelector('#delete-account-modal .btn-del-delete');
+            
+            const deleteBtn = document.querySelector('#delete-account-modal button:last-child');
             if(deleteBtn) {
                 deleteBtn.innerHTML = 'Deleting...';
                 deleteBtn.disabled = true;
@@ -1509,38 +1624,25 @@
 
             try {
                 // Delete user doc from firestore
-                try {
-                    const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
-                    await deleteDoc(doc(window.firebaseDb, "users", userToDelete.uid));
-                } catch(dbErr) {
-                    console.warn("Could not delete firestore data:", dbErr);
-                }
+                const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+                await deleteDoc(doc(window.firebaseDb, "users", userToDelete.uid));
                 
                 // Try deleting auth account
+                const { deleteUser } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
                 try {
-                    const { deleteUser } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js");
                     await deleteUser(userToDelete);
                 } catch (authErr) {
-                    console.warn("Could not delete auth user immediately (might need reauth):", authErr);
-                    if(authErr.code === 'auth/requires-recent-login') {
-                        alert("For security reasons, please log out and log back in before deleting your account.");
-                        if(deleteBtn) {
-                            deleteBtn.innerHTML = 'Delete';
-                            deleteBtn.disabled = false;
-                        }
-                        return;
-                    }
+                    console.log("Could not delete auth user immediately (might need reauth), but data is wiped.", authErr);
                 }
+
 
                 // Redirect to login
                 window.location.href = 'login.html';
             } catch (err) {
                 console.error("Error deleting account:", err);
                 alert("An error occurred while deleting your account.");
-                if(deleteBtn) {
-                    deleteBtn.innerHTML = 'Delete';
-                    deleteBtn.disabled = false;
-                }
+                deleteBtn.innerHTML = 'Delete';
+                deleteBtn.disabled = false;
             }
         }
         
@@ -1552,3 +1654,5 @@
     <script type="module" src="firebase-config.js"></script>
 </body>
 </html>
+
+
