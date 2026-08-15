@@ -1469,7 +1469,8 @@
         } else if(type === 'duration') {
             const dirBtn = document.querySelector('#cb-direction-group .seg-btn.active');
             const dir = dirBtn ? dirBtn.innerText : 'Higher is Better';
-            inputsHTML += `<div class="input-group"><label class="input-label">Target (Duration) — ${dir}</label><div class="control-row"><div class="form-control" onclick="event.stopPropagation()"><input type="number" value="30" data-extract="target_value"></div><div class="segment-control" onclick="event.stopPropagation()"><button class="seg-btn active" onclick="toggleSeg(this, event)">Min</button><button class="seg-btn" onclick="toggleSeg(this, event)">Hr</button></div></div></div>`;
+            const scoringDir = dir.includes('Lower') ? 'lower' : 'higher';
+            inputsHTML += `<div class="input-group"><label class="input-label">Target (Duration) — ${dir}</label><div class="control-row"><div class="form-control" onclick="event.stopPropagation()"><input type="number" value="30" data-extract="target_value"></div><div class="segment-control" onclick="event.stopPropagation()"><button class="seg-btn active" onclick="toggleSeg(this, event)">Min</button><button class="seg-btn" onclick="toggleSeg(this, event)">Hr</button></div></div><input type="hidden" value="${scoringDir}" data-extract="scoring_dir"></div>`;
         } else if(type === 'time') {
             inputsHTML += `<div class="input-group"><label class="input-label">Target Time</label><div class="form-control" onclick="event.stopPropagation()"><input type="time" value="12:00" data-extract="target_value"></div></div>`;
         } else if(type === 'number') {
@@ -1481,8 +1482,9 @@
             const target = document.getElementById('cb-target').value || 10;
             const dirBtn = document.querySelector('#cb-direction-group .seg-btn.active');
             const dir = dirBtn ? dirBtn.innerText : 'Higher is Better';
+            const scoringDir = dir.includes('Lower') ? 'lower' : 'higher';
             
-            inputsHTML += `<div class="input-group"><label class="input-label">Target — ${dir}</label><div class="control-row"><div class="form-control" onclick="event.stopPropagation()"><input type="number" value="${target}" data-extract="target_value"></div><span style="font-size:0.85rem;color:var(--text-sub);font-weight:700;">${unit}</span></div><div style="font-size:0.75rem;color:var(--text-sub);margin-top:6px;">0% floor: ${floor} ${unit}</div></div>`;
+            inputsHTML += `<div class="input-group"><label class="input-label">Target — ${dir}</label><div class="control-row"><div class="form-control" onclick="event.stopPropagation()"><input type="number" value="${target}" data-extract="target_value"></div><span style="font-size:0.85rem;color:var(--text-sub);font-weight:700;" data-extract="unit_label">${unit}</span></div><div style="font-size:0.75rem;color:var(--text-sub);margin-top:6px;">0% floor: <span data-extract="floor_value">${floor}</span> ${unit}</div><input type="hidden" value="${scoringDir}" data-extract="scoring_dir"></div>`;
         }
         
         if(hasTol) {
@@ -1714,10 +1716,13 @@
                 targetVal = targetEl.value;
             }
 
-            // Extract Unit (Min/Hr)
+            // Extract Unit (Min/Hr or Custom Number unit)
             let unit = null;
             const activeSeg = card.querySelector('.seg-btn.active');
-            if (activeSeg) {
+            const unitLabel = card.querySelector('[data-extract="unit_label"]');
+            if (unitLabel) {
+                unit = unitLabel.innerText;
+            } else if (activeSeg) {
                 unit = activeSeg.innerText.toLowerCase();
             } else if (type === 'duration') {
                 // Default to min if no segment but is duration
@@ -1732,6 +1737,15 @@
                 toleranceVal = tolEl.innerText.replace(/[^0-9]/g, '');
             }
 
+            // Extract Floor and Scoring Direction
+            let floorVal = 0;
+            const floorEl = card.querySelector('[data-extract="floor_value"]');
+            if (floorEl) floorVal = floorEl.innerText;
+
+            let scoringDir = 'higher';
+            const dirEl = card.querySelector('[data-extract="scoring_dir"]');
+            if (dirEl) scoringDir = dirEl.value;
+
             payload[id] = {
                 habit_id: id,
                 habit_name: name,
@@ -1740,6 +1754,8 @@
                 target_value: targetVal,
                 unit: unit,
                 tolerance: toleranceVal,
+                floor_value: floorVal,
+                scoring_dir: scoringDir,
                 icon_svg: iconSvg,
                 icon_class: iconClass,
                 addedAt: new Date().toISOString()
