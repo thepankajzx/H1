@@ -350,6 +350,8 @@
             .engine-row { padding: 16px; }
         }
     </style>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
 </head>
 <body>
 
@@ -1230,14 +1232,18 @@
                         const lockDate = new Date(new Date(addedAtStr).getTime() + 30 * 24 * 60 * 60 * 1000);
                         if (new Date() < lockDate) {
                             // Habits are locked!
-                            document.querySelector('.container').innerHTML = `
-                                <div style="text-align:center; padding: 4rem 1rem;">
-                                    <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="#F59E0B" stroke-width="2" style="margin: 0 auto 1rem;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                    <h2 style="margin-bottom: 1rem; color: #0F172A; font-size: 1.5rem; font-weight: 800;">Habits Locked</h2>
-                                    <p style="color: #64748B; margin-bottom: 2rem;">You have finalized your habits. Stay committed! You can change them after 30 days.</p>
-                                    <button style="padding: 12px 24px; border-radius: 8px; background: linear-gradient(135deg, #F59E0B, #EA580C); color: white; border: none; font-weight: 600; cursor: pointer;" onclick="window.location.href='index.html'">Go to Dashboard</button>
-                                </div>
+                            const container = document.querySelector('.container');
+                            const lockScreen = document.createElement('div');
+                            lockScreen.style.textAlign = 'center';
+                            lockScreen.style.padding = '4rem 1rem';
+                            lockScreen.innerHTML = `
+                                <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="#F59E0B" stroke-width="2" style="margin: 0 auto 1rem;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                <h2 style="margin-bottom: 1rem; color: #0F172A; font-size: 1.5rem; font-weight: 800;">Habits Locked</h2>
+                                <p style="color: #64748B; margin-bottom: 2rem;">You have finalized your habits. Stay committed! You can change them after 30 days.</p>
+                                <button style="padding: 12px 24px; border-radius: 8px; background: linear-gradient(135deg, #F59E0B, #EA580C); color: white; border: none; font-weight: 600; cursor: pointer;" onclick="window.location.href='index.html'">Go to Dashboard</button>
                             `;
+                            container.style.display = 'none';
+                            container.parentNode.insertBefore(lockScreen, container);
                             
                             // Hide the sticky footer completely if habits are locked
                             const mainFooter = document.getElementById('main-footer');
@@ -1309,6 +1315,7 @@
 </script>
 <script>
     const MAX_FREE_HABITS = 8;
+    const isPremium = localStorage.getItem('isPremium') === 'true';
     let customHabitsCount = 0;
     
     // UI Function: Toggle Min/Hr segments inside Habit Cards
@@ -1364,7 +1371,7 @@
         
         if(!card.classList.contains('selected')) {
             const selectedCount = document.querySelectorAll('.habit-card.selected:not(.exclude-count)').length;
-            if(!isExcluded && selectedCount >= MAX_FREE_HABITS) {
+            if(!isExcluded && !isPremium && selectedCount >= MAX_FREE_HABITS) {
                 document.getElementById('premium-modal-text').innerText = "You can only select up to 8 habits on the Free plan. Upgrade to Pro to track more.";
                 document.getElementById('premium-modal').style.display = 'flex';
                 return;
@@ -1375,20 +1382,20 @@
         updateProgress();
     }
 
-    // Interaction Function: Add Custom Habit (Max 1 allowed)
+    // Interaction Function: Add Custom Habit (Max 1 allowed for free, unlimited for premium)
     function addCustomHabit(e) {
         e.stopPropagation();
         
-        // Prevent exceeding 1 custom habit
-        if(customHabitsCount >= 1) {
+        // Prevent exceeding 1 custom habit for free users
+        if(!isPremium && customHabitsCount >= 1) {
             document.getElementById('premium-modal-text').innerText = "You have reached the limit of 1 Free Custom Habit. Upgrade to Pro to add more.";
             document.getElementById('premium-modal').style.display = 'flex';
             return;
         }
         
-        // Prevent exceeding global max 8 limit
+        // Prevent exceeding global max 8 limit for free users
         const selectedCount = document.querySelectorAll('.habit-card.selected:not(.exclude-count)').length;
-        if(selectedCount >= MAX_FREE_HABITS) {
+        if(!isPremium && selectedCount >= MAX_FREE_HABITS) {
             document.getElementById('premium-modal-text').innerText = "You have reached the maximum limit of 8 habits on the Free plan. Upgrade to Pro to add more.";
             document.getElementById('premium-modal').style.display = 'flex';
             return;
@@ -1465,14 +1472,22 @@
         document.getElementById('selected-count').innerText = selectedCount;
         document.getElementById('summary-selected').innerText = selectedCount;
         
-        let remaining = MAX_FREE_HABITS - selectedCount;
-        if(remaining < 0) remaining = 0;
-        document.getElementById('summary-slots').innerText = remaining + ' Slots';
+        if (isPremium) {
+            document.getElementById('summary-slots').innerText = 'Unlimited Slots';
+            let percent = Math.round((selectedCount / 14) * 100); // Visual max of 14 for premium ring
+            if(percent > 100) percent = 100;
+            document.getElementById('progress-percent').innerText = 'PRO';
+            document.getElementById('progress-circle').style.background = `conic-gradient(var(--primary) ${percent}%, #E2E8F0 0)`;
+        } else {
+            let remaining = MAX_FREE_HABITS - selectedCount;
+            if(remaining < 0) remaining = 0;
+            document.getElementById('summary-slots').innerText = remaining + ' Slots';
 
-        let percent = Math.round((selectedCount / MAX_FREE_HABITS) * 100);
-        if(percent > 100) percent = 100;
-        document.getElementById('progress-percent').innerText = percent + '%';
-        document.getElementById('progress-circle').style.background = `conic-gradient(var(--primary) ${percent}%, #E2E8F0 0)`;
+            let percent = Math.round((selectedCount / MAX_FREE_HABITS) * 100);
+            if(percent > 100) percent = 100;
+            document.getElementById('progress-percent').innerText = percent + '%';
+            document.getElementById('progress-circle').style.background = `conic-gradient(var(--primary) ${percent}%, #E2E8F0 0)`;
+        }
     }
 
     // Interaction Function: Dropdown Category Filter Logic

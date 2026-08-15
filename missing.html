@@ -1,0 +1,47 @@
+                            <svg viewBox="0 0 24 24" fill="#F59E0B" style="width: 16px; height: 16px;">
+                                <path d="M2.5 19h19v2h-19v-2zm18.06-2H3.44l-1.45-8.7 5.46 3.27L12 3l4.55 8.57 5.46-3.27-1.45 8.7z"/>
+                            </svg>
+                        </div>
+                        <div class="text-tertiary">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Account -->
+                <div class="list-item" style="border-color: rgba(239, 68, 68, 0.2); cursor: pointer;" onclick="openDeleteAccountModal()">
+                    <div class="list-item-left">
+                        <div class="list-icon" style="color: var(--danger); background: rgba(239, 68, 68, 0.1);"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></div>
+                        <div>
+                            <div class="list-title" style="color: var(--danger);">Delete Account</div>
+                            <div class="list-desc">Permanently delete your data</div>
+                        </div>
+                    </div>
+                    <div class="text-tertiary"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer / Logout -->
+        <div class="flex justify-center mt-4 mb-8">
+            <button class="btn btn-ghost text-secondary hover:text-danger w-full max-w-xs justify-center" onclick="logoutUser()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Secure Logout
+            </button>
+        </div>
+
+    </main>
+
+    <!-- ==========================================================================
+         JAVASCRIPT
+         ========================================================================== -->
+    
+<script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // Globals for UI
+        window.buyPremium = () => { window.location.href = 'subscription.html'; };
+        window.managePremium = () => { window.location.href = 'subscription.html'; };
+        window.toggleTheme = toggleTheme;

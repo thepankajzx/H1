@@ -9,6 +9,10 @@ export function calculateStreakAndAverages(logs) {
         longestStreak: 0,
         habitTotals: {},
         habitObservationCounts: {},
+        bestScore: -1,
+        bestDate: null,
+        lowestScore: 101,
+        lowestDate: null,
         latestLogDate: null
     };
     
@@ -43,6 +47,9 @@ export function calculateStreakAndAverages(logs) {
                 summary.habitObservationCounts[habitId]++;
             });
         }
+        
+        if (percentageScore > summary.bestScore) { summary.bestScore = percentageScore; summary.bestDate = d; }
+        if (percentageScore < summary.lowestScore) { summary.lowestScore = percentageScore; summary.lowestDate = d; }
     });
 
     const todayStr = new Date().toISOString().split('T')[0];
@@ -88,12 +95,18 @@ export async function ensureSummaryBackfill(db, uid, logs) {
             const summary = calculateStreakAndAverages(logs);
             summary.lastUpdated = new Date().toISOString();
             await setDoc(summaryRef, summary);
+            localStorage.setItem('analyticsSummary', JSON.stringify(summary));
             return summary;
         }
-        return snap.data();
+        
+        let summaryData = snap.data();
+        localStorage.setItem('analyticsSummary', JSON.stringify(summaryData));
+        return summaryData;
     } catch(e) {
         console.error("Failed to backfill summary", e);
-        return calculateStreakAndAverages(logs); // graceful fallback
+        let fallback = calculateStreakAndAverages(logs);
+        localStorage.setItem('analyticsSummary', JSON.stringify(fallback));
+        return fallback; // graceful fallback
     }
 }
 
@@ -151,6 +164,7 @@ export async function updateSummaryTransaction(db, uid, dateStr, oldLog, newLog,
             summary.lastUpdated = new Date().toISOString();
             
             transaction.update(summaryRef, summary);
+            localStorage.setItem('analyticsSummary', JSON.stringify(summary));
         });
         console.log("Summary updated transactionally!");
     } catch(e) {

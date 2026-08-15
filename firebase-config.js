@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber, linkWithPhoneNumber, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, enableIndexedDbPersistence, doc, setDoc, getDoc, updateDoc, collection, getDocs, query, where, documentId } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, enableIndexedDbPersistence, doc, setDoc, getDoc, updateDoc, collection, getDocs, query, where, documentId, runTransaction, orderBy, limit, startAfter } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBPGblfC8LRdFgZFyx_-WlRwCoDJ2gnpfY",
@@ -42,6 +42,10 @@ window.getDocs = getDocs;
 window.query = query;
 window.where = where;
 window.documentId = documentId;
+window.runTransaction = runTransaction;
+window.orderBy = orderBy;
+window.limit = limit;
+window.startAfter = startAfter;
 window.signInWithEmailAndPassword = signInWithEmailAndPassword;
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.sendPasswordResetEmail = sendPasswordResetEmail;

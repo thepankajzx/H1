@@ -661,6 +661,16 @@
 </head>
 <body>
 
+    <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></symbol>
+        <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></symbol>
+        <symbol id="icon-menu" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></symbol>
+        <symbol id="icon-trend-up" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></symbol>
+        <symbol id="icon-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></symbol>
+        <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></symbol>
+        <symbol id="icon-medal" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></symbol>
+    </svg>
+
     <!-- TOP NAVBAR -->
     <nav class="navbar">
         <div class="container nav-content">
@@ -677,9 +687,8 @@
             <div class="nav-actions">
                 <div class="desktop-only" style="display: flex; gap: 1rem; align-items: center;">
                     <button class="icon-btn" id="themeToggle" aria-label="Toggle Theme">
-                        <!-- Sun/Moon Icon Handled by JS -->
-                        <svg id="moonIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                        <svg id="sunIcon" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg id="moonIcon" viewBox="0 0 24 24"><use href="#icon-moon"></use></svg>
+                        <svg id="sunIcon" viewBox="0 0 24 24" style="display:none;"><use href="#icon-sun"></use></svg>
                     </button>
                     <button class="icon-btn" aria-label="Notifications">
                         <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
@@ -698,7 +707,7 @@
                 </a>
                 
                 <button class="icon-btn mobile-only" onclick="toggleMobileMenu()" aria-label="Menu">
-                    <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    <svg viewBox="0 0 24 24"><use href="#icon-menu"></use></svg>
                 </button>
             </div>
         </div>
@@ -707,7 +716,7 @@
     <!-- MOBILE MENU DROPDOWN -->
     <div id="mobileMenuDropdown" style="display: none; position: absolute; top: 70px; right: 1rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; box-shadow: var(--shadow-lg); z-index: 200; flex-direction: column; gap: 1rem; min-width: 160px;">
         <button class="btn-outline" id="mobileThemeToggle" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 8px;">
-            <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;"><use href="#icon-moon"></use></svg>
             Night Mode
         </button>
     </div>
@@ -716,7 +725,7 @@
         <!-- WELCOME SECTION -->
         <header class="welcome-header">
             <div class="greeting">
-                <h1 id="greeting-title">Good Morning, User <span class="wave">ðŸ‘‹</span></h1>
+                <h1 id="greeting-title">Good Morning, User <span class="wave">👋</span></h1>
                 <p>Consistency creates success. Let's make today count.</p>
             </div>
         </header>
@@ -726,7 +735,7 @@
             <div class="glass-panel stat-card">
                 <div class="stat-header">
                     <span>Today's Score</span>
-                    <div class="stat-icon" style="color: var(--accent-1);"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+                    <div class="stat-icon" style="color: var(--accent-1);"><svg viewBox="0 0 24 24"><use href="#icon-activity"></use></svg></div>
                 </div>
                 <div class="stat-value" id="displayScore">0</div>
                 <div class="stat-trend trend-neutral">
@@ -741,7 +750,7 @@
                 </div>
                 <div class="stat-value">84%</div>
                 <div class="stat-trend trend-up">
-                    <svg style="width:12px;height:12px;" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                    <svg style="width:12px;height:12px;" viewBox="0 0 24 24"><use href="#icon-trend-up"></use></svg>
                     <span>+5.2% vs last week</span>
                 </div>
             </div>
@@ -749,11 +758,11 @@
             <div class="glass-panel stat-card">
                 <div class="stat-header">
                     <span>Monthly Average</span>
-                    <div class="stat-icon" style="color: var(--accent-2);"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+                    <div class="stat-icon" style="color: var(--accent-2);"><svg viewBox="0 0 24 24"><use href="#icon-calendar"></use></svg></div>
                 </div>
                 <div class="stat-value">88%</div>
                 <div class="stat-trend trend-up">
-                    <svg style="width:12px;height:12px;" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                    <svg style="width:12px;height:12px;" viewBox="0 0 24 24"><use href="#icon-trend-up"></use></svg>
                     <span>+2.1% vs last month</span>
                 </div>
             </div>
@@ -761,7 +770,7 @@
             <div class="glass-panel stat-card">
                 <div class="stat-header">
                     <span>Overall Average</span>
-                    <div class="stat-icon" style="color: var(--success);"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
+                    <div class="stat-icon" style="color: var(--success);"><svg viewBox="0 0 24 24"><use href="#icon-medal"></use></svg></div>
                 </div>
                 <div class="stat-value">91%</div>
                 <div class="stat-trend trend-neutral">
@@ -948,6 +957,11 @@
         let currentUser = null;
 
         window.addEventListener('load', () => {
+            // Optimistic UI Rendering
+            renderForm();
+            const localLogs = JSON.parse(localStorage.getItem('dailyLogs') || '{}');
+            if (window.updateStatsUI) window.updateStatsUI(localLogs);
+            
             if (window.firebaseAuth) {
                 onAuthStateChanged(window.firebaseAuth, async (user) => {
                     if (user) {
@@ -974,6 +988,7 @@
                                 if (avatar) avatar.innerText = initials;
                                 
                                 if (data.region) localStorage.setItem('userRegion', data.region);
+                                if (data.isPremium !== undefined) localStorage.setItem('isPremium', data.isPremium.toString());
                                 
                                 if(data.userHabits) {
                                     localStorage.setItem('userHabits', JSON.stringify(data.userHabits));
@@ -990,18 +1005,19 @@
                             }
                         } catch(e) { console.error(e); }
 
-                        // Load logs from Firebase
+                        // Load logs from Firebase (Bounded to 30 days)
                         try {
-                            let logsQuery;
-                            const isPremium = localStorage.getItem('isPremium') === 'true';
-                            if (!isPremium) {
-                                const cutoffDate = new Date();
-                                cutoffDate.setDate(cutoffDate.getDate() - 60);
-                                const cutoffStr = cutoffDate.toISOString().split('T')[0];
-                                logsQuery = window.query(window.collection(window.firebaseDb, "users", user.uid, "logs"), window.where(window.documentId(), ">=", cutoffStr));
-                            } else {
-                                logsQuery = window.collection(window.firebaseDb, "users", user.uid, "logs");
-                            }
+                            const cutoffDate = new Date();
+                            cutoffDate.setDate(cutoffDate.getDate() - 30);
+                            const cutoffStr = cutoffDate.toISOString().split('T')[0];
+                            
+                            // SUMMARY ENGINE: We only ever need the last 30 days for rendering the dashboard stats
+                            // The all-time averages are now drawn from the analytics/summary document.
+                            let logsQuery = window.query(
+                                window.collection(window.firebaseDb, "users", user.uid, "logs"),
+                                window.where(window.documentId(), ">=", cutoffStr)
+                            );
+                            
                             const logsSnap = await window.getDocs(logsQuery);
                             let fetchedLogs = {};
                             logsSnap.forEach(d => {
@@ -1012,10 +1028,6 @@
                             // SUMMARY ENGINE: ONE-TIME BACKFILL (DUAL-RUN MODE)
                             try {
                                 await ensureSummaryBackfill(window.firebaseDb, user.uid, fetchedLogs);
-                                // DUAL-RUN VERIFICATION
-                                import('./verify_summary.js').then(module => {
-                                    module.verifySummaryMetrics(window.firebaseDb, user.uid, fetchedLogs);
-                                });
                             } catch(e) { console.error("Summary backfill error:", e); }
                             
                             if (window.updateStatsUI) window.updateStatsUI(fetchedLogs);
@@ -1026,16 +1038,13 @@
                         document.getElementById('profile-avatar').style.display = 'none';
                         updateGreeting("User");
                     }
-                    renderForm(); // Re-render once data loaded
-                    const localLogs = JSON.parse(localStorage.getItem('dailyLogs') || '{}');
-                    if (window.updateStatsUI) window.updateStatsUI(localLogs);
+                    renderForm(); // Re-render once fresh data loaded
+                    const freshLogs = JSON.parse(localStorage.getItem('dailyLogs') || '{}');
+                    if (window.updateStatsUI) window.updateStatsUI(freshLogs);
                 });
             } else {
                 document.getElementById('auth-buttons').style.display = 'flex';
-                renderForm();
                 updateGreeting("User");
-                const localLogs = JSON.parse(localStorage.getItem('dailyLogs') || '{}');
-                if (window.updateStatsUI) window.updateStatsUI(localLogs);
             }
             
             // Initial optimistic greeting from cache
@@ -1051,7 +1060,12 @@
             
             // Set today's date
             const dateInput = document.getElementById('entryDate');
-            if(dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+            if(dateInput) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+                dateInput.addEventListener('change', (e) => {
+                    if (window.loadDataForDate) window.loadDataForDate(e.target.value);
+                });
+            }
         });
 
         const defaultHabits = {
@@ -1121,9 +1135,17 @@
             const avg30 = getAvg(30);
             const prevAvg30 = getAvgOffset(30, 1);
             
-            let totalSum = 0, totalCount = 0;
-            Object.values(logs).forEach(l => { totalSum += l.score; totalCount++; });
-            const allTimeAvg = totalCount > 0 ? Math.round(totalSum/totalCount) : 0;
+            let allTimeAvg = 0;
+            const summaryData = JSON.parse(localStorage.getItem('analyticsSummary') || 'null');
+            if (summaryData && summaryData.habitTotals && summaryData.habitObservationCounts) {
+                let totalScore = summaryData.habitTotals['overall'] || 0;
+                let totalObs = summaryData.habitObservationCounts['overall'] || 0;
+                allTimeAvg = totalObs > 0 ? Math.round(totalScore / totalObs) : 0;
+            } else {
+                let totalSum = 0, totalCount = 0;
+                Object.values(logs).forEach(l => { totalSum += l.score; totalCount++; });
+                allTimeAvg = totalCount > 0 ? Math.round(totalSum/totalCount) : 0;
+            }
             
             const statCards = document.querySelectorAll('.stat-card');
             if(statCards.length >= 4) {
@@ -1142,8 +1164,8 @@
             if(!trendEl) return;
             trendEl.className = 'stat-trend ' + (diff > 0 ? 'trend-up' : (diff < 0 ? 'trend-down' : 'trend-neutral'));
             let icon = '';
-            if (diff > 0) icon = '<svg style="width:12px;height:12px;" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>';
-            else if (diff < 0) icon = '<svg style="width:12px;height:12px;" viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>';
+            if (diff > 0) icon = '<svg style="width:12px;height:12px;" viewBox="0 0 24 24"><use href="#icon-trend-up"></use></svg>';
+            else if (diff < 0) icon = '<svg style="width:12px;height:12px;" viewBox="0 0 24 24"><use href="#icon-trend-down"></use></svg>';
             
             let sign = diff > 0 ? '+' : ''; 
             let text = (diff === 0 && (suffix === 'Pending completion' || suffix === 'Overall Avg')) ? suffix : `${sign}${diff}% ${suffix}`;
@@ -1164,7 +1186,7 @@
             const emptyStateHTML = `
                 <div class="glass-panel" style="padding: 3rem 1.5rem; text-align: center; background: linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(234, 88, 12, 0.02)); border: 1px solid rgba(249, 115, 22, 0.2); box-shadow: 0 10px 30px rgba(249, 115, 22, 0.05); max-width: 500px; margin: 0 auto; border-radius: 24px;">
                     <div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #f97316, #ea580c); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; box-shadow: 0 8px 20px rgba(234, 88, 12, 0.3);">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-edit"></use></svg>
                     </div>
                     <h3 style="margin-bottom: 0.75rem; color: var(--text-primary); justify-content: center; font-size: 1.5rem; font-weight: 800;">Your Journey Starts Here</h3>
                     <p style="margin-bottom: 2rem; font-size: 1rem; color: var(--text-secondary); font-weight: 500;">Select the habits you want to build and track daily. Once saved, they will be locked for 30 days to ensure consistency.</p>
@@ -1189,7 +1211,7 @@
 
             let html = '<div style="margin-bottom: 2rem; width: 100%;">';
             html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">';
-            html += '<h2 style="font-weight: 800; font-size: 1.5rem; margin:0; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--primary);"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> Daily Tracker</h2>';
+            html += '<h2 style="font-weight: 800; font-size: 1.5rem; margin:0; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--primary);"><use href="#icon-edit"></use></svg> Daily Tracker</h2>';
             html += '</div>';
             
             html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">';
@@ -1274,6 +1296,60 @@
                     updateProgress();
                 });
             });
+            
+            if (window.loadDataForDate) {
+                window.loadDataForDate(document.getElementById('entryDate').value);
+            } else {
+                updateProgress();
+            }
+        };
+
+        window.loadDataForDate = function(dateStr) {
+            const userHabits = getDynamicHabits();
+            
+            // 1. Clear all inputs
+            Object.values(userHabits).forEach(habit => {
+                const id = habit.habit_id;
+                if (!id) return;
+                
+                if (habit.habit_type === 'duration' || habit.habit_type === 'reverse-duration') {
+                    const hrsEl = document.getElementById('habit-' + id + '-hrs');
+                    const minsEl = document.getElementById('habit-' + id + '-mins');
+                    if (hrsEl) hrsEl.value = '';
+                    if (minsEl) minsEl.value = '';
+                } else {
+                    const el = document.getElementById('habit-' + id);
+                    if (el) el.value = '';
+                }
+            });
+
+            // 2. Load past data if it exists
+            if (!dateStr) return updateProgress();
+            const logs = JSON.parse(localStorage.getItem('dailyLogs')) || {};
+            const log = logs[dateStr];
+            
+            if (log && log.inputs) {
+                Object.values(userHabits).forEach(habit => {
+                    const id = habit.habit_id;
+                    const val = log.inputs[id];
+                    if (val === undefined) return;
+
+                    if (habit.habit_type === 'duration' || habit.habit_type === 'reverse-duration') {
+                        let hMatch = val.toString().match(/(\d+)h/);
+                        let mMatch = val.toString().match(/(\d+)m/);
+                        let hrs = hMatch ? hMatch[1] : '';
+                        let mins = mMatch ? mMatch[1] : '';
+                        
+                        let hrsEl = document.getElementById('habit-' + id + '-hrs');
+                        let minsEl = document.getElementById('habit-' + id + '-mins');
+                        if (hrsEl) hrsEl.value = hrs;
+                        if (minsEl) minsEl.value = mins;
+                    } else {
+                        const el = document.getElementById('habit-' + id);
+                        if (el) el.value = val;
+                    }
+                });
+            }
             updateProgress();
         };
 
@@ -1302,29 +1378,43 @@
             }
         };
 
+        let cachedFormFields = null;
+        let cachedProgressBar = null;
+        let cachedProgressPercent = null;
+
+        // Call this whenever the form is re-rendered to clear the cache
+        window.clearProgressCache = function() {
+            cachedFormFields = null;
+            cachedProgressBar = null;
+            cachedProgressPercent = null;
+        };
+
         window.updateProgress = function() {
-            const formFields = document.querySelectorAll('.form-field');
-            if (formFields.length === 0) return;
+            if (!cachedFormFields || cachedFormFields[0]?.isConnected === false) {
+                cachedFormFields = Array.from(document.querySelectorAll('.form-field'));
+                cachedProgressBar = document.getElementById('progressBar');
+                cachedProgressPercent = document.getElementById('progressPercent');
+            }
+            if (!cachedFormFields || cachedFormFields.length === 0) return;
             
             let filledCount = 0;
-            formFields.forEach(field => {
-                if (field.value && field.value.trim() !== '') filledCount++;
-            });
+            for (let i = 0; i < cachedFormFields.length; i++) {
+                if (cachedFormFields[i].value && cachedFormFields[i].value.trim() !== '') {
+                    filledCount++;
+                }
+            }
             
-            const percentage = Math.round((filledCount / formFields.length) * 100);
+            const percentage = Math.round((filledCount / cachedFormFields.length) * 100);
             
-            const progressBar = document.getElementById('progressBar');
-            const progressPercent = document.getElementById('progressPercent');
+            if(cachedProgressBar) cachedProgressBar.style.width = percentage + "%";
+            if(cachedProgressPercent) cachedProgressPercent.textContent = percentage + "%";
             
-            if(progressBar) progressBar.style.width = percentage + "%";
-            if(progressPercent) progressPercent.textContent = percentage + "%";
-            
-            if(percentage === 100 && progressBar) {
-                progressBar.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.5)';
-                progressBar.style.background = 'var(--success)';
-            } else if(progressBar) {
-                progressBar.style.boxShadow = 'none';
-                progressBar.style.background = 'var(--gradient-accent)';
+            if(percentage === 100 && cachedProgressBar) {
+                cachedProgressBar.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.5)';
+                cachedProgressBar.style.background = 'var(--success)';
+            } else if(cachedProgressBar) {
+                cachedProgressBar.style.boxShadow = 'none';
+                cachedProgressBar.style.background = 'var(--gradient-accent)';
             }
         };
 
